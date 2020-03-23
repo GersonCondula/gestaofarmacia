@@ -105,19 +105,27 @@ public class IdentificacaoMethods {
 	   * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	   */
 	  public static Identificacao getById(int id, Identificacao [] identificacoes) {
-	      Identificacao identificacaos = null;        
-	          if (id!=0) {
-	          	for (int i = 0; i < identificacoes.length; i++) {
-	                  if (identificacoes[i].getIdIdentificacao() != 0) {
-	                      if (identificacoes[i].getIdIdentificacao() == id) {
+	      Identificacao identificacaos = null;
+	      int count = 0;
+	      if (id!=0) {        	  
+	          	for (int i = 0; i < identificacoes.length; i++) {	          		
+	                  if (identificacoes[i].getIdIdentificacao() != 0) {	                	  
+	                      if (identificacoes[i].getIdIdentificacao() == id) {	                    	  
 	                          identificacaos = new Identificacao(identificacoes[i].getIdIdentificacao(), 
 	                        		  identificacoes[i].getNomeIdentificacao(),identificacoes[i].getAcronimoIdentificacao(), 
 	                        		  identificacoes[i].isStatusIdentificacao(),identificacoes[i].getDataRegistoIdentificacao(), 
 	                        		  identificacoes[i].getDataActualizacaoIdentificacaos());
+	                          count ++;
 	                      }
-	                  }
-	               } 
+	                   }	                  
+	                } 	          		
 				}       
+	      if (identificacaos == null) {
+	    	 identificacaos = getById(Validacao.validaEntradaInteiro("Volte a informar o numero da identificacao valido: "), identificacoes);
+	    	 if (count < 3) {
+				
+			}
+	      }
 	      return identificacaos;
 	  }
 
@@ -181,7 +189,7 @@ public class IdentificacaoMethods {
        System.out.println("*---------------------------------------------------------------------------------*");     
        System.out.println("*3. Estado                                                                        *");
        System.out.println("*---------------------------------------------------------------------------------*");     
-       System.out.println("*4. Sair                                                                          *");
+       System.out.println("*4. Cancelar                                                                      *");
        System.out.println("***********************************************************************************");
        return Validacao.validaEntradaByte("Indique o dado de que deseja editar:");
    }
@@ -189,39 +197,56 @@ public class IdentificacaoMethods {
 	public static int actualizarIdentificacao(Identificacao[] identificacaos) {
 		int id = 0;
 		listaIdentificacao(identificacaos);
+		boolean error = true;
+		String msg;
 		Identificacao identificacao = getById(Validacao.validaEntradaInteiro("Informe o numero da identificacao: "), identificacaos);
-		for (int i = 0; i < identificacaos.length; i++) {
-			if (identificacaos[i].getIdIdentificacao() != 0) {
-				if (identificacaos[i].getIdIdentificacao() == identificacao.getIdIdentificacao()) {
-					id = identificacao.getIdIdentificacao();					
-					switch (menuActualizarIdentificacao()){
-						case 1: 
-							String nome = validaNome(Validacao.validaEntradaPalavra("Informe o nome da identificacao: "),identificacaos);	                        	                                                        
+		if (identificacao != null) {
+			for (int i = 0; i < identificacaos.length; i++) {
+				if (identificacaos[i].getIdIdentificacao() != 0) {
+					if (identificacaos[i].getIdIdentificacao() == identificacao.getIdIdentificacao()) {
+						id = identificacao.getIdIdentificacao();
+						switch (menuActualizarIdentificacao()) {
+						case 1:
+							String nome = validaNome(
+									Validacao.validaEntradaPalavra("Informe o nome da identificacao: "),
+									identificacaos);
 							identificacaos[i].setNomeIdentificacao(nome);
-							identificacaos[i].setDataActualizacaoIdentificacaos(LocalDateTime.now());                                               
-	                        listaIdentificacao(identificacaos, id);
+							identificacaos[i].setDataActualizacaoIdentificacaos(LocalDateTime.now());
+							listaIdentificacao(identificacaos, id);
 							break;
-						case 2: 
-							String acronimo = validaAcronimo(Validacao.validaEntradaPalavra("Informe o acronimo da identificacao: "),identificacaos);	                        	                                                        
+						case 2:
+							String acronimo = validaAcronimo(
+									Validacao.validaEntradaPalavra("Informe o acronimo da identificacao: "),
+									identificacaos);
 							identificacaos[i].setAcronimoIdentificacao(acronimo);
-							identificacaos[i].setDataActualizacaoIdentificacaos(LocalDateTime.now());                                               
-	                        listaIdentificacao(identificacaos, id);
+							identificacaos[i].setDataActualizacaoIdentificacaos(LocalDateTime.now());
+							listaIdentificacao(identificacaos, id);
 							break;
 						case 3:
-							boolean estado = Validacao.validaEntradaStatus("Informe o Novo Estado Para o Cliente [Activo ou Inactivo]: ");	                        
+							boolean estado = Validacao
+									.validaEntradaStatus("Informe o Novo Estado Para o Cliente [Activo ou Inactivo]: ");
 							identificacaos[i].setStatusIdentificacao(estado);
-                            identificacaos[i].setDataActualizacaoIdentificacaos(LocalDateTime.now());	                                    	                        
-                            listaIdentificacao(identificacaos, id);
+							identificacaos[i].setDataActualizacaoIdentificacaos(LocalDateTime.now());
+							listaIdentificacao(identificacaos, id);
 							break;
-						case 4:							
+						case 4:
+							error = false;
 							break;
-						default: break;
+						default:
+							actualizarIdentificacao(identificacaos);
+							break;
+						}
 					}
 				}
-			}
+			} 
 		}
 		gravarDadosIdentificacaoNoFicheiro(identificacaos, filePath);
-		Validacao.validaGravacao(id, "Identificacao Atualizada com Sucesso!");		
+		if (error) {
+			msg = "Identificacao Atualizada com Sucesso!";
+		}else {
+			msg = "Identificacao Não Atualizada com Sucesso!";
+		}
+		Validacao.validaGravacao(id, msg);
 		return id;
 	}
 	
