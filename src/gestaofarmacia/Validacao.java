@@ -149,7 +149,7 @@ public static boolean validaDados(String valor){
  * @Descrição: valida se o valor informado e um numero inteiro diferente de 0 e se contem espacos em branco
  */
 public static boolean validaDados(int valor){
-    return (Integer.toString(valor)).matches("[0-9]*") && valor != 0;
+    return (Integer.toString(valor)).matches("[0-9]*") && valor != 0 && !Integer.toString(valor).isBlank();
 }
 
 /**
@@ -301,11 +301,10 @@ public static int validaEntradaInteiro(String msg){
            if (validaDados(valor)) {
                error = true;
            }else {
-               System.err.println("Informe valor valido: ");
+        	   validaEntradaByte(msg);
            }
 
-       } catch (Exception e) {
-           System.err.println("Informe numero valido: ");
+       } catch (Exception e) {      
        }
        if (!error) {
            count++;
