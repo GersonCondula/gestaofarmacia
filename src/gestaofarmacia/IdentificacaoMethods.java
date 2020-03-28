@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream.GetField;
 import java.time.LocalDateTime;
 import java.util.StringTokenizer;
 
@@ -250,6 +249,11 @@ public class IdentificacaoMethods {
 		return id;
 	}
 	
+	private static int deletaIdentificacao(Identificacao[] identificacaos){
+		
+		return 0;
+	}
+	
 	private static boolean lerDadosIdentificacaoNoFicheiro(Identificacao[] identificacaos, String file) {
 		boolean error = false;		
 		StringTokenizer str;
@@ -342,4 +346,55 @@ public class IdentificacaoMethods {
 		}			
 		Validacao.formatoImpressaoFooter(identificacaos.length, empty_);		
     }         
+    
+    /**       
+    * @Descrição Menu de atualizacao de dados de Identificacao
+    */
+   private static byte menu() {
+	   
+       System.out.println();
+       System.out.println("************************** Gestao de Item Identificacao ***************************");
+       System.out.println("***********************************************************************************");
+       System.out.println("*---------------------------------------------------------------------------------*");
+       System.out.println("*1. Registar Identificacao                                                        *");
+       System.out.println("*---------------------------------------------------------------------------------*");     
+       System.out.println("*2. Actualizar Identificacao                                                      *");
+       System.out.println("*---------------------------------------------------------------------------------*");     
+       System.out.println("*3. Apagar Identificacao                                                          *");
+       System.out.println("*---------------------------------------------------------------------------------*");
+       System.out.println("*4. Lista Identificacao                                                           *");
+       System.out.println("*---------------------------------------------------------------------------------*");
+       System.out.println("*5. Cancelar                                                                      *");
+       System.out.println("***********************************************************************************");
+       return Validacao.validaEntradaByte("Indique o dado de que deseja editar:");
+   }
+    
+   public static void inicializador(Identificacao [] identificacaos) {
+	   init(identificacaos);
+	   int caso;
+	   do {
+		   caso = menu();
+			switch (caso) {
+				case 1:
+					gravaIdentificacao(identificacaos);
+					;break;
+				case 2:
+					actualizarIdentificacao(identificacaos);
+					;break;
+				case 3:
+					deletaIdentificacao(identificacaos);
+					;break;
+				case 4:
+					listaIdentificacao(identificacaos);
+					;break;
+				case 5:
+					
+					;break;
+				default:
+					
+					break;
+				}
+	} while (caso != 5);
+	   
+   }
 }
