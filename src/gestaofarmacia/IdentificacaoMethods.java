@@ -40,12 +40,12 @@ public class IdentificacaoMethods {
 	/**
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
 	 **/
-	public static int geradorID_Identificacao(int j, Identificacao[] identificacaos) {
+	private static int geradorID_Identificacao(int j, Identificacao[] identificacaos) {
 		boolean exise = false;
 		int id = (1 + Validacao.random.nextInt(identificacaos.length));
 		int newID = 0;
 		for (int i = 0; i < identificacaos.length; i++) {
-			if (identificacaos[i].getIdIdentificacao() != 0) {
+			if (identificacaos[i] != null) {
 				if (identificacaos[i].getIdIdentificacao() == id || id == 0)
 					exise = true;
 			}
@@ -60,7 +60,7 @@ public class IdentificacaoMethods {
 	/**	 
 	 * @Descrição Garante que os nomes das identificacoes sejam unicos
 	 */
-	public static String validaAcronimo(String acronimo, Identificacao[] identificacaos) {
+	private static String validaAcronimo(String acronimo, Identificacao[] identificacaos) {
 		String acronimod = null;
 		if (acronimo != null) {
 			for (int i = 0; i < identificacaos.length; i++) {
@@ -82,7 +82,7 @@ public class IdentificacaoMethods {
 	/**	 
 	 * @Descrição Garante que os nomes das identificacoes sejam unicos
 	 */
-	public static String validaNome(String nome, Identificacao[] identificacaos) {
+	private static String validaNome(String nome, Identificacao[] identificacaos) {
 		String nomed = null;
 		if (nome != null) {
 			for (int i = 0; i < identificacaos.length; i++) {
@@ -107,7 +107,7 @@ public class IdentificacaoMethods {
 	 * @return
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
-	public static Identificacao getById(int id, Identificacao [] identificacoes) {
+	private static Identificacao getById(int id, Identificacao [] identificacoes) {
 		Identificacao identificacaos = null;
 		int count = 0;
 		if (id!=0) {        	  
@@ -132,7 +132,7 @@ public class IdentificacaoMethods {
 		return identificacaos;
 	}
 
-	public static int gravaIdentificacao(Identificacao[] identificacaos) {
+	private static int gravaIdentificacao(Identificacao[] identificacaos) {
 		int id = 0, i = EAR.notNull(identificacaos);		
 		id = geradorID_Identificacao(i, identificacaos);		
 		String nome = validaNome(Validacao.validaEntradaPalavra("Informe o nome da identificacao: "),identificacaos);		
@@ -171,7 +171,7 @@ public class IdentificacaoMethods {
 		return Validacao.validaEntradaByte("Indique o dado de que deseja editar:");
 	}
 
-	public static int actualizarIdentificacao(Identificacao[] identificacaos) {
+	private static int actualizarIdentificacao(Identificacao[] identificacaos) {
 		int id = 0;
 		listaIdentificacao(identificacaos);
 		boolean error = true;
@@ -260,7 +260,7 @@ public class IdentificacaoMethods {
 			if (new File(file).exists()) {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
 				for (int i = 0; i < identificacaos.length; i++) {
-					if (identificacaos[i].getIdIdentificacao() != 0) {
+					if (identificacaos[i] != null) {
 						bw.write(identificacaos[i].getIdIdentificacao() + "|" + identificacaos[i].getNomeIdentificacao()
 								+ "|" + identificacaos[i].getAcronimoIdentificacao()
 								+ "|" + identificacaos[i].isStatusIdentificacao() 
@@ -343,7 +343,7 @@ public class IdentificacaoMethods {
 		int empty_= 0;
 		String layoutFormat = formatoImpressao();
 		for (int i = 0; i < identificacaos.length; i++){
-			if (identificacaos[i].getIdIdentificacao() != 0){
+			if (identificacaos[i] != null){
 				dadosImpressao(numeracao, i, identificacaos, layoutFormat);
 				numeracao+=1;
 			}else{empty_ += 1; }
@@ -398,7 +398,7 @@ public class IdentificacaoMethods {
 	}
 
 	public static void inicializador(Identificacao [] identificacaos) {			
-		EAR.init(identificacaos, new Identificacao(0, null, null, false, null, null));	
+		EAR.init(identificacaos);	
 		lerDadosIdentificacaoNoFicheiro(identificacaos, filePath);
 		int caso;
 		do {
