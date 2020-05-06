@@ -4,21 +4,13 @@ import java.time.LocalDateTime;
 
 public class Identificacao {
 
-	public void setIdIdentificacao(int idIdentificacao) {
-		this.idIdentificacao = idIdentificacao;
-	}
-
-	public void setDataRegistoIdentificacao(LocalDateTime dataRegistoIdentificacao) {
-		this.dataRegistoIdentificacao = dataRegistoIdentificacao;
-	}
-
 	private int idIdentificacao;
-    private String nomeIdentificacao;
-    private String acronimoIdentificacao;    
+	private String nomeIdentificacao;
+	private String acronimoIdentificacao;    
 	private boolean statusIdentificacao;
-    private LocalDateTime dataRegistoIdentificacao;
-    private LocalDateTime dataActualizacaoIdentificacaos;
-    
+	private LocalDateTime dataRegistoIdentificacao;
+	private LocalDateTime dataActualizacaoIdentificacaos;
+
 	public Identificacao(int idIdentificacao, String nomeIdentificacao, String acronimoIdentificacao, boolean statusIdentificacao,
 			LocalDateTime dataRegistoIdentificacao, LocalDateTime dataActualizacaoIdentificacaos) {		
 		this.idIdentificacao = idIdentificacao;
@@ -27,6 +19,14 @@ public class Identificacao {
 		this.statusIdentificacao = statusIdentificacao;
 		this.dataRegistoIdentificacao = dataRegistoIdentificacao;
 		this.dataActualizacaoIdentificacaos = dataActualizacaoIdentificacaos;
+	}
+
+	public void setIdIdentificacao(int idIdentificacao) {
+		this.idIdentificacao = idIdentificacao;
+	}
+
+	public void setDataRegistoIdentificacao(LocalDateTime dataRegistoIdentificacao) {
+		this.dataRegistoIdentificacao = dataRegistoIdentificacao;
 	}
 
 	public String getAcronimoIdentificacao() {
@@ -68,11 +68,11 @@ public class Identificacao {
 	public void setDataActualizacaoIdentificacaos(LocalDateTime dataActualizacaoIdentificacaos) {
 		this.dataActualizacaoIdentificacaos = dataActualizacaoIdentificacaos;
 	}
-	
+
 	@Override
 	public String toString() {
 		return  "[Identificacao: "+ Validacao.delimitador + idIdentificacao + Validacao.delimitador + nomeIdentificacao
 				+ Validacao.delimitador + acronimoIdentificacao + Validacao.delimitador + statusIdentificacao + Validacao.delimitador
-				+ dataRegistoIdentificacao + Validacao.delimitador + dataActualizacaoIdentificacaos + Validacao.delimitador + " ]";
+				+ dataRegistoIdentificacao + Validacao.delimitador + dataActualizacaoIdentificacaos + Validacao.delimitador + "]";
 	}	
 }

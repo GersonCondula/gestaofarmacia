@@ -52,6 +52,26 @@ public class Validacao {
 		return filePath2;
 	}
 	
+	public static String destroiDirectorioFicheiro(String fileNames) {
+		Path currentAbsolutePath1 = Paths.get("");
+		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\files");
+		File fileDirectory = new File(filePath1);
+		String filePath2 = filePath1.concat("\\"+fileNames);
+		File file = new File(filePath2);
+		try {
+			if (!new File(filePath1).exists()) {				
+				fileDirectory.mkdir();											
+			}else {
+				if (new File(filePath2).exists())				
+					file.delete();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return filePath2;
+	}
+	
 	/**
     *
     * @param data_
