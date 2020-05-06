@@ -9,12 +9,13 @@ public class EAR {
 
 	/**	 	
 	 * @param <E>
+	 * @param <obj>
 	 * @return 
 	 * @Descrição Inicializa o array de objecto com valores nulos com recurso a genericos
 	 */
-	public static <E> E[] init(E[] anArray) {
+	public static <E, obj> E[] init(E[] anArray, E obj ) {
 		for (int i = 0; i < anArray.length; i++)			
-			anArray[i] = null;							
+			anArray[i] = obj;							
 		return anArray;
 	}
 	
@@ -26,7 +27,7 @@ public class EAR {
 		int not_null = 0;		
 		for (int i = 0; i < anArray.length; i++)
 			if(anArray.equals(null))			
-				not_null+=1; 					
+				not_null+=1; 				
 		return not_null;
 	}
 }

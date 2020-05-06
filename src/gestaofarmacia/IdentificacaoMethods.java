@@ -27,7 +27,7 @@ public class IdentificacaoMethods {
 
 	/**	 	
 	 * @Descrição retorna quantidade de registos nao nulos que tem no array
-	 */
+	 
 	public static int notNull_Identificacoes(Identificacao[] identificacaos) {		
 		int not_null = 0;		
 		for (int i = 0; i < identificacaos.length; i++)
@@ -35,6 +35,7 @@ public class IdentificacaoMethods {
 				not_null+=1; 					
 		return not_null;
 	}
+	*/
 
 	/**
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
@@ -44,7 +45,7 @@ public class IdentificacaoMethods {
 		int id = (1 + Validacao.random.nextInt(identificacaos.length));
 		int newID = 0;
 		for (int i = 0; i < identificacaos.length; i++) {
-			if (identificacaos[i] != null) {
+			if (identificacaos[i].getIdIdentificacao() != 0) {
 				if (identificacaos[i].getIdIdentificacao() == id || id == 0)
 					exise = true;
 			}
@@ -63,7 +64,7 @@ public class IdentificacaoMethods {
 		String acronimod = null;
 		if (acronimo != null) {
 			for (int i = 0; i < identificacaos.length; i++) {
-				if (identificacaos[i] != null) {
+				if (identificacaos[i].getIdIdentificacao() != 0) {
 					if (!identificacaos[i].getAcronimoIdentificacao().equalsIgnoreCase(acronimo)) {
 						acronimod = acronimo;
 					}else {
@@ -85,7 +86,7 @@ public class IdentificacaoMethods {
 		String nomed = null;
 		if (nome != null) {
 			for (int i = 0; i < identificacaos.length; i++) {
-				if (identificacaos[i] != null) {
+				if (identificacaos[i].getIdIdentificacao() != 0) {
 					if (!identificacaos[i].getNomeIdentificacao().equalsIgnoreCase(nome)) {
 						nomed = nome;
 					}else {
@@ -259,7 +260,7 @@ public class IdentificacaoMethods {
 			if (new File(file).exists()) {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
 				for (int i = 0; i < identificacaos.length; i++) {
-					if (identificacaos[i] != null) {
+					if (identificacaos[i].getIdIdentificacao() != 0) {
 						bw.write(identificacaos[i].getIdIdentificacao() + "|" + identificacaos[i].getNomeIdentificacao()
 								+ "|" + identificacaos[i].getAcronimoIdentificacao()
 								+ "|" + identificacaos[i].isStatusIdentificacao() 
@@ -342,7 +343,7 @@ public class IdentificacaoMethods {
 		int empty_= 0;
 		String layoutFormat = formatoImpressao();
 		for (int i = 0; i < identificacaos.length; i++){
-			if (identificacaos[i] != null){
+			if (identificacaos[i].getIdIdentificacao() != 0){
 				dadosImpressao(numeracao, i, identificacaos, layoutFormat);
 				numeracao+=1;
 			}else{empty_ += 1; }
@@ -396,10 +397,8 @@ public class IdentificacaoMethods {
 		return Validacao.validaEntradaByte("Indique o dado de que deseja editar:");
 	}
 
-	public static void inicializador(Identificacao [] identificacaos) {
-		//init(identificacaos);		
-		//EAR.init(identificacaos, new Identificacao(0, null, null, false, null, null));
-		EAR.init(identificacaos);
+	public static void inicializador(Identificacao [] identificacaos) {			
+		EAR.init(identificacaos, new Identificacao(0, null, null, false, null, null));	
 		lerDadosIdentificacaoNoFicheiro(identificacaos, filePath);
 		int caso;
 		do {
