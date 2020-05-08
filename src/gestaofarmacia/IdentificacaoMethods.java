@@ -46,7 +46,7 @@ public class IdentificacaoMethods {
 					if (!identificacaos[i].getAcronimo().equalsIgnoreCase(acronimo)) {
 						acronimod = acronimo;
 					}else {
-						acronimod = validaAcronimo(Validacao.validaEntradaPalavra("O acronimo da identificacao ja existe, queira por favor informar um novo nome: "),identificacaos);
+						acronimod = validaAcronimo(Validacao.validaEntradaPalavra(Language.default_language ? Language.pt_identificacao_acronimo_existe : Language.en_identification_acronym_exist),identificacaos);
 						i = identificacaos.length;
 					}
 				}else {
@@ -68,7 +68,7 @@ public class IdentificacaoMethods {
 					if (!identificacaos[i].getNome().equalsIgnoreCase(nome)) {
 						nomed = nome;
 					}else {
-						nomed = validaNome(Validacao.validaEntradaPalavra("O nome da identificacao ja existe, queira por favor informar um novo nome: "),identificacaos);
+						nomed = validaNome(Validacao.validaEntradaPalavra(Language.default_language ? Language.pt_identificacao_nome_existe : Language.en_identification_name_existe), identificacaos);
 						i = identificacaos.length;
 					}
 				}else {
@@ -102,7 +102,7 @@ public class IdentificacaoMethods {
 			} 	          		
 		}       
 		if (identificacaos == null) {
-			identificacaos = getByAcronimo(Validacao.validaEntradaPalavra("Volte a informar o acronimo da identificacao valido: "), identificacoes);
+			identificacaos = getByAcronimo(Validacao.validaEntradaPalavra(Language.default_language ? Language.pt_identificacao_acronimo_invalido : Language.en_identification_acronym_invalid), identificacoes);
 			if (count < 3) {
 
 			}
@@ -133,7 +133,7 @@ public class IdentificacaoMethods {
 			} 	          		
 		}       
 		if (identificacaos == null) {
-			identificacaos = getById(Validacao.validaEntradaInteiro("Volte a informar o numero da identificacao valido: "), identificacoes);
+			identificacaos = getById(Validacao.validaEntradaInteiro(Language.default_language ? Language.pt_identificacao_valida_numero_invalido : Language.en_identification_valid_number), identificacoes);
 			if (count < 3) {
 
 			}
@@ -144,9 +144,9 @@ public class IdentificacaoMethods {
 	private static int gravaIdentificacao(Identificacao[] identificacaos) {
 		int id = 0, i = Validacao.notNull(identificacaos);		
 		id = geradorID(i, identificacaos);		
-		String nome = validaNome(Validacao.validaEntradaPalavra("Informe o nome da identificacao: "),identificacaos);		
+		String nome = validaNome(Validacao.validaEntradaPalavra(Language.default_language ? Language.pt_identificacao_nome : Language.en_identification_name),identificacaos);		
 		if (nome != null) {
-			String acronimo = validaAcronimo(Validacao.validaEntradaPalavra("Informe o acronimo da identificacao: "),identificacaos);
+			String acronimo = validaAcronimo(Validacao.validaEntradaPalavra(Language.default_language ? Language.pt_identificacao_acronimo : Language.en_identification_acronym),identificacaos);
 			if (acronimo != null) {
 				identificacaos[i] = new Identificacao(id, nome, acronimo, true, LocalDateTime.now(), LocalDateTime.now());
 			}else {
@@ -156,7 +156,7 @@ public class IdentificacaoMethods {
 			id = 0;
 		}		
 		gravarDadosIdentificacaoNoFicheiro(identificacaos, filePath);
-		Validacao.validaGravacao(id, "Identificacao Gravada com sucesso!");			
+		Validacao.validaGravacao(id, Language.default_language ? Language.pt_identificacao_salva : Language.en_identification_save);			
 		return id;
 	}
 
@@ -165,18 +165,18 @@ public class IdentificacaoMethods {
 	 */
 	private static byte menuActualizarIdentificacao() {
 		System.out.println();
-		System.out.println("********************* Actualizar dados de Item Identificacao **********************");
+		System.out.println("********************* "+ (Language.default_language ? Language.pt_identificacao_actualizacao_menu : Language.en_identification_update_menu) +" **********************");
 		System.out.println("***********************************************************************************");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*1. Nome                                                                          *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*2. Acronimo                                                                      *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*3. Estado                                                                        *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*4. Cancelar                                                                      *");
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("1. "+(Language.default_language ? Language.pt_identificacao_valida_nome : Language.en_identification_valid_name));
+		System.out.println("-----------------------------------------------------------------------------------");     
+		System.out.println("2. "+(Language.default_language ? Language.pt_identificacao_valida_acronimo : Language.en_identification_valid_acronym));
+		System.out.println("-----------------------------------------------------------------------------------");     
+		System.out.println("3. "+(Language.default_language ? Language.pt_identificacao_valida_estado : Language.en_identification_valid_status));
+		System.out.println("-----------------------------------------------------------------------------------");     
+		System.out.println("4. "+(Language.default_language ? Language.pt_identificacao_actualizacao_cancelar : Language.en_identification_update_cancel));
 		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Indique o dado de que deseja editar:");
+		return Validacao.validaEntradaByte(Language.default_language ? Language.pt_inicializacao_editar_dado : Language.en_identification_edit_data);
 	}
 
 	private static int actualizarIdentificacao(Identificacao[] identificacaos) {
@@ -184,7 +184,7 @@ public class IdentificacaoMethods {
 		listaIdentificacao(identificacaos);
 		boolean error = true;
 		String msg;
-		Identificacao identificacao = getById(Validacao.validaEntradaInteiro("Informe o numero da identificacao: "), identificacaos);
+		Identificacao identificacao = getById(Validacao.validaEntradaInteiro(Language.default_language ? Language.pt_identificacao_valida_numero : Language.en_identification_number), identificacaos);
 		if (identificacao != null) {
 			for (int i = 0; i < identificacaos.length; i++) {
 				if (identificacaos[i] != null) {
@@ -193,7 +193,7 @@ public class IdentificacaoMethods {
 						switch (menuActualizarIdentificacao()) {
 						case 1:
 							String nome = validaNome(
-									Validacao.validaEntradaPalavra("Informe o nome da identificacao: "),
+									Validacao.validaEntradaPalavra(Language.default_language ? Language.pt_identificacao_valida_nome : Language.en_identification_valid_name),
 									identificacaos);
 							identificacaos[i].setNome(nome);
 							identificacaos[i].setDataActualizacao(LocalDateTime.now());
@@ -201,7 +201,7 @@ public class IdentificacaoMethods {
 							break;
 						case 2:
 							String acronimo = validaAcronimo(
-									Validacao.validaEntradaPalavra("Informe o acronimo da identificacao: "),
+									Validacao.validaEntradaPalavra(Language.default_language ? Language.pt_identificacao_acronimo : Language.en_identification_acronym),
 									identificacaos);
 							identificacaos[i].setAcronimo(acronimo);
 							identificacaos[i].setDataActualizacao(LocalDateTime.now());
@@ -209,7 +209,7 @@ public class IdentificacaoMethods {
 							break;
 						case 3:
 							boolean estado = Validacao
-							.validaEntradaStatus("Informe o Novo Estado Para o Cliente [Activo ou Inactivo]: ");
+							.validaEntradaStatus(Language.default_language ? Language.pt_identificacao_novo_estado : Language.en_identification_new_status);
 							identificacaos[i].setStatus(estado);
 							identificacaos[i].setDataActualizacao(LocalDateTime.now());
 							listaIdentificacao(identificacaos, id);
@@ -413,27 +413,37 @@ public class IdentificacaoMethods {
 	public static void inicializador(Identificacao [] identificacaos) {			
 		load(identificacaos);
 		int caso;
-		do {
-			caso = menu();
-			switch (caso) {
-			case 1:
-				gravaIdentificacao(identificacaos);
-				;break;
-			case 2:
-				actualizarIdentificacao(identificacaos);
-				;break;
-			case 3:
-				deletaIdentificacao(identificacaos);
-				;break;
-			case 4:
-				listaIdentificacao(identificacaos);
-				;break;			
-			case 5:
-				;break;
-			default:
+		if (Validacao.notNull(identificacaos) != 0) {
+			do {
+				caso = menu();
+				switch (caso) {
+				case 1:
+					gravaIdentificacao(identificacaos);
+					;
+					break;
+				case 2:
+					actualizarIdentificacao(identificacaos);
+					;
+					break;
+				case 3:
+					deletaIdentificacao(identificacaos);
+					;
+					break;
+				case 4:
+					listaIdentificacao(identificacaos);
+					;
+					break;
+				case 5:
+					;
+					break;
+				default:
 
-				break;
-			}
-		} while (caso != 5);
+					break;
+				}
+			} while (caso != 5);
+		}else {
+			System.out.println(Language.default_language ? Language.pt_inicializacao_empty_array : Language.en_identification_empty_array);
+			gravaIdentificacao(identificacaos);
+		}
 	}
 }

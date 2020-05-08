@@ -14,6 +14,13 @@ import java.util.Random;
 
 public class Validacao {
 	
+	
+	
+	/**
+	 * Color out print
+	 **/	
+	public static final String ANSI_GREEN = "\u001B[32m";
+	
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);    
     public static Random random = new Random();

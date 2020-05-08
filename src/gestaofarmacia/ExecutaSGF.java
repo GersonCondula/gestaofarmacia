@@ -5,11 +5,13 @@ public class ExecutaSGF {
 	private static Identificacao [] identificacaos = new Identificacao[Validacao.getTamanho()];
 	private static Funcionario [] funcionarios = new Funcionario[Validacao.getTamanho()];
 	private static PermissaoSistema [] permissaoSistemas = new PermissaoSistema[Validacao.getTamanho()];
+	private static Usuario [] usuarios = new Usuario[Validacao.getTamanho()]; 
 
-	private static void load() {
+	private static void load() {	
 		IdentificacaoMethods.load(identificacaos);
 		FuncionarioMethods.load(funcionarios, identificacaos);
 		PermissaoSistemaMethods.load(permissaoSistemas);
+		UsuarioMethods.load(usuarios, funcionarios);
 	}
 
 	private static byte menuOutros() {
@@ -59,14 +61,17 @@ public class ExecutaSGF {
 		System.out.println("*---------------------------------------------------------------------------------*");
 		System.out.println("*1. Funcionarios                                                                  *");
 		System.out.println("*---------------------------------------------------------------------------------*");     	       
-		System.out.println("*2. Outros                                                                        *");
+		System.out.println("*2. Usuarios                                                                      *");
 		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*3. Cancelar                                                                      *");
+		System.out.println("*3. Outros                                                                        *");
+		System.out.println("*---------------------------------------------------------------------------------*");
+		System.out.println("*4. Cancelar                                                                      *");
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte("Selecione uma opcao:");
 	}
 
 	private static void inicializador() {
+		Language.load();
 		load();
 		int caso;	
 		do {
@@ -75,17 +80,20 @@ public class ExecutaSGF {
 			case 1:
 				FuncionarioMethods.inicializador(funcionarios, identificacaos);				
 				break;
-			case 2:
-				outros();				
+			case 2:		
+				UsuarioMethods.inicializador(usuarios, funcionarios, identificacaos);		
 				break;
 			case 3:
+				outros();
+				break;
+			case 4:
 				;
 				break;
 			default:
 				;
 				break;
 			}   		  
-		} while (caso!=3);
+		} while (caso!=4);
 	}
 
 	public static void main(String[]args) {				

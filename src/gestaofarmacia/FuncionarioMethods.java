@@ -145,18 +145,24 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 	private static int gravar(Funcionario [] funcionario, Identificacao [] identificacaos) {
 		int id = 0, i = Validacao.notNull(funcionario);		
 		id = geradorID(i, funcionario);		
-		String nome = validaNome(Validacao.validaEntradaPalavra("Informe o nome do funcionario: "),funcionario);		
-		if (nome != null) {
-			IdentificacaoMethods.listaIdentificacao(identificacaos);
-			Identificacao identificacao = selecionaIdentificacao(identificacaos);
-			if (identificacao != null) {
-				String numeroIdentidade = ValidaNumeroIdentificacao(Validacao.validaEntradaPalavra("Introduza o numero de identidade: "), funcionario);
-				if (numeroIdentidade != null) {
-					int nuit = Validacao.validaEntradaInteiro("Introduza o numero de nuit: ");
-					if (nuit != 0) {
-						String morada = Validacao.validaEntradaPalavra("Introduza o endereço da morada: ");
-						if (morada != null) {
-							funcionario[i] = new Funcionario(id,nome,identificacao,numeroIdentidade,nuit,morada,true,LocalDateTime.now(),LocalDateTime.now());
+		if (Validacao.notNull(identificacaos) != 0) {
+			String nome = validaNome(Validacao.validaEntradaPalavra("Informe o nome do funcionario: "), funcionario);
+			if (nome != null) {
+				IdentificacaoMethods.listaIdentificacao(identificacaos);
+				Identificacao identificacao = selecionaIdentificacao(identificacaos);
+				if (identificacao != null) {
+					String numeroIdentidade = ValidaNumeroIdentificacao(
+							Validacao.validaEntradaPalavra("Introduza o numero de identidade: "), funcionario);
+					if (numeroIdentidade != null) {
+						int nuit = Validacao.validaEntradaInteiro("Introduza o numero de nuit: ");
+						if (nuit != 0) {
+							String morada = Validacao.validaEntradaPalavra("Introduza o endereço da morada: ");
+							if (morada != null) {
+								funcionario[i] = new Funcionario(id, nome, identificacao, numeroIdentidade, nuit,
+										morada, true, LocalDateTime.now(), LocalDateTime.now());
+							} else {
+								id = 0;
+							}
 						} else {
 							id = 0;
 						}
@@ -168,12 +174,13 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 				}
 			} else {
 				id = 0;
-			}			
-		} else {
-			id = 0;
-		}		
-		gravarDadosNoFicheiro(funcionario, filePath);
-		Validacao.validaGravacao(id, "Identificacao Gravada com sucesso!");			
+			}
+			gravarDadosNoFicheiro(funcionario, filePath);
+			Validacao.validaGravacao(id, "Identificacao Gravada com sucesso!");
+		}else {
+			IdentificacaoMethods.inicializador(identificacaos);
+			gravar(funcionario, identificacaos);
+		}
 		return id;
 	}
 	
@@ -434,7 +441,7 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 	private static byte menu() {
 
 		System.out.println();
-		System.out.println("************************** Gestao de Item Funcionario *****************************");
+		System.out.println("**************************** Gestao de Funcionario ********************************");
 		System.out.println("***********************************************************************************");
 		System.out.println("*---------------------------------------------------------------------------------*");
 		System.out.println("*1. Registar                                                                      *");
@@ -459,29 +466,38 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 	 * @param funcionarios
 	 * @param identificacaos
 	 */	
-	public static void inicializador(Funcionario [] funcionarios, Identificacao [] identificacaos) {			
-		
-		int caso;
-		do {
-			caso = menu();
-			switch (caso) {
-			case 1:
-				gravar(funcionarios, identificacaos);
-				;break;
-			case 2:
-				actualizar(funcionarios, identificacaos);
-				;break;
-			case 3:
-				deleta(funcionarios);
-				;break;
-			case 4:
-				lista(funcionarios);
-				;break;
-			case 5:							
-				;break;		
-			default:
-				break;
-			}
-		} while (caso != 5);
+	public static void inicializador(Funcionario [] funcionarios, Identificacao [] identificacaos) {					
+		if (Validacao.notNull(funcionarios) != 0) {
+			int caso;
+			do {
+				caso = menu();
+				switch (caso) {
+				case 1:
+					gravar(funcionarios, identificacaos);
+					;
+					break;
+				case 2:
+					actualizar(funcionarios, identificacaos);
+					;
+					break;
+				case 3:
+					deleta(funcionarios);
+					;
+					break;
+				case 4:
+					lista(funcionarios);
+					;
+					break;
+				case 5:
+					;
+					break;
+				default:
+					break;
+				}
+			} while (caso != 5);
+		}else {
+			System.out.println(Language.default_language ? Language.pt_inicializacao_empty_array : Language.en_identification_empty_array);
+			gravar(funcionarios, identificacaos);
+		}
 	}	
 }

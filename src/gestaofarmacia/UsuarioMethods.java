@@ -341,31 +341,41 @@ public class UsuarioMethods {
 		lerDadosNoFicheiro(usuarios, funcionarios, filePath);
 	}
 
-	public static void inicializador(Usuario [] usuarios, Funcionario [] funcionarios) {			
+	public static void inicializador(Usuario [] usuarios, Funcionario [] funcionarios, Identificacao [] identificacaos) {			
 		load(usuarios, funcionarios);
 		int caso;
-		do {
-			caso = menu();
-			switch (caso) {
-			case 1:
-				gravar(usuarios, funcionarios);
-				;break;
-			case 2:
-				actualizar(usuarios);
-				;break;
-			case 3:
-				deletar(usuarios);
-				;break;
-			case 4:
-				lista(usuarios);
-				;break;			
-			case 5:
-				;break;
-			default:
+		if (Validacao.notNull(funcionarios) != 0) {
+			do {
+				caso = menu();
+				switch (caso) {
+				case 1:
+					gravar(usuarios, funcionarios);
+					;
+					break;
+				case 2:
+					actualizar(usuarios);
+					;
+					break;
+				case 3:
+					deletar(usuarios);
+					;
+					break;
+				case 4:
+					lista(usuarios);
+					;
+					break;
+				case 5:
+					;
+					break;
+				default:
 
-				break;
-			}
-		} while (caso != 5);
+					break;
+				}
+			} while (caso != 5);
+		}else {
+			FuncionarioMethods.inicializador(funcionarios, identificacaos);
+			gravar(usuarios, funcionarios);
+		}
 	}
 
 
