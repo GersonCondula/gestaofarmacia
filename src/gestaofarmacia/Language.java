@@ -1,12 +1,8 @@
 package gestaofarmacia;
 
-import java.time.LocalDateTime;
-
 public class Language {
-		
-	public static boolean pt = true;	
-	public static boolean en = false;
-	
+	private static boolean pt = true;	
+	private static boolean en = false;	
 	public static boolean default_language = pt;
 	
 	private static byte menu() {
@@ -20,9 +16,8 @@ public class Language {
 		System.out.println("*---------------------------------------------------------------------------------*");
 		System.out.println("*3. Sair                                                                          *");
 		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Selecione uma Idioma: ");
+		return Validacao.validaEntradaByte("Selecione uma Idioma / Select Language: ");
 	}
-	
 	public static void load() {	
 		int caso;
 		do {
@@ -43,86 +38,224 @@ public class Language {
 
 	 
 	/**
-	 * Propreties language menssage
-	 * 
-	 * pt 
-	 * ----------------- Geral ----------------
+	 * ----------------- Propreties language menssage -----------------
 	 **/
-	public static final String pt_inicializacao_empty_array = "Nao ha nenhum tipo de identificacao no sistema, registe o primeiro";
-	public static final String pt_inicializacao_editar_dado = "Indique o dado de que deseja editar: ";
-	public static final String pt_inicializacao_sucesso = "Identificacao Atualizada com Sucesso!";
-	public static final String pt_inicializacao_unsucesso = "Identificacao Não Atualizada com Sucesso!";
 	
-	/**
-	 * pt
-	 * -------------- Identificacao -----------
+	/** 
+	 * ------------------------  Geral--------------------------------- 
 	 **/
-	public static final String pt_identificacao_valida_id = "Codigo";
-	public static final String pt_identificacao_valida_nome = "Nome";
-	public static final String pt_identificacao_valida_acronimo = "Acronimo";    
-	public static final String pt_identificacao_valida_estado = "Estado";
-	public static final String pt_identificacao_valida_dataRegisto = "Data de Registo";
-	public static final String pt_identificacao_valida_dataActualizacao = "Data de Actualizacao";
-	public static final String pt_identificacao_valida_numero = "Informe o numero da identificacao: ";
-	public static final String pt_identificacao_valida_numero_invalido = "Volte a informar o numero da identificacao valido: ";
-	public static final String pt_identificacao_nome = "Informe o nome da identificacao: ";
-	public static final String pt_identificacao_nome_existe = "O nome da identificacao ja existe, queira por favor informar um novo nome: ";
-	public static final String pt_identificacao_acronimo = "Informe o acronimo da identificacao: ";
-	public static final String pt_identificacao_acronimo_existe = "O acronimo da identificacao ja existe, queira por favor informar um novo acronimo: ";
-	public static final String pt_identificacao_acronimo_invalido = "Volte a informar o acronimo da identificacao valido: ";
-	public static final String pt_identificacao_novo_estado = "Informe o Novo Estado [Activo ou Inactivo]: ";
-	public static final String pt_identificacao_salva = "Identificacao Gravada com sucesso!";
-	public static final String pt_identificacao_actualizacao_menu = "Actualizar dados de Item Identificacao";
-	public static final String pt_identificacao_actualizacao_cancelar = "Cancelar";
-	
-	
-	/**
-	 * en
-	 * ------------------ General --------------
+	public static final String language_pharmacy_management() {
+		return default_language ? "Gestao de Farmacia" : "Pharmacy Management";
+	}
+	public static final String language_active() {
+		return default_language ? "Activo" : "Active";
+	}
+	public static final String language_inactive() {
+		return default_language ? "Inactivo" : "inactive";
+	}
+	public static final String language_id() {
+		return default_language ? "Codigo" : "ID";
+	}	
+	public static final String language_name() {
+		return default_language ? "Nome" : "Name";
+	}
+	public static final String language_acronym() {
+		return default_language ? "Acronimo" : "Acronym";
+	}	
+	public static final String language_state() {
+		return default_language ? "Status" : "State";
+	}
+	public static final String language_register() {
+		return default_language ? "Registar" : "Register";
+	}
+	public static final String language_update() {
+		return default_language ? "Actualizar" : "Update";
+	}
+	public static final String language_delete() {
+		return default_language ? "apagar" : "Delete";
+	}
+	public static final String language_listing() {
+		return default_language ? "listar" : "listing";
+	}
+	public static final String language_cancel() {
+		return default_language ? "Cancelar" :"Cancel";
+	}	
+	public static final String language_dateRegistration() {
+		return default_language ? "Data Reg" : "Reg Data";
+	}
+	public static final String language_updateDate() {
+		return default_language ? "Data Actua" : "Upda Date";
+	}
+	public static final String language_input_id() {
+		return default_language ? "Informe o Codigo: " :
+								  "Enter the ID: ";
+	}
+	public static final String language_input_valid_id() {
+		return default_language ? "Volte a informar o Codigo valido: " :
+								  "Re-enter the valid ID: ";
+	}
+	public static final String language_input_name() {
+		return default_language ? "Informe o nome: " :
+								  "Enter the name: ";
+	}
+	public static final String language_input_valid_name() {
+		return default_language ? "Informe um nome valido: " :
+								  "Enter the valid name: ";
+	}
+	public static final String language_input_exist_name() {
+		return default_language ? "O nome ja existe, queira por favor informar um novo nome: " :
+								  "The name already exists, please enter a new name: ";
+	}
+	public static final String language_number() {
+		return default_language ? "Numero" : "Number";
+	}
+	public static final String language_input_number() {
+		return default_language ? "Informe o numero: " :
+								  "Enter the number: ";
+	}
+	public static final String language_input_invalid_number() {
+		return default_language ? "Volte a Informe um numero valido: " :
+								  "Re-enter the valid number: ";
+	}
+	public static final String language_input_exist_number() {
+		return default_language ? "O numero ja existe, queira por favor informar um novo numero: " :
+								  "The number already exists, please enter a new number: ";
+	}
+	public static final String language_nuit() {
+		return default_language ? "Nuit" : "Nuit";
+	}
+	public static final String language_input_nuit() {
+		return default_language ? "Informe o nuit: " :
+								  "Enter the nuit: ";
+	}
+	public static final String language_input_valid_nuit() {
+		return default_language ? "Informe um nuit valido: " :
+								  "Enter the valid nuit: ";
+	}
+	public static final String language_input_exist_nuit() {
+		return default_language ? "O nuit ja existe, queira por favor informar um novo nuit: " :
+								  "The nuit already exists, please enter a new nuit: ";
+	}
+	public static final String language_address() {
+		return default_language ? "Morada" : "address";
+	}
+	public static final String language_input_address() {
+		return default_language ? "Informe a morada: " :
+								  "Enter the address: ";
+	}	
+	public static final String language_input_acronym() {
+		return default_language ? "Informe o acronimo: " :
+								  "Enter the acronym: ";
+	}
+	public static final String language_input_exist_acronym() {
+		return default_language ? "O acronimo ja existe, queira por favor informar um novo acronimo: " :
+								  "The acronym already exists, please inform a new acronym: ";
+	}
+	public static final String language_invalid_acronym() {
+		return default_language ? "Volte a informar o acronimo valido: " :
+								  "Re-enter the acronym: ";
+	}
+	public static final String language_input_state() {
+		return default_language ? "Informe o Novo Status [Activo ou Inactivo]: " :
+								  "Inform the New State [Active or Inactive]: ";
+	}
+	public static final String language_input_valid_state() {
+		return default_language ? "Informe um status valido [Activo ou Inactivo]: " :
+								  "Inform the valid State [Active or Inactive]: ";
+	}
+	public static final String language_update_menu() {
+		return default_language ? "Actualizar dados " :
+								  "Update data";
+	}
+	public static final String language_menu(String obj) {
+		return default_language ? "Gestao de " +obj :
+								  obj+ " Management";
+	}
+	public static final String language_delete_successs() {
+		return default_language ? "Removido com Sucesso!" :
+								  "Removed Successfully!";
+	}
+	public static final String language_delete_unsuccesss() {
+		return default_language ? "Não Removido com Sucesso!" :
+								  "Not Successfully Removed!";
+	}
+	public static final String language_edit_data() {
+		return default_language ? "Indique o dado de que deseja editar: " :
+								  "Indicate the data you want to edit: ";
+	}
+	public static final String language_save_successs() {
+		return default_language ? "Atualizado com Sucesso!" :
+								  "successfully updated!";
+	}
+	public static final String language_save_unsuccesss() {
+		return default_language ? "Não Atualizada com Sucesso!" :
+								  "Successfully updated!";
+	}
+	public static final String language_invalid_value() {
+		return default_language ? "Valor Invalido!" : "Invalid Value";
+	}
+	public static final String language_valid_value() {
+		return default_language ? "Informe valor valido: " : "Inform valid value: ";
+	}
+	public static final String language_time_out() {
+		return default_language ? "Esgotaram-se as tentativas, revise bem os dados e tente de novo..." 
+				: "Attempts have run out, review the data well and try again ...";
+	}
+	public static final String language_empty_regist() {
+		return default_language ? "Nao ha dados registados" 
+				: "No data recorded";
+	}
+	public static final String language_select_option() {
+		return default_language ? "Selecione uma opcao: " 
+				: "Select one option: ";
+	}
+	public static final String language_other() {
+		return default_language ? "Outro" 
+				: "Other";
+	}
+	public static final String language_empty_array(String obj) {
+		return default_language ? "Nao ha nenhum tipo de "+obj+" no sistema, registe o primeiro" :
+								  "There is no type of "+obj+" in the system, register the first";
+	}
+	public static final String language_list(String obj) {
+		return default_language ? "Lista de " + obj : "List " + obj;
+	}
+	/** 
+	 * ------------------------ Identificacao -------------------------	 	 
 	 **/
-	public static final String en_identification_empty_array = "There is no type of identification in the system, register the first";
-	public static final String en_identification_edit_data = "Indicate the data you want to edit: ";
-	public static final String en_identification_successs = "Identification successfully updated!";
-	public static final String en_identification_unsuccesss = "Identification not updated successfully!";
-	
-	/**
-	 * en
-	 * -------------- Identification ------------
+	public static final String language_identification() {
+		return default_language ? "Identificacao" : "identification";
+	}
+	public static final String language_identification_type() {
+		return default_language ? "Tipos de Identidade" : "Types of Identity";
+	}		
+	/** 
+	 * -------------------- Permissoes de sistema ---------------------	 	 
 	 **/
-	public static final String en_identification_valid_id = "ID";
-	public static final String en_identification_valid_name = "Name";
-	public static final String en_identification_valid_acronym = "acronym";    
-	public static final String en_identification_valid_status = "Status";
-	public static final String en_identification_valid_dateRegistration = "Registration Date";
-	public static final String en_identification_valid_updateDate = "Update Date";
-	public static final String en_identification_number = "Enter the identification number: ";
-	public static final String en_identification_valid_number = "Re-enter the valid identification number: ";
-	public static final String en_identification_name = "Enter the name of the identification: ";
-	public static final String en_identification_name_existe = "The identification name already exists, please enter a new name: ";
-	public static final String en_identification_acronym = "Enter the acronym of identification: ";
-	public static final String en_identification_acronym_exist = "The acronym of the identification already exists, please inform a new acronym: ";
-	public static final String en_identification_acronym_invalid = "Re-enter the acronym of the valid identification: ";
-	public static final String en_identification_new_status = "Inform the New State [Active or Inactive]: ";
-	public static final String en_identification_save = "Identification Recorded successfully!";
-	public static final String en_identification_update_menu = "Update Item Identification data";
-	public static final String en_identification_update_cancel = "Cancel";
+	public static final String language_systempermissions() {
+		return default_language ? "Permissoes de sistema" : "System permissions";
+	}
+	public static final String language_permissions() {
+		return default_language ? "Permissoes" : "permissions";
+	}
+	/** 
+	 * ---------------------------- Funcionario -----------------------	 	 
+	 **/
+	public static final String language_employee() {
+		return default_language ? "Funcionario" : "Employee";
+	}
+	/** 
+	 * ----------------------------- Usuario --------------------------	 	 
+	 **/
+	public static final String language_user() {
+		return default_language ? "Usuario" : "User";
+	}
+	/** 
+	 * ----------------------------- Perfil --------------------------	 	 
+	 **/
+	public static final String language_profile() {
+		return default_language ? "Perfil" : "Profile";
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }

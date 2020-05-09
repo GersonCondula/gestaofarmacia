@@ -57,7 +57,7 @@ public class UsuarioMethods {
 			} 	          		
 		}       
 		if (usuario == null) {
-			usuario = getById(Validacao.validaEntradaInteiro("Volte a informar o numero de funcionario valido: "), usuarios);
+			usuario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), usuarios);
 			if (count < 3) {
 
 			}
@@ -67,7 +67,7 @@ public class UsuarioMethods {
 
 	public static Funcionario selecionaFuncionario(Funcionario [] funcionarios) {
 		Funcionario funcionario = null;		
-		int numero = Validacao.validaEntradaInteiro("Selecione o numero do funcionario: ");
+		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
 		for (Funcionario funcionario2 : funcionarios) {			
 			if (funcionario2 != null) {
 				if (funcionario2.getId() == numero) {
@@ -83,7 +83,7 @@ public class UsuarioMethods {
 
 	public static PermissaoSistema selecionaPermissaoSistema(PermissaoSistema [] permissaoSistemas) {
 		PermissaoSistema permissaoSistema = null;		
-		int numero = Validacao.validaEntradaInteiro("Selecione o numero da permissao: ");
+		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
 		for (PermissaoSistema permissaoSistema2 : permissaoSistemas) {			
 			if (permissaoSistema2 != null) {
 				if (permissaoSistema2.getId() == numero) {
@@ -99,16 +99,18 @@ public class UsuarioMethods {
 
 	private static int gravar(Usuario[] usuarios, Funcionario [] funcionarios) {
 		int id = 0, i = Validacao.notNull(usuarios);		
+		boolean error =  false;
 		id = geradorID(i, usuarios);		
 		FuncionarioMethods.lista(funcionarios);
 		Funcionario funcionario = selecionaFuncionario(funcionarios);	
 		if (funcionario != null) {			
-			usuarios[i] = new Usuario(id, funcionario, true, LocalDateTime.now(), LocalDateTime.now());			
+			usuarios[i] = new Usuario(id, funcionario, true, LocalDateTime.now(), LocalDateTime.now());	
+			error = true;
 		} else {
 			id = 0;
 		}		
 		gravarDadosNoFicheiro(usuarios, filePath);
-		Validacao.validaGravacao(id, "Identificacao Gravada com sucesso!");			
+		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());				
 		return id;
 	}
 
@@ -117,22 +119,21 @@ public class UsuarioMethods {
 	 */
 	private static byte menuActualizar() {
 		System.out.println();
-		System.out.println("*************************** Actualizar dados de Usuario ***************************");
+		System.out.println("*************************** "+ Language.language_update_menu() +" ***************************");
 		System.out.println("***********************************************************************************");
-		System.out.println("*---------------------------------------------------------------------------------*");     		   
-		System.out.println("*1. Estado                                                                        *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*2. Cancelar                                                                      *");
+		System.out.println("-----------------------------------------------------------------------------------");     		   
+		System.out.println("3. "+Language.language_state());
+		System.out.println("----------------------------------------------------------------------------------");     
+		System.out.println("4. "+Language.language_cancel());
 		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Indique o dado de que deseja editar:");
+		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
 
 	private static int actualizar(Usuario[] usuarios) {
 		int id = 0;
 		lista(usuarios);
-		boolean error = true;
-		String msg;
-		Usuario identificacao = getById(Validacao.validaEntradaInteiro("Informe o numero do usuario: "), usuarios);
+		boolean error = false;		
+		Usuario identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), usuarios);
 		if (identificacao != null) {
 			for (int i = 0; i < usuarios.length; i++) {
 				if (usuarios[i] != null) {
@@ -140,13 +141,13 @@ public class UsuarioMethods {
 						id = identificacao.getId();
 						switch (menuActualizar()) {										
 						case 1:
-							boolean estado = Validacao.validaEntradaStatus("Informe o Novo Estado Para o Cliente [Activo ou Inactivo]: ");
+							boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
 							usuarios[i].setStatus(estado);
 							usuarios[i].setDataActualizacao(LocalDateTime.now());
 							lista(usuarios, id);
 							break;
 						case 2:
-							error = false;
+							error = true;
 							break;
 						default:
 							actualizar(usuarios);
@@ -156,40 +157,30 @@ public class UsuarioMethods {
 				}
 			} 
 		}
-		gravarDadosNoFicheiro(usuarios, filePath);
-		if (error) {
-			msg = "Identificacao Atualizada com Sucesso!";
-		}else {
-			msg = "Identificacao Não Atualizada com Sucesso!";
-		}
-		Validacao.validaGravacao(id, msg);
+		gravarDadosNoFicheiro(usuarios, filePath);		
+		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;
 	}
 
 	private static int deletar(Usuario[] usuarios){
 		int id = 0;
 		lista(usuarios);
-		boolean error = true;
-		String msg;
-		Usuario usuario = getById(Validacao.validaEntradaInteiro("Informe o numero do usuario: "), usuarios);
+		boolean error = false;		
+		Usuario usuario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), usuarios);
 		if (usuario != null) {
 			for (int i = 0; i < usuarios.length; i++) {
 				if (usuarios[i] != null) {
 					if (usuarios[i].getId() == usuario.getId()) {
 						id = usuario.getId();
 						usuarios[i] = null;
+						error = true;
 					}
 				}
 			} 
 		}		
 		Validacao.destroiDirectorioFicheiro(filePath);
-		gravarDadosNoFicheiro(usuarios, filePath);				
-		if (error) {
-			msg = "Identificacao removida com Sucesso!";
-		}else {
-			msg = "Identificacao Não removida com Sucesso!";
-		}
-		Validacao.validaGravacao(id, msg);
+		gravarDadosNoFicheiro(usuarios, filePath);						
+		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;		
 	}
 
@@ -201,7 +192,7 @@ public class UsuarioMethods {
 				for (int i = 0; i < usuarios.length; i++) {
 					if (usuarios[i] != null) {
 						bw.write(usuarios[i].getId() 
-								+ "|" + usuarios[i].getFuncionario()
+								+ "|" + usuarios[i].getFuncionario().getId()
 								+ "|" + usuarios[i].isStatus() 
 								+ "|" + usuarios[i].getDataRegisto()
 								+ "|" + usuarios[i].getDataActualizacao());
@@ -257,18 +248,20 @@ public class UsuarioMethods {
 	 * @Descrição imprime o formato de cabeçalho e retorna o formato para impressao dos dados
 	 */
 	private static String formatoImpressao(){
-		String [] header = new String[]{"|","#","|","Numero","|","Funcionario","|","Estado","|","Data Reg","|","Data Act","|"};
+		String [] header = new String[]{"|","#","|",Language.language_id(),"|",Language.language_employee(),"|",Language.language_state(),
+									    "|",Language.language_dateRegistration(),"|",Language.language_updateDate(),"|"};
 		String formatCaracter = "%s",formatNumero = "%-10.6s", formatNome = "%-60.60s";
 		String formatEstado = "%-8.10s";
 		String formatData = "%-19.19s", formatDataLast = "%-26.20s";
 		String formatColl = formatCaracter + " " + formatCaracter + " " + formatCaracter + " " + formatNumero + " " + formatCaracter
 				+ " " + formatNome + " " + formatCaracter + " " + formatEstado 
-				+ " " + formatCaracter + " " + formatData + " " + formatCaracter + " " + formatDataLast + " " + formatCaracter;
+				+ " " + formatCaracter + " " + formatData + " " + formatCaracter + " " + formatDataLast;
 		System.out.println();
-		System.out.println("******************************************************************** Lista de Identificacoes ***************************************************************");
+		System.out.println("************************************************************************************************************************************************************");
+		System.out.println("\t\t\t\t\t\t\t\t\t"+Language.language_list(Language.language_user()));
 		System.out.println("************************************************************************************************************************************************************");
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.format(formatColl,header[0],header[1],header[2],header[3],header[4],header[5],header[6],header[7],header[8],header[9],header[10],header[11],header[12]);
+		System.out.format(formatColl,header[0],header[1],header[2],header[3],header[4],header[5],header[6],header[7],header[8],header[9],header[10],header[11]);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		return formatColl;
@@ -314,28 +307,6 @@ public class UsuarioMethods {
 		Validacao.formatoImpressaoFooter(usuarios.length, empty_);		
 	}         
 
-	/**       
-	 * @Descrição Menu de atualizacao de dados
-	 */
-	private static byte menu() {
-
-		System.out.println();
-		System.out.println("******************************* Gestao de Usuarios *******************************");
-		System.out.println("***********************************************************************************");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*1. Registar                                                                      *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*2. Actualizar                                                                    *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*3. Apagar                                                                        *");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*4. Lista                                                                         *");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*5. Cancelar                                                                      *");
-		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Selecione uma opcao:");
-	}
-
 	public static void load(Usuario [] usuarios, Funcionario [] funcionarios) {
 		Validacao.init(usuarios);	
 		lerDadosNoFicheiro(usuarios, funcionarios, filePath);
@@ -346,7 +317,7 @@ public class UsuarioMethods {
 		int caso;
 		if (Validacao.notNull(funcionarios) != 0) {
 			do {
-				caso = menu();
+				caso = Validacao.menu(Language.language_user());
 				switch (caso) {
 				case 1:
 					gravar(usuarios, funcionarios);
@@ -368,7 +339,6 @@ public class UsuarioMethods {
 					;
 					break;
 				default:
-
 					break;
 				}
 			} while (caso != 5);
@@ -377,6 +347,4 @@ public class UsuarioMethods {
 			gravar(usuarios, funcionarios);
 		}
 	}
-
-
 }

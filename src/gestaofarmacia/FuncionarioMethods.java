@@ -44,7 +44,7 @@ public class FuncionarioMethods {
 					if (!funcionarios[i].getNome().equalsIgnoreCase(nome)) {
 						nomed = nome;
 					}else {
-						nomed = validaNome(Validacao.validaEntradaPalavra("O nome da identificacao ja existe, queira por favor informar um novo nome: "),funcionarios);
+						nomed = validaNome(Validacao.validaEntradaPalavra(Language.language_input_exist_name()),funcionarios);
 						i = funcionarios.length;
 					}
 				}else {
@@ -56,7 +56,7 @@ public class FuncionarioMethods {
 	}
 
 	private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, Funcionario [] funcionario) {
-		
+
 		String funcioanrioStr = null;
 		if (validaEntradaPalavra != null) {
 			for (int i = 0; i < funcionario.length; i++) {
@@ -64,7 +64,7 @@ public class FuncionarioMethods {
 					if (!funcionario[i].getNumeroIdentidade().equalsIgnoreCase(validaEntradaPalavra)) {
 						funcioanrioStr = validaEntradaPalavra;
 					}else {
-						funcioanrioStr = ValidaNumeroIdentificacao(Validacao.validaEntradaPalavra("O numero da identificacao ja existe, queira por favor informar um novo numero: "),funcionario);
+						funcioanrioStr = ValidaNumeroIdentificacao(Validacao.validaEntradaPalavra(Language.language_input_exist_number()),funcionario);
 						i = funcionario.length;
 					}
 				}else {
@@ -74,9 +74,9 @@ public class FuncionarioMethods {
 		}
 		return funcioanrioStr;
 	}
-	
-private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int id,Funcionario [] funcionario) {
-		
+
+	private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int id,Funcionario [] funcionario) {
+
 		String funcioanrioStr = null;
 		if (validaEntradaPalavra != null) {
 			for (int i = 0; i < funcionario.length; i++) {
@@ -84,7 +84,7 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 					if (!funcionario[i].getNumeroIdentidade().equalsIgnoreCase(validaEntradaPalavra) && funcionario[i].getId() == id) {
 						funcioanrioStr = validaEntradaPalavra;
 					}else {
-						funcioanrioStr = ValidaNumeroIdentificacao(Validacao.validaEntradaPalavra("O numero da identificacao ja existe, queira por favor informar um novo numero: "),funcionario);
+						funcioanrioStr = ValidaNumeroIdentificacao(Validacao.validaEntradaPalavra(Language.language_input_exist_number()),funcionario);
 						i = funcionario.length;
 					}
 				}else {
@@ -94,7 +94,7 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 		}
 		return funcioanrioStr;
 	}
-	
+
 	/**
 	 *
 	 * @param id
@@ -119,7 +119,7 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 			}			 	          	
 		}       
 		if (funcionario == null) {
-			funcionario = getById(Validacao.validaEntradaInteiro("Volte a informar o numero da identificacao valido: "), funcionarios);
+			funcionario = getById(Validacao.validaEntradaInteiro(Language.language_input_invalid_number()), funcionarios);
 			if (count < 3) {
 			}
 		}
@@ -128,7 +128,7 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 
 	public static Identificacao selecionaIdentificacao(Identificacao [] identificacaos) {
 		Identificacao identificacao = null;		
-		int numero = Validacao.validaEntradaInteiro("Selecione o numero do tipo de identidade: ");
+		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
 		for (Identificacao identificacao2 : identificacaos) {			
 			if (identificacao2 != null) {
 				if (identificacao2.getId() == numero) {
@@ -144,25 +144,24 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 
 	private static int gravar(Funcionario [] funcionario, Identificacao [] identificacaos) {
 		int id = 0, i = Validacao.notNull(funcionario);		
+		boolean error = false;
 		id = geradorID(i, funcionario);		
-		if (Validacao.notNull(identificacaos) != 0) {
-			String nome = validaNome(Validacao.validaEntradaPalavra("Informe o nome do funcionario: "), funcionario);
-			if (nome != null) {
-				IdentificacaoMethods.listaIdentificacao(identificacaos);
-				Identificacao identificacao = selecionaIdentificacao(identificacaos);
-				if (identificacao != null) {
-					String numeroIdentidade = ValidaNumeroIdentificacao(
-							Validacao.validaEntradaPalavra("Introduza o numero de identidade: "), funcionario);
-					if (numeroIdentidade != null) {
-						int nuit = Validacao.validaEntradaInteiro("Introduza o numero de nuit: ");
-						if (nuit != 0) {
-							String morada = Validacao.validaEntradaPalavra("Introduza o endereço da morada: ");
-							if (morada != null) {
-								funcionario[i] = new Funcionario(id, nome, identificacao, numeroIdentidade, nuit,
-										morada, true, LocalDateTime.now(), LocalDateTime.now());
-							} else {
-								id = 0;
-							}
+
+		String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()), funcionario);
+		if (nome != null) {
+			IdentificacaoMethods.listaIdentificacao(identificacaos);
+			Identificacao identificacao = selecionaIdentificacao(identificacaos);
+			if (identificacao != null) {
+				String numeroIdentidade = ValidaNumeroIdentificacao(
+						Validacao.validaEntradaPalavra(Language.language_input_number()), funcionario);
+				if (numeroIdentidade != null) {
+					int nuit = Validacao.validaEntradaInteiro(Language.language_input_nuit());
+					if (nuit != 0) {
+						String morada = Validacao.validaEntradaPalavra(Language.language_input_address());
+						if (morada != null) {
+							funcionario[i] = new Funcionario(id, nome, identificacao, numeroIdentidade, nuit,
+									morada, true, LocalDateTime.now(), LocalDateTime.now());
+							error = true;
 						} else {
 							id = 0;
 						}
@@ -175,15 +174,14 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 			} else {
 				id = 0;
 			}
-			gravarDadosNoFicheiro(funcionario, filePath);
-			Validacao.validaGravacao(id, "Identificacao Gravada com sucesso!");
-		}else {
-			IdentificacaoMethods.inicializador(identificacaos);
-			gravar(funcionario, identificacaos);
+		} else {
+			id = 0;
 		}
+		gravarDadosNoFicheiro(funcionario, filePath);
+		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());		
 		return id;
 	}
-	
+
 
 	private static boolean gravarDadosNoFicheiro(Funcionario[] funcionario, String file) {
 		boolean error = false;	
@@ -221,32 +219,32 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 	 */
 	private static byte menuActualizacao() {
 		System.out.println();
-		System.out.println("************************ Actualizar dados de Funcionario **************************");
+		System.out.println("***********************************************************************************");
+		System.out.println("\t\t\t\t"+Language.language_update_menu());
 		System.out.println("***********************************************************************************");
 		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*1. Nome                                                                          *");
+		System.out.println("*1. "+ Language.language_name());
 		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*2. Tipo de Identificacao                                                         *");
+		System.out.println("*2. "+ Language.language_identification_type());
 		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*3. Numero de Identificacao                                                       *");
+		System.out.println("*3. "+ Language.language_number() + Language.language_identification());                                                     
 		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*4. Nuit                                                                          *");
+		System.out.println("*4. "+ Language.language_nuit());
 		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*5. Morada                                                                        *");
+		System.out.println("*5. "+ Language.language_address());
 		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*6. Estado                                                                        *");
+		System.out.println("*6. "+ Language.language_state());
 		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*7. Cancelar                                                                      *");
+		System.out.println("*7. "+ Language.language_cancel());
 		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Indique o dado de que deseja editar:");
+		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
 
 	private static int actualizar(Funcionario[] funcionarios, Identificacao [] identificacaos) {
 		int id = 0;
 		lista(funcionarios);
-		boolean error = true;
-		String msg;
-		Funcionario funcionario = getById(Validacao.validaEntradaInteiro("Informe o numero do funcioanario: "), funcionarios);
+		boolean error = false;		
+		Funcionario funcionario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), funcionarios);
 		if (funcionario != null) {
 			for (int i = 0; i < funcionarios.length; i++) {
 				if (funcionarios[i] != null) {
@@ -255,7 +253,7 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 						switch (menuActualizacao()) {
 						case 1:
 							String nome = validaNome(
-									Validacao.validaEntradaPalavra("Informe o nome do funcionario: "),
+									Validacao.validaEntradaPalavra(Language.language_input_name()),
 									funcionarios);
 							funcionarios[i].setNome(nome);
 							funcionarios[i].setDataActualizacao(LocalDateTime.now());
@@ -269,26 +267,26 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 							lista(funcionarios, id);
 							break;
 						case 3:
-							String numeroIdentidade = ValidaNumeroIdentificacao(Validacao.validaEntradaPalavra("Introduza o numero de identidade: "),funcionarios[i].getId(), funcionarios);
+							String numeroIdentidade = ValidaNumeroIdentificacao(Validacao.validaEntradaPalavra(Language.language_input_number()),funcionarios[i].getId(), funcionarios);
 							funcionarios[i].setNumeroIdentidade(numeroIdentidade);
 							funcionarios[i].setDataActualizacao(LocalDateTime.now());
 							lista(funcionarios, id);
 							break;
 						case 4:
-							int nuit = Validacao.validaEntradaInteiro("Introduza o numero de nuit: ");						
+							int nuit = Validacao.validaEntradaInteiro(Language.language_input_nuit());						
 							funcionarios[i].setNuit(nuit);
 							funcionarios[i].setDataActualizacao(LocalDateTime.now());
 							lista(funcionarios, id);
 							break;
 						case 5:
-							String morada = Validacao.validaEntradaPalavra("Introduza o endereço da morada: ");						
+							String morada = Validacao.validaEntradaPalavra(Language.language_input_address());						
 							funcionarios[i].setMorada(morada);
 							funcionarios[i].setDataActualizacao(LocalDateTime.now());
 							lista(funcionarios, id);
 							break;
 						case 6:
 							boolean estado = Validacao
-							.validaEntradaStatus("Informe o Novo Estado Para o Cliente [Activo ou Inactivo]: ");
+							.validaEntradaStatus(Language.language_input_state());
 							funcionarios[i].setStatus(estado);
 							funcionarios[i].setDataActualizacao(LocalDateTime.now());
 							lista(funcionarios, id);
@@ -301,46 +299,37 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 							break;
 						}
 					}
+					error = true;
 				}
 			} 
 		}
-		gravarDadosNoFicheiro(funcionarios, filePath);
-		if (error) {
-			msg = "Identificacao Atualizada com Sucesso!";
-		}else {
-			msg = "Identificacao Não Atualizada com Sucesso!";
-		}
-		Validacao.validaGravacao(id, msg);
+		gravarDadosNoFicheiro(funcionarios, filePath);		
+		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;
 	}
-	
+
 	private static int deleta(Funcionario[] funcionarios){
 		int id = 0;
 		lista(funcionarios);
-		boolean error = true;
-		String msg;
-		Funcionario funcionario = getById(Validacao.validaEntradaInteiro("Informe o numero do funcioanario: "), funcionarios);
+		boolean error = false;		
+		Funcionario funcionario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), funcionarios);
 		if (funcionario != null) {
 			for (int i = 0; i < funcionarios.length; i++) {
 				if (funcionarios[i] != null) {
 					if (funcionarios[i].getId() == funcionario.getId()) {
 						id = funcionario.getId();
 						funcionarios[i] = null;
+						error =  true;
 					}
 				}
 			} 
 		}		
 		Validacao.destroiDirectorioFicheiro(filePath);
-		gravarDadosNoFicheiro(funcionarios, filePath);				
-		if (error) {
-			msg = "Identificacao removida com Sucesso!";
-		}else {
-			msg = "Identificacao Não removida com Sucesso!";
-		}
-		Validacao.validaGravacao(id, msg);
+		gravarDadosNoFicheiro(funcionarios, filePath);						
+		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;		
 	}
-	
+
 	private static boolean lerDadosNoFicheiro(Funcionario[] funcionario, Identificacao [] identificacoes, String file) {
 		boolean error = false;		
 		StringTokenizer str;
@@ -378,7 +367,10 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 	 */
 	private static String formatoImpressao(){
 
-		String [] header = new String[]{"|","#","|","Numero","|","Nome","|","Identificacao","|","Numero Identificacao","|","Nuit","|","Morada","|","Estado","|","Data Reg","|","Data Act","|"};
+		String [] header = new String[]{"|","#","|",Language.language_id(),"|",Language.language_name(),"|",Language.language_identification(),
+				"|",Language.language_number() + " " + Language.language_identification(),"|",Language.language_nuit(),
+				"|",Language.language_address(),"|",Language.language_state(),"|",Language.language_dateRegistration(),
+				"|",Language.language_updateDate(),"|"};
 		String formatCaracter = "%s",formatNumero = "%-10.6s", formatNome = "%-43.43s";
 		String formatNumIden = "%-20.20s",formatIdentifica = "%-15.15s";
 		String formatData = "%-19.19s", formatDataLast = "%-26.20s";
@@ -386,7 +378,8 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 				+ " " + formatNome + " " + formatCaracter + " " + formatIdentifica + " " + formatCaracter + " " + formatNumIden 
 				+ " " + formatCaracter + " " + formatData + " " + formatCaracter + " " + formatDataLast + " " + formatCaracter;
 		System.out.println();
-		System.out.println("******************************************************************** Lista de Funcionarios** ***************************************************************");
+		System.out.println("************************************************************************************************************************************************************");
+		System.out.println("\t\t\t\t\t\t\t\t\t"+Language.language_list(Language.language_employee()));
 		System.out.println("************************************************************************************************************************************************************");
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		System.out.format(formatColl,header[0],header[1],header[2],header[3],header[4],header[5],header[6],header[7],header[8],header[9],header[10],
@@ -434,70 +427,53 @@ private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int
 			}else empty_ += 1;						
 		Validacao.formatoImpressaoFooter(funcionario.length, empty_);		
 	}  
-	
-	/**       
-	 * @Descrição Menu de atualizacao de dados de Identificacao
-	 */
-	private static byte menu() {
-
-		System.out.println();
-		System.out.println("**************************** Gestao de Funcionario ********************************");
-		System.out.println("***********************************************************************************");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*1. Registar                                                                      *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*2. Actualizar                                                                    *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*3. Apagar                                                                        *");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*4. Lista                                                                         *");			
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*5. Cancelar                                                                      *");
-		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Indique o dado de que deseja editar:");
-	}
 
 	public static void load(Funcionario [] funcionarios, Identificacao [] identificacaos) {
 		Validacao.init(funcionarios);	
 		lerDadosNoFicheiro(funcionarios, identificacaos, filePath);
 	}
-	
+
 	/**
 	 * @param funcionarios
 	 * @param identificacaos
 	 */	
 	public static void inicializador(Funcionario [] funcionarios, Identificacao [] identificacaos) {					
-		if (Validacao.notNull(funcionarios) != 0) {
-			int caso;
-			do {
-				caso = menu();
-				switch (caso) {
-				case 1:
-					gravar(funcionarios, identificacaos);
-					;
-					break;
-				case 2:
-					actualizar(funcionarios, identificacaos);
-					;
-					break;
-				case 3:
-					deleta(funcionarios);
-					;
-					break;
-				case 4:
-					lista(funcionarios);
-					;
-					break;
-				case 5:
-					;
-					break;
-				default:
-					break;
-				}
-			} while (caso != 5);
+		if (Validacao.notNull(identificacaos) != 0) {
+			if (Validacao.notNull(funcionarios) != 0) {
+				int caso;
+				do {
+					caso = Validacao.menu(Language.language_employee());
+					switch (caso) {
+					case 1:
+						gravar(funcionarios, identificacaos);
+						;
+						break;
+					case 2:
+						actualizar(funcionarios, identificacaos);
+						;
+						break;
+					case 3:
+						deleta(funcionarios);
+						;
+						break;
+					case 4:
+						lista(funcionarios);
+						;
+						break;
+					case 5:
+						;
+						break;
+					default:
+						break;
+					}
+				} while (caso != 5);
+			} else {
+				System.out.println(Language.language_empty_array(Language.language_employee()));
+				gravar(funcionarios, identificacaos);
+			} 
 		}else {
-			System.out.println(Language.default_language ? Language.pt_inicializacao_empty_array : Language.en_identification_empty_array);
-			gravar(funcionarios, identificacaos);
+			System.out.println(Language.language_empty_array(Language.language_identification()));
+			IdentificacaoMethods.gravaIdentificacao(identificacaos);
 		}
 	}	
 }

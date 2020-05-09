@@ -1,43 +1,20 @@
 package gestaofarmacia;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.StringTokenizer;
 
 public class PermissaoSistemaMethods {
 
-	private static BufferedReader br;
-	private static BufferedWriter bw;		
+	private static BufferedReader br;	
 	private static String filePath = Validacao.geraDirectorioFicheiro("permissoessistema.txt");
-
-	/**
-	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
-	 **/
-	private static int geradorID(int j, PermissaoSistema[] permissaoSistemas) {
-		boolean exise = false;
-		int id = (1 + Validacao.random.nextInt(permissaoSistemas.length));
-		int newID = 0;
-		for (int i = 0; i < permissaoSistemas.length; i++) {
-			if (permissaoSistemas[i] != null) {
-				if (permissaoSistemas[i].getId() == id || id == 0)
-					exise = true;
-			}
-		}
-		if (exise)
-			geradorID(j, permissaoSistemas);
-		else
-			newID = id;
-		return newID;
-	}
 
 	/**	 
 	 * @Descrição Garante que os nomes sejam unicos
 	 */
+	@SuppressWarnings("unused")
 	private static String validaNome(String nome, PermissaoSistema[] permissaoSistemas) {
 		String nomed = null;
 		if (nome != null) { 
@@ -46,7 +23,7 @@ public class PermissaoSistemaMethods {
 					if (!permissaoSistemas[i].getNome().equalsIgnoreCase(nome)) {
 						nomed = nome;
 					}else {
-						nomed = validaNome(Validacao.validaEntradaPalavra("O nome da Permissao ja existe, queira por favor informar um novo nome: "),permissaoSistemas);
+						nomed = validaNome(Validacao.validaEntradaPalavra(Language.language_input_exist_name()),permissaoSistemas);
 						i = permissaoSistemas.length;
 					}
 				}else {
@@ -71,15 +48,14 @@ public class PermissaoSistemaMethods {
 				if (permissaoSistemas[i] != null) {	                	  
 					if (permissaoSistemas[i].getNome().equalsIgnoreCase(nome)) {	                    	  
 						permissaoSistema = new PermissaoSistema(permissaoSistemas[i].getId(), 
-								permissaoSistemas[i].getNome(), permissaoSistemas[i].isStatus(),
-								permissaoSistemas[i].getDataRegisto(), permissaoSistemas[i].getDataActualizacao());
+								permissaoSistemas[i].getNome());
 						count ++;
 					}
 				}	                  
 			} 	          		
 		}       
 		if (permissaoSistema == null) {
-			permissaoSistema = getByNome(Validacao.validaEntradaPalavra("Volte a informar o nome da Permissao valida: "), permissaoSistemas);
+			permissaoSistema = getByNome(Validacao.validaEntradaPalavra(Language.language_input_valid_name()), permissaoSistemas);
 			if (count < 3) {
 
 			}
@@ -101,152 +77,19 @@ public class PermissaoSistemaMethods {
 				if (permissaoSistemas[i] != null) {	                	  
 					if (permissaoSistemas[i].getId() == id) {	                    	  
 						permissaoSistema = new PermissaoSistema(permissaoSistemas[i].getId(), 
-								permissaoSistemas[i].getNome(), permissaoSistemas[i].isStatus(),
-								permissaoSistemas[i].getDataRegisto(), permissaoSistemas[i].getDataActualizacao());
+								permissaoSistemas[i].getNome());
 						count ++;
 					}
 				}	                  
 			} 	          		
 		}       
 		if (permissaoSistema == null) {
-			permissaoSistema = getByNome(Validacao.validaEntradaPalavra("Volte a informar o nome da Permissao valida: "), permissaoSistemas);
+			permissaoSistema = getByNome(Validacao.validaEntradaPalavra(Language.language_input_valid_name()), permissaoSistemas);
 			if (count < 3) {
 
 			}
 		}
 		return permissaoSistema;
-	}
-
-	private static int gravar(PermissaoSistema[] permissaoSistemas) {
-		int id = 0, i = Validacao.notNull(permissaoSistemas);		
-		id = geradorID(i, permissaoSistemas);		
-		String nome = validaNome(Validacao.validaEntradaPalavra("Informe o nome da permissao: "),permissaoSistemas);		
-		if (nome != null)
-			permissaoSistemas[i] = new PermissaoSistema(id, nome, true, LocalDateTime.now(), LocalDateTime.now());
-		else 
-			id = 0;
-		gravarDadosNoFicheiro(permissaoSistemas, filePath);
-		Validacao.validaGravacao(id, "Identificacao Gravada com sucesso!");			
-		return id;
-	}
-
-	/**       
-	 * @Descrição Menu de atualizacao de dados
-	 */
-	private static byte menuActualizar() {
-		System.out.println();
-		System.out.println("************************* Actualizar dados de Permissoes **************************");
-		System.out.println("***********************************************************************************");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*1. Nome                                                                          *");
-		System.out.println("*---------------------------------------------------------------------------------*");     		   
-		System.out.println("*2. Estado                                                                        *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*3. Cancelar                                                                      *");
-		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Indique o dado de que deseja editar:");
-	}
-
-	private static int actualizar(PermissaoSistema[] permissaoSistemas) {
-		int id = 0;
-		lista(permissaoSistemas);
-		boolean error = true;
-		String msg;
-		PermissaoSistema identificacao = getById(Validacao.validaEntradaInteiro("Informe o numero da permissao: "), permissaoSistemas);
-		if (identificacao != null) {
-			for (int i = 0; i < permissaoSistemas.length; i++) {
-				if (permissaoSistemas[i] != null) {
-					if (permissaoSistemas[i].getId() == identificacao.getId()) {
-						id = identificacao.getId();
-						switch (menuActualizar()) {
-						case 1:
-							String nome = validaNome(
-									Validacao.validaEntradaPalavra("Informe o nome da permissao: "),
-									permissaoSistemas);
-							permissaoSistemas[i].setNome(nome);
-							permissaoSistemas[i].setDataActualizacao(LocalDateTime.now());
-							listaIdentificacao(permissaoSistemas, id);
-							break;
-						case 2:							
-							boolean estado = Validacao
-							.validaEntradaStatus("Informe o Novo Estado [Activo ou Inactivo]: ");
-							permissaoSistemas[i].setStatus(estado);
-							permissaoSistemas[i].setDataActualizacao(LocalDateTime.now());
-							listaIdentificacao(permissaoSistemas, id);
-							break;
-						case 4:
-							error = false;
-							break;
-						default:
-							actualizar(permissaoSistemas);
-							break;
-						}
-					}
-				}
-			} 
-		}
-		gravarDadosNoFicheiro(permissaoSistemas, filePath);
-		if (error) {
-			msg = "Identificacao Atualizada com Sucesso!";
-		}else {
-			msg = "Identificacao Não Atualizada com Sucesso!";
-		}
-		Validacao.validaGravacao(id, msg);
-		return id;
-	}
-
-	private static int deletaIdentificacao(PermissaoSistema[] permissaoSistemas){
-		int id = 0;
-		lista(permissaoSistemas);
-		boolean error = true;
-		String msg;
-		PermissaoSistema permissaoSistema = getById(Validacao.validaEntradaInteiro("Informe o numero da permissao: "), permissaoSistemas);
-		if (permissaoSistema != null) {
-			for (int i = 0; i < permissaoSistemas.length; i++) {
-				if (permissaoSistemas[i] != null) {
-					if (permissaoSistemas[i].getId() == permissaoSistema.getId()) {
-						id = permissaoSistema.getId();
-						permissaoSistemas[i] = null;
-					}
-				}
-			} 
-		}		
-		Validacao.destroiDirectorioFicheiro(filePath);
-		gravarDadosNoFicheiro(permissaoSistemas, filePath);				
-		if (error) {
-			msg = "Identificacao removida com Sucesso!";
-		}else {
-			msg = "Identificacao Não removida com Sucesso!";
-		}
-		Validacao.validaGravacao(id, msg);
-		return id;		
-	}
-
-	private static boolean gravarDadosNoFicheiro(PermissaoSistema[] permissaoSistemas, String file) {
-		boolean error = false;	
-		try {						
-			if (new File(file).exists()) {
-				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
-				for (int i = 0; i < permissaoSistemas.length; i++) {
-					if (permissaoSistemas[i] != null) {
-						bw.write(permissaoSistemas[i].getId() + "|" + permissaoSistemas[i].getNome()								
-								+ "|" + permissaoSistemas[i].isStatus() 
-								+ "|" + permissaoSistemas[i].getDataRegisto()
-								+ "|" + permissaoSistemas[i].getDataActualizacao());
-						bw.newLine();
-						lista(permissaoSistemas);
-					}
-				}
-				bw.close();
-				error = true;
-			}else {				
-				Validacao.geraDirectorioFicheiro(file);
-				gravarDadosNoFicheiro(permissaoSistemas,file);
-			}			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return error;
 	}
 
 	public static boolean lerDadosNoFicheiro(PermissaoSistema[] permissaoSistemas, String file) {
@@ -260,9 +103,7 @@ public class PermissaoSistemaMethods {
 				while (linha != null) {					
 					str = new StringTokenizer(linha, "|");
 					PermissaoSistema identificacao = new PermissaoSistema(Integer.parseInt(str.nextToken()),
-							str.nextToken(), Boolean.parseBoolean(str.nextToken()),
-							Validacao.parseStringToLocalDateTime(str.nextToken()),
-							Validacao.parseStringToLocalDateTime(str.nextToken()));
+							str.nextToken());
 					permissaoSistemas[i] = identificacao;					
 					linha = br.readLine();
 					i++;					
@@ -285,18 +126,16 @@ public class PermissaoSistemaMethods {
 	 * @Descrição imprime o formato de cabeçalho e retorna o formato para impressao dos dados
 	 */
 	private static String formatoImpressao(){
-		String [] header = new String[]{"|","#","|","Numero","|","Nome","|","Estado","|","Data Reg","|","Data Act","|"};
-		String formatCaracter = "%s",formatNumero = "%-10.6s", formatNome = "%-58.58s";
-		String formatEstado = "%-16.16s";
-		String formatData = "%-26.20s", formatDataLast = "%-26.20s";
+		String [] header = new String[]{"|","#","|",Language.language_id(),"|",Language.language_name()};
+		String formatCaracter = "%s",formatNumero = "%-10.6s", formatNome = "%-58.58s";			
 		String formatColl = formatCaracter + " " + formatCaracter + " " + formatCaracter + " " + formatNumero + " " + formatCaracter
-				+ " " + formatNome + " " + formatCaracter + " " + formatEstado 
-				+ " " + formatCaracter + " " + formatData + " " + formatCaracter + " " + formatDataLast + " " + formatCaracter;
+				+ " " + formatNome;
 		System.out.println();
-		System.out.println("******************************************************************** Lista de Permissoess ******************************************************************");
+		System.out.println("************************************************************************************************************************************************************");
+		System.out.println("\t\t\t\t\t\t\t\t"+Language.language_list(Language.language_permissions()));
 		System.out.println("************************************************************************************************************************************************************");
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.format(formatColl,header[0],header[1],header[2],header[3],header[4],header[5],header[6],header[7],header[8],header[9],header[10],header[11],header[12]);
+		System.out.format(formatColl,header[0],header[1],header[2],header[3],header[4],header[5]);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		return formatColl;
@@ -320,13 +159,12 @@ public class PermissaoSistemaMethods {
 
 	private static void dadosImpressao(int numeracao, int i, PermissaoSistema [] identificacaos, String layoutFormat) {
 		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,identificacaos[i].getId(),Validacao.delimitador,
-				identificacaos[i].getNome(),Validacao.delimitador,Validacao.mudarStatus(identificacaos[i].isStatus()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(identificacaos[i].getDataRegisto()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(identificacaos[i].getDataActualizacao()),Validacao.delimitador);
+				identificacaos[i].getNome(),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}
 
+	@SuppressWarnings("unused")
 	private static void listaIdentificacao(PermissaoSistema [] permissaoSistemas, int id){
 		int numeracao = 1;
 		int empty_= 0;        
@@ -342,28 +180,6 @@ public class PermissaoSistemaMethods {
 		Validacao.formatoImpressaoFooter(permissaoSistemas.length, empty_);		
 	}         
 
-	/**       
-	 * @Descrição Menu de atualizacao de dados
-	 */
-	private static byte menu() {
-
-		System.out.println();
-		System.out.println("****************************** Gestao de Permissoes *******************************");
-		System.out.println("***********************************************************************************");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*1. Registar                                                                      *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*2. Actualizar                                                                    *");
-		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*3. Apagar                                                                        *");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*4. Lista                                                                         *");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*5. Cancelar                                                                      *");
-		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Selecionar opcao:");
-	}
-
 	public static void load(PermissaoSistema [] permissaoSistemas) {
 		Validacao.init(permissaoSistemas);	
 		lerDadosNoFicheiro(permissaoSistemas, filePath);
@@ -373,27 +189,18 @@ public class PermissaoSistemaMethods {
 		load(permissaoSistemas);
 		int caso;
 		do {
-			caso = menu();
+			caso = Validacao.menuPermissions(Language.language_permissions());
 			switch (caso) {
-			case 1:
-				gravar(permissaoSistemas);
-				;break;
-			case 2:
-				actualizar(permissaoSistemas);
-				;break;
-			case 3:
-				deletaIdentificacao(permissaoSistemas);
-				;break;
-			case 4:
+			case 1:							
 				lista(permissaoSistemas);
 				;break;			
-			case 5:
+			case 2:
 				;break;
 			default:
 
 				break;
 			}
-		} while (caso != 5);
+		} while (caso != 2);
 	}
 
 

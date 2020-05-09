@@ -5,11 +5,11 @@ public class Perfil {
 	private PermissaoSistema permissaoSistema;
 	private Usuario usuario;
 	
-	public Perfil(int id, PermissaoSistema permissaoSistema, Usuario usuario) {
+	public Perfil(int id, Usuario usuario, PermissaoSistema permissaoSistema) {
 		super();
-		this.id = id;
-		this.permissaoSistema = permissaoSistema;
+		this.id = id;		
 		this.usuario = usuario;
+		this.permissaoSistema = permissaoSistema;
 	}
 
 	public int getId() {
@@ -38,6 +38,6 @@ public class Perfil {
 
 	@Override
 	public String toString() {
-		return "Perfil [id=" + id + ", permissaoSistema=" + permissaoSistema + ", usuario=" + usuario + "]";
+		return "Perfil [id=" + id + ", usuario=" + usuario + " permissaoSistema=" + permissaoSistema + "]";
 	}		
 }

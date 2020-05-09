@@ -6,6 +6,7 @@ public class ExecutaSGF {
 	private static Funcionario [] funcionarios = new Funcionario[Validacao.getTamanho()];
 	private static PermissaoSistema [] permissaoSistemas = new PermissaoSistema[Validacao.getTamanho()];
 	private static Usuario [] usuarios = new Usuario[Validacao.getTamanho()]; 
+	private static Perfil [] perfils = new Perfil[Validacao.getTamanho()]; 
 
 	private static void load() {	
 		IdentificacaoMethods.load(identificacaos);
@@ -17,16 +18,19 @@ public class ExecutaSGF {
 	private static byte menuOutros() {
 
 		System.out.println();
-		System.out.println("******************************* Gestao de Farmacia ********************************");
 		System.out.println("***********************************************************************************");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*1. Tipos de Identidade                                                           *");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*2. Permissoes de sistema                                                         *");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*3. Cancelar                                                                      *");
+		System.out.println("\t\t\t\t"+Language.language_pharmacy_management());
 		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Selecione uma opcao:");
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("1. "+Language.language_identification_type());
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("2. "+Language.language_systempermissions());
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("3. "+Language.language_profile());
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("4. "+Language.language_cancel());
+		System.out.println("***********************************************************************************");
+		return Validacao.validaEntradaByte(Language.language_select_option());
 	}
 
 	private static void outros() {
@@ -41,13 +45,15 @@ public class ExecutaSGF {
 				PermissaoSistemaMethods.inicializador(permissaoSistemas);
 				break;	
 			case 3:				
-				;
+				PerfilMethods.inicializador(perfils, permissaoSistemas, usuarios);
 				break;	
+			case 4:								
+				break;
 			default:
 				;
 				break;
 			}   		  
-		} while (caso!=3);
+		} while (caso!=4);
 	}
 
 	/**       
@@ -56,18 +62,19 @@ public class ExecutaSGF {
 	private static byte menu() {
 
 		System.out.println();
-		System.out.println("******************************* Gestao de Farmacia ********************************");
 		System.out.println("***********************************************************************************");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*1. Funcionarios                                                                  *");
-		System.out.println("*---------------------------------------------------------------------------------*");     	       
-		System.out.println("*2. Usuarios                                                                      *");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*3. Outros                                                                        *");
-		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*4. Cancelar                                                                      *");
+		System.out.println("\t\t\t\t"+Language.language_pharmacy_management());
 		System.out.println("***********************************************************************************");
-		return Validacao.validaEntradaByte("Selecione uma opcao:");
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("1. "+Language.language_employee());
+		System.out.println("-----------------------------------------------------------------------------------");     	       
+		System.out.println("2. "+Language.language_user());
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("3. "+Language.language_other());
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("4. "+Language.language_cancel());
+		System.out.println("***********************************************************************************");
+		return Validacao.validaEntradaByte(Language.language_select_option());
 	}
 
 	private static void inicializador() {
