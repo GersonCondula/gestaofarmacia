@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 public class ProdutoMethods {
@@ -115,7 +117,8 @@ public class ProdutoMethods {
 									if (quantidade!=0) {
 										double preco = Validacao.validaEntradaFlutuante(Language.language_input_price());
 										if (preco != 0) {
-											date 
+											LocalDateTime dataValidade = Validacao.validaDadosData(Language.language_input_exist_acronym());
+													
 											if (error) {
 												produtos[i] = new Produto(id, fornecedor, categoriaProduto, nome, marca,
 														descricao, quantidade, preco, true, LocalDateTime.now(),

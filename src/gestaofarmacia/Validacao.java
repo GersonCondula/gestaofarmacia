@@ -22,6 +22,7 @@ public class Validacao {
 	public static final String ANSI_GREEN = "\u001B[32m";
 
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	private static DateTimeFormatter dateTimeFormatterInput = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
 	private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);    
 	public static Random random = new Random();
 	private static final int tamanho = 10000;
@@ -301,6 +302,11 @@ public class Validacao {
 		return valor;
 	}
 
+	public static LocalDateTime validaDadosData(String language_expirationDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	/**
 	 *
 	 * @param nome
