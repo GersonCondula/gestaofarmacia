@@ -5,20 +5,51 @@ import java.time.LocalDateTime;
 public class Usuario {	
 
 	private int id;
-	private Funcionario funcionario;    
+	private Funcionario funcionario;
+	private String username;
+	private String password;
 	private boolean status;
 	private LocalDateTime dataRegisto;
 	private LocalDateTime dataActualizacao;
 
-	public Usuario(int id, Funcionario funionario, boolean status,
-			LocalDateTime dataRegisto, LocalDateTime dataActualizacao) {	
+	
+	public Usuario(int id, Funcionario funcionario, String password, boolean status,
+			LocalDateTime dataRegisto, LocalDateTime dataActualizacao) {
+		super();
 		this.id = id;
-		this.funcionario = funionario;		
+		this.funcionario = funcionario;
+		this.username = geraUsername(funcionario);
+		this.password = password;
 		this.status = status;
 		this.dataRegisto = dataRegisto;
 		this.dataActualizacao = dataActualizacao;
 	}
 
+	public String geraUsername(Funcionario funcionario2) {
+		String [] anArray = funcionario2.getNome().split(" ");
+		String username = null;
+		for (int i = 0; i < anArray.length; i++) {
+			username = anArray[0].charAt(0)+"".concat(anArray[anArray.length-1]);
+		}
+		return username;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
 	public boolean isStatus() {
 		return status;
 	}

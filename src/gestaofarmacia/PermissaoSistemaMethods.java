@@ -1,14 +1,17 @@
 package gestaofarmacia;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
 public class PermissaoSistemaMethods {
 
-	private static BufferedReader br;	
+	private static BufferedReader br;
+	private static BufferedWriter bw;
 	private static String filePath = Validacao.geraDirectorioFicheiro("permissoessistema.txt");
 
 	/**	 
@@ -91,7 +94,32 @@ public class PermissaoSistemaMethods {
 		}
 		return permissaoSistema;
 	}
-
+	
+	private static boolean gravarDadosNoFicheiro(PermissaoSistema [] permissaoSistemas, String file) {
+		boolean error = false;	
+		try {		
+			br = new BufferedReader(new FileReader(new File(file)));
+			String linha = br.readLine();
+			if (new File(file).exists() || linha == null) {
+				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
+				for (int i = 0; i < permissaoSistemas.length; i++) {
+					if (permissaoSistemas[i] != null) {
+						bw.write(permissaoSistemas[i].getId() + "|" + permissaoSistemas[i].getNome());
+						bw.newLine();						
+					}
+				}
+				bw.close();
+				error = true;
+			}else {				
+				Validacao.geraDirectorioFicheiro(file);
+				gravarDadosNoFicheiro(permissaoSistemas,file);
+			}			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return error;
+	}
+	
 	public static boolean lerDadosNoFicheiro(PermissaoSistema[] permissaoSistemas, String file) {
 		boolean error = false;		
 		StringTokenizer str;
@@ -100,18 +128,35 @@ public class PermissaoSistemaMethods {
 				br = new BufferedReader(new FileReader(new File(file)));
 				String linha = br.readLine();
 				int i = 0;
-				while (linha != null) {					
-					str = new StringTokenizer(linha, "|");
-					PermissaoSistema identificacao = new PermissaoSistema(Integer.parseInt(str.nextToken()),
-							str.nextToken());
-					permissaoSistemas[i] = identificacao;					
-					linha = br.readLine();
-					i++;					
+				if (linha!=null) {
+					while (linha != null) {
+						str = new StringTokenizer(linha, "|");
+						PermissaoSistema identificacao = new PermissaoSistema(Integer.parseInt(str.nextToken()),
+								str.nextToken());
+						permissaoSistemas[i] = identificacao;
+						linha = br.readLine();
+						i++;
+					} 
+				}else {
+					PermissaoSistema permissaoSistemas1 = new PermissaoSistema(2222,"Administracao");
+					PermissaoSistema permissaoSistemas2 = new PermissaoSistema(3333,"Gestor");
+					PermissaoSistema permissaoSistemas3 = new PermissaoSistema(4444,"Farmaceutico");
+					permissaoSistemas[0]= permissaoSistemas1;
+					permissaoSistemas[1]= permissaoSistemas2;
+					permissaoSistemas[2]= permissaoSistemas3;
+					bw = new BufferedWriter(new FileWriter(new File(filePath)));				
+					for (int ii = 0; ii < 3; ii++) {
+						if (permissaoSistemas[ii] != null) {
+							bw.write(permissaoSistemas[ii].getId() + "|" + permissaoSistemas[ii].getNome());
+							bw.newLine();						
+						}
+					}
+					bw.close();
 				}
 				br.close();
 				error = true;				
 			}else {								
-				Validacao.geraDirectorioFicheiro(file);
+				Validacao.geraDirectorioFicheiro(file);				
 				lerDadosNoFicheiro(permissaoSistemas,file);				
 			}
 		} catch (IOException e) {
@@ -181,7 +226,7 @@ public class PermissaoSistemaMethods {
 	}         
 
 	public static void load(PermissaoSistema [] permissaoSistemas) {
-		Validacao.init(permissaoSistemas);	
+		Validacao.init(permissaoSistemas);			
 		lerDadosNoFicheiro(permissaoSistemas, filePath);
 	}
 

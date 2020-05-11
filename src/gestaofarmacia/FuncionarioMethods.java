@@ -126,6 +126,18 @@ public class FuncionarioMethods {
 		return funcionario;
 	}
 
+	public static Funcionario selecionaFuncionario(Funcionario [] funcionarios) {
+		Funcionario funcionario = null;		
+		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
+		for (Funcionario funcionario2 : funcionarios) 			
+			if (funcionario2 != null) 
+				if (funcionario2.getId() == numero) 
+					funcionario = funcionario2;									
+		if (funcionario == null) 
+			return selecionaFuncionario(funcionarios);		
+		return funcionario;
+	}
+	
 	public static Identificacao selecionaIdentificacao(Identificacao [] identificacaos) {
 		Identificacao identificacao = null;		
 		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());

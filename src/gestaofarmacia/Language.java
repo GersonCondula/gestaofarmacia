@@ -47,6 +47,12 @@ public class Language {
 	public static final String language_pharmacy_management() {
 		return default_language ? "Gestao de Farmacia" : "Pharmacy Management";
 	}
+	public static final String language_human_resources() {
+		return default_language ? "Recursos Humanos" : "Human Resources";
+	}
+	public static final String language_stock_management() {
+		return default_language ? "Gestao de estoque" : "Stock Management";
+	}
 	public static final String language_active() {
 		return default_language ? "Activo" : "Active";
 	}
@@ -56,12 +62,34 @@ public class Language {
 	public static final String language_id() {
 		return default_language ? "Codigo" : "ID";
 	}	
+	public static final String language_password() {
+		return default_language ? "Senha" : "Password";
+	}
+	public static final String language_input_password() {
+		return default_language ? "Informe a senha: " :
+								  "Enter the password: ";
+	}
 	public static final String language_name() {
 		return default_language ? "Nome" : "Name";
 	}
 	public static final String language_acronym() {
 		return default_language ? "Acronimo" : "Acronym";
-	}	
+	}
+	public static final String language_description() {
+		return default_language ? "Descricao" : "Description";
+	}
+	public static final String language_brand() {
+		return default_language ? "Marca" : "Brand";
+	}
+	public static final String language_price() {
+		return default_language ? "Preco" : "Price";
+	}
+	public static final String language_amount() {
+		return default_language ? "Quantidade" : "Amount";
+	}
+	public static final String language_person_type() {
+		return default_language ? "Tipo Pessoa" : "Person type";
+	}
 	public static final String language_state() {
 		return default_language ? "Status" : "State";
 	}
@@ -79,7 +107,14 @@ public class Language {
 	}
 	public static final String language_cancel() {
 		return default_language ? "Cancelar" :"Cancel";
-	}	
+	}
+	public static final String language_expirationDate() {
+		return default_language ? "Data de validade" : "Expiration Date";
+	}
+	public static final String language_input_expirationDate() {
+		return default_language ? "Informe a data de validade [dia-mes-ano]: " :
+								  "Enter the expiration date [day-month-year]: ";
+	}
 	public static final String language_dateRegistration() {
 		return default_language ? "Data Reg" : "Reg Data";
 	}
@@ -163,6 +198,22 @@ public class Language {
 		return default_language ? "Informe um status valido [Activo ou Inactivo]: " :
 								  "Inform the valid State [Active or Inactive]: ";
 	}
+	public static final String language_input_description() {
+		return default_language ? "Informe a descricao: " :
+								  "Enter the description: ";
+	}
+	public static final String language_input_price() {
+		return default_language ? "Informe o preco: " :
+								  "Enter the price: ";
+	}
+	public static final String language_input_brand() {
+		return default_language ? "Informe o nome marca: " :
+								  "Enter the brand name: ";
+	}
+	public static final String language_input_amount() {
+		return default_language ? "Informe a quantidade: " :
+								  "Enter the amount: ";
+	}
 	public static final String language_update_menu() {
 		return default_language ? "Actualizar dados " :
 								  "Update data";
@@ -220,6 +271,15 @@ public class Language {
 	public static final String language_list(String obj) {
 		return default_language ? "Lista de " + obj : "List " + obj;
 	}
+	public static final String language_login() {
+		return default_language ? "Autenticacao" : "Sign in";
+	}	
+	public static final String language_invalid_value_login() {
+		return default_language ? "Valor Invalido, deseja tentar mais uma vez? \nsim (s) nao (n)" : "Invalid Value, need to retry? \nyes (y) no (n)";
+	}
+	public static final char language_option_yes_login() {
+		return default_language ? (char)'s' : (char)'y';
+	}	
 	/** 
 	 * ------------------------ Identificacao -------------------------	 	 
 	 **/
@@ -256,6 +316,22 @@ public class Language {
 	public static final String language_profile() {
 		return default_language ? "Perfil" : "Profile";
 	}
-	
-
+	/** 
+	 * ----------------------------- Categoria Produto --------------------------	 	 
+	 **/
+	public static final String language_product_category() {
+		return default_language ? "Categoria Produto" : "Product Category";
+	}
+	/** 
+	 * ----------------------------- Fornecedor --------------------------	 	 
+	 **/
+	public static final String language_provider() {
+		return default_language ? "Fornecedor" : "Provider";
+	}
+	/** 
+	 * ----------------------------- Produto --------------------------	 	 
+	 **/
+	public static final String language_product() {
+		return default_language ? "Produto" : "Product";
+	}
 }

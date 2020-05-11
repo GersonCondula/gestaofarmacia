@@ -4,81 +4,85 @@ import java.time.LocalDateTime;
 
 public class Fornecedor {	
 
-	private int  idFornecedor;
-    private String  nomeFornecedor;     
-    private String  moradaFornecedor;
-    private int  nuitFornecedor;
-    private String  tipoPessoaFornecedor;
-    private boolean  statusFornecedor;
-    private LocalDateTime  dataRegistoFornecedor;
-    private LocalDateTime  dataActualizacaoFornecedor;
+	private int  id;
+    private String  nome;     
+    private String  morada;        
+    private int  nuit;
+    private boolean  status;
+    private LocalDateTime  dataRegisto;
+    private LocalDateTime  dataActualizacao;
     
-	public Fornecedor(int idFornecedor, String nomeFornecedor, String moradaFornecedor, int nuitFornecedor,
-			String tipoPessoaFornecedor, boolean statusFornecedor, LocalDateTime dataRegistoFornecedor,
-			LocalDateTime dataActualizacaoFornecedor) {	
-		this.idFornecedor = idFornecedor;
-		this.nomeFornecedor = nomeFornecedor;
-		this.moradaFornecedor = moradaFornecedor;
-		this.nuitFornecedor = nuitFornecedor;
-		this.tipoPessoaFornecedor = tipoPessoaFornecedor;
-		this.statusFornecedor = statusFornecedor;
-		this.dataRegistoFornecedor = dataRegistoFornecedor;
-		this.dataActualizacaoFornecedor = dataActualizacaoFornecedor;
+	public Fornecedor(int id, String nome, String morada, int nuit, boolean status,
+			LocalDateTime dataRegisto, LocalDateTime dataActualizacao) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.morada = morada;
+		this.nuit = nuit;		
+		this.status = status;
+		this.dataRegisto = dataRegisto;
+		this.dataActualizacao = dataActualizacao;
 	}
 
-	public String getNomeFornecedor() {
-		return nomeFornecedor;
+	public int getId() {
+		return id;
 	}
 
-	public void setNomeFornecedor(String nomeFornecedor) {
-		this.nomeFornecedor = nomeFornecedor;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public String getMoradaFornecedor() {
-		return moradaFornecedor;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setMoradaFornecedor(String moradaFornecedor) {
-		this.moradaFornecedor = moradaFornecedor;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public int getNuitFornecedor() {
-		return nuitFornecedor;
+	public String getMorada() {
+		return morada;
 	}
 
-	public void setNuitFornecedor(int nuitFornecedor) {
-		this.nuitFornecedor = nuitFornecedor;
+	public void setMorada(String morada) {
+		this.morada = morada;
 	}
 
-	public String getTipoPessoaFornecedor() {
-		return tipoPessoaFornecedor;
+	public int getNuit() {
+		return nuit;
 	}
 
-	public void setTipoPessoaFornecedor(String tipoPessoaFornecedor) {
-		this.tipoPessoaFornecedor = tipoPessoaFornecedor;
+	public void setNuit(int nuit) {
+		this.nuit = nuit;
 	}
 
-	public boolean isStatusFornecedor() {
-		return statusFornecedor;
+	public boolean isStatus() {
+		return status;
 	}
 
-	public void setStatusFornecedor(boolean statusFornecedor) {
-		this.statusFornecedor = statusFornecedor;
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
-	public int getIdFornecedor() {
-		return idFornecedor;
+	public LocalDateTime getDataRegisto() {
+		return dataRegisto;
 	}
 
-	public void setDataActualizacaoFornecedor(LocalDateTime dataActualizacaoFornecedor) {
-		this.dataActualizacaoFornecedor = dataActualizacaoFornecedor;
+	public void setDataRegisto(LocalDateTime dataRegisto) {
+		this.dataRegisto = dataRegisto;
+	}
+
+	public LocalDateTime getDataActualizacao() {
+		return dataActualizacao;
+	}
+
+	public void setDataActualizacao(LocalDateTime dataActualizacao) {
+		this.dataActualizacao = dataActualizacao;
 	}
 
 	@Override
 	public String toString() {
-		return "Fornecedor [idFornecedor=" + idFornecedor + ", nomeFornecedor=" + nomeFornecedor + ", moradaFornecedor="
-				+ moradaFornecedor + ", nuitFornecedor=" + nuitFornecedor + ", tipoPessoaFornecedor="
-				+ tipoPessoaFornecedor + ", statusFornecedor=" + statusFornecedor + ", dataRegistoFornecedor="
-				+ dataRegistoFornecedor + ", dataActualizacaoFornecedor=" + dataActualizacaoFornecedor + "]";
+		return "Fornecedor [id=" + id + ", nome=" + nome + ", morada=" + morada + ", nuit=" + nuit + ", status=" + status + ", dataRegisto=" + dataRegisto + ", dataActualizacao="
+				+ dataActualizacao + "]";
 	}       
 }

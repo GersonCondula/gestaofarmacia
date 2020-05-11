@@ -49,6 +49,7 @@ public class UsuarioMethods {
 					if (usuarios[i].getId() == id) {	                    	  
 						usuario = new Usuario(usuarios[i].getId(), 
 								usuarios[i].getFuncionario(),
+								usuarios[i].getPassword(),
 								usuarios[i].isStatus(),usuarios[i].getDataRegisto(), 
 								usuarios[i].getDataActualizacao());
 						count ++;
@@ -65,20 +66,16 @@ public class UsuarioMethods {
 		return usuario;
 	}
 
-	public static Funcionario selecionaFuncionario(Funcionario [] funcionarios) {
-		Funcionario funcionario = null;		
+	public static Usuario selecionaUsuario(Usuario [] usuarios) {
+		Usuario usuario = null;		
 		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
-		for (Funcionario funcionario2 : funcionarios) {			
-			if (funcionario2 != null) {
-				if (funcionario2.getId() == numero) {
-					funcionario = funcionario2;
-				} 
-			}
-		}
-		if (funcionario == null) {
-			return selecionaFuncionario(funcionarios);
-		}
-		return funcionario;
+		for (Usuario usuario2 : usuarios)			
+			if (usuario2 != null) 
+				if (usuario2.getId() == numero) 
+					usuario = usuario2;									
+		if (usuario == null) 
+			return selecionaUsuario(usuarios);		
+		return usuario;
 	}
 
 	public static PermissaoSistema selecionaPermissaoSistema(PermissaoSistema [] permissaoSistemas) {
@@ -96,16 +93,21 @@ public class UsuarioMethods {
 		}
 		return permissaoSistema;
 	}
-
 	private static int gravar(Usuario[] usuarios, Funcionario [] funcionarios) {
 		int id = 0, i = Validacao.notNull(usuarios);		
 		boolean error =  false;
 		id = geradorID(i, usuarios);		
 		FuncionarioMethods.lista(funcionarios);
-		Funcionario funcionario = selecionaFuncionario(funcionarios);	
-		if (funcionario != null) {			
-			usuarios[i] = new Usuario(id, funcionario, true, LocalDateTime.now(), LocalDateTime.now());	
-			error = true;
+		Funcionario funcionario = FuncionarioMethods.selecionaFuncionario(funcionarios);	
+		if (funcionario != null) {
+			String password = Validacao.validaEntradaPalavra(Language.language_input_password());
+			if (password != null) {
+				usuarios[i] = new Usuario(id, funcionario,password ,true, LocalDateTime.now(), LocalDateTime.now());
+				error = true;
+			} else {
+				id = 0;
+			}
+			
 		} else {
 			id = 0;
 		}		
@@ -193,6 +195,7 @@ public class UsuarioMethods {
 					if (usuarios[i] != null) {
 						bw.write(usuarios[i].getId() 
 								+ "|" + usuarios[i].getFuncionario().getId()
+								+ "|" + usuarios[i].getPassword() 
 								+ "|" + usuarios[i].isStatus() 
 								+ "|" + usuarios[i].getDataRegisto()
 								+ "|" + usuarios[i].getDataActualizacao());
@@ -223,7 +226,8 @@ public class UsuarioMethods {
 				while (linha != null) {					
 					str = new StringTokenizer(linha, "|");
 					Usuario identificacao = new Usuario(Integer.parseInt(str.nextToken()),
-							FuncionarioMethods.getById(Integer.parseInt(str.nextToken()), funcionarios), Boolean.parseBoolean(str.nextToken()),
+							FuncionarioMethods.getById(Integer.parseInt(str.nextToken()), funcionarios),
+							str.nextToken(), Boolean.parseBoolean(str.nextToken()),
 							Validacao.parseStringToLocalDateTime(str.nextToken()),
 							Validacao.parseStringToLocalDateTime(str.nextToken()));
 					usuarios[i] = identificacao;					
@@ -248,20 +252,20 @@ public class UsuarioMethods {
 	 * @Descrição imprime o formato de cabeçalho e retorna o formato para impressao dos dados
 	 */
 	private static String formatoImpressao(){
-		String [] header = new String[]{"|","#","|",Language.language_id(),"|",Language.language_employee(),"|",Language.language_state(),
+		String [] header = new String[]{"|","#","|",Language.language_id(),"|",Language.language_employee(),"|",Language.language_password(),"|",Language.language_state(),
 									    "|",Language.language_dateRegistration(),"|",Language.language_updateDate(),"|"};
-		String formatCaracter = "%s",formatNumero = "%-10.6s", formatNome = "%-60.60s";
-		String formatEstado = "%-8.10s";
+		String formatCaracter = "%s",formatNumero = "%-10.6s", formatNome = "%-35.35s";
+		String formatEstado = "%-8.10s", formatPassword = "%-25.25s";
 		String formatData = "%-19.19s", formatDataLast = "%-26.20s";
 		String formatColl = formatCaracter + " " + formatCaracter + " " + formatCaracter + " " + formatNumero + " " + formatCaracter
-				+ " " + formatNome + " " + formatCaracter + " " + formatEstado 
+				+ " " + formatNome + " " + formatCaracter + " " + formatPassword + " " + formatCaracter + " " + formatEstado 
 				+ " " + formatCaracter + " " + formatData + " " + formatCaracter + " " + formatDataLast;
 		System.out.println();
 		System.out.println("************************************************************************************************************************************************************");
 		System.out.println("\t\t\t\t\t\t\t\t\t"+Language.language_list(Language.language_user()));
 		System.out.println("************************************************************************************************************************************************************");
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.format(formatColl,header[0],header[1],header[2],header[3],header[4],header[5],header[6],header[7],header[8],header[9],header[10],header[11]);
+		System.out.format(formatColl,header[0],header[1],header[2],header[3],header[4],header[5],header[6],header[7],header[8],header[9],header[10],header[11],header[12],header[13]);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		return formatColl;
@@ -283,11 +287,12 @@ public class UsuarioMethods {
 		Validacao.formatoImpressaoFooter(usuarios.length,empty_);
 	}
 
-	private static void dadosImpressao(int numeracao, int i, Usuario [] identificacaos, String layoutFormat) {
-		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,identificacaos[i].getId(),Validacao.delimitador,
-				identificacaos[i].getFuncionario().getNome(),Validacao.delimitador,Validacao.mudarStatus(identificacaos[i].isStatus()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(identificacaos[i].getDataRegisto()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(identificacaos[i].getDataActualizacao()),Validacao.delimitador);
+	private static void dadosImpressao(int numeracao, int i, Usuario [] usuarios, String layoutFormat) {
+		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,usuarios[i].getId(),Validacao.delimitador,
+				usuarios[i].getFuncionario().getNome(),Validacao.delimitador,usuarios[i].getPassword(),
+				Validacao.delimitador,Validacao.mudarStatus(usuarios[i].isStatus()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToSring(usuarios[i].getDataRegisto()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToSring(usuarios[i].getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}

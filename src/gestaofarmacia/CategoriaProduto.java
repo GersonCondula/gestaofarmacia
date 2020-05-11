@@ -4,62 +4,75 @@ import java.time.LocalDateTime;
 
 public class CategoriaProduto {
 	
-	private int idCategoriaProduto;
-    private String nomeCategoriaProduto;       
-    private boolean statusCategoriaProduto;
-    private String observacoesCategoriaProduto;
-    private LocalDateTime dataRegistoCategoriaProduto;
-    private LocalDateTime dataActualizacaoCategoriaProduto;
+	private int id;
+    private String nome;   
+    private String descricao;
+    private boolean status;    
+    private LocalDateTime dataRegisto;
+    private LocalDateTime dataActualizacao;
     
-	public CategoriaProduto(int idCategoriaProduto, String nomeCategoriaProduto, boolean statusCategoriaProduto,
-			String observacoesCategoriaProduto, LocalDateTime dataRegistoCategoriaProduto,
-			LocalDateTime dataActualizacaoCategoriaProduto) {	
-		this.idCategoriaProduto = idCategoriaProduto;
-		this.nomeCategoriaProduto = nomeCategoriaProduto;
-		this.statusCategoriaProduto = statusCategoriaProduto;
-		this.observacoesCategoriaProduto = observacoesCategoriaProduto;
-		this.dataRegistoCategoriaProduto = dataRegistoCategoriaProduto;
-		this.dataActualizacaoCategoriaProduto = dataActualizacaoCategoriaProduto;
+	public CategoriaProduto(int id, String nome, String descricao, 
+			boolean status, LocalDateTime dataRegisto,
+			LocalDateTime dataActualizacao) {	
+		this.id = id;
+		this.nome = nome;
+		this.descricao = descricao;
+		this.status = status;		
+		this.dataRegisto = dataRegisto;
+		this.dataActualizacao = dataActualizacao;
 	}
 
-	public String getNomeCategoriaProduto() {
-		return nomeCategoriaProduto;
+	public int getId() {
+		return id;
 	}
 
-	public void setNomeCategoriaProduto(String nomeCategoriaProduto) {
-		this.nomeCategoriaProduto = nomeCategoriaProduto;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public boolean isStatusCategoriaProduto() {
-		return statusCategoriaProduto;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setStatusCategoriaProduto(boolean statusCategoriaProduto) {
-		this.statusCategoriaProduto = statusCategoriaProduto;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public String getObservacoesCategoriaProduto() {
-		return observacoesCategoriaProduto;
+	public boolean isStatus() {
+		return status;
 	}
 
-	public void setObservacoesCategoriaProduto(String observacoesCategoriaProduto) {
-		this.observacoesCategoriaProduto = observacoesCategoriaProduto;
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
-	public int getIdCategoriaProduto() {
-		return idCategoriaProduto;
+	public String getDescricao() {
+		return descricao;
 	}
 
-	public void setDataActualizacaoCategoriaProduto(LocalDateTime dataActualizacaoCategoriaProduto) {
-		this.dataActualizacaoCategoriaProduto = dataActualizacaoCategoriaProduto;
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public LocalDateTime getDataRegisto() {
+		return dataRegisto;
+	}
+
+	public void setDataRegisto(LocalDateTime dataRegisto) {
+		this.dataRegisto = dataRegisto;
+	}
+
+	public LocalDateTime getDataActualizacao() {
+		return dataActualizacao;
+	}
+
+	public void setDataActualizacao(LocalDateTime dataActualizacao) {
+		this.dataActualizacao = dataActualizacao;
 	}
 
 	@Override
 	public String toString() {
-		return "CategoriaProduto [idCategoriaProduto=" + idCategoriaProduto + ", nomeCategoriaProduto="
-				+ nomeCategoriaProduto + ", statusCategoriaProduto=" + statusCategoriaProduto
-				+ ", observacoesCategoriaProduto=" + observacoesCategoriaProduto + ", dataRegistoCategoriaProduto="
-				+ dataRegistoCategoriaProduto + ", dataActualizacaoCategoriaProduto=" + dataActualizacaoCategoriaProduto
-				+ "]";
+		return "CategoriaProduto [id=" + id + ", nome=" + nome + ", status=" + status + ", descricao=" + descricao
+				+ ", dataRegisto=" + dataRegisto + ", dataActualizacao=" + dataActualizacao + "]";
 	}
 }

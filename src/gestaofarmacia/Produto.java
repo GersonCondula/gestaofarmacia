@@ -4,127 +4,139 @@ import java.time.LocalDateTime;
 
 public class Produto {
 	
-	private int idProduto;
-    private int idFornecedorProduto;
-    private int idUsuarioProduto;
-    private int idProdutoCategoria;
-    private String nomeProduto; 
-    private String marcaProduto;
-    private int quantidadeProduto;
-    private boolean statusProduto;
-    private String observacoesProduto;
-    private double precoVendaProduto;
-    private LocalDateTime dataValidadeProduto;
-    private LocalDateTime dataRegistoProduto;
-    private LocalDateTime dataActualizacaoProduto;
+	private int id;
+    private Fornecedor fornecedor;    
+    private CategoriaProduto categoriaProduto;
+    private String nome; 
+    private String marca;
+    private String descricao;
+    private int quantidade;        
+    private double preco;
+    private boolean status;
+    private LocalDateTime dataValidade;
+    private LocalDateTime dataRegisto;
+    private LocalDateTime dataActualizacao;
     
-	public Produto(int idProduto, int idFornecedorProduto, int idUsuarioProduto, int idProdutoCategoria,
-			String nomeProduto, String marcaProduto, int quantidadeProduto, boolean statusProduto,
-			String observacoesProduto, double precoVendaProduto, LocalDateTime dataValidadeProduto,
-			LocalDateTime dataRegistoProduto, LocalDateTime dataActualizacaoProduto) {	
-		this.idProduto = idProduto;
-		this.idFornecedorProduto = idFornecedorProduto;
-		this.idUsuarioProduto = idUsuarioProduto;
-		this.idProdutoCategoria = idProdutoCategoria;
-		this.nomeProduto = nomeProduto;
-		this.marcaProduto = marcaProduto;
-		this.quantidadeProduto = quantidadeProduto;
-		this.statusProduto = statusProduto;
-		this.observacoesProduto = observacoesProduto;
-		this.precoVendaProduto = precoVendaProduto;
-		this.dataValidadeProduto = dataValidadeProduto;
-		this.dataRegistoProduto = dataRegistoProduto;
-		this.dataActualizacaoProduto = dataActualizacaoProduto;
+	public Produto(int id, Fornecedor fornecedor, CategoriaProduto categoriaProduto, String nome, String marca,
+			String descricao, int quantidade, double preco, boolean status, LocalDateTime dataValidade,
+			LocalDateTime dataRegisto, LocalDateTime dataActualizacao) {
+		super();
+		this.id = id;
+		this.fornecedor = fornecedor;
+		this.categoriaProduto = categoriaProduto;
+		this.nome = nome;
+		this.marca = marca;
+		this.descricao = descricao;
+		this.quantidade = quantidade;
+		this.preco = preco;
+		this.status = status;
+		this.dataValidade = dataValidade;
+		this.dataRegisto = dataRegisto;
+		this.dataActualizacao = dataActualizacao;
 	}
 
-	public String getNomeProduto() {
-		return nomeProduto;
+	public int getId() {
+		return id;
 	}
 
-	public void setNomeProduto(String nomeProduto) {
-		this.nomeProduto = nomeProduto;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public String getMarcaProduto() {
-		return marcaProduto;
+	public Fornecedor getFornecedor() {
+		return fornecedor;
 	}
 
-	public void setMarcaProduto(String marcaProduto) {
-		this.marcaProduto = marcaProduto;
+	public void setFornecedor(Fornecedor fornecedor) {
+		this.fornecedor = fornecedor;
 	}
 
-	public int getQuantidadeProduto() {
-		return quantidadeProduto;
+	public CategoriaProduto getCategoriaProduto() {
+		return categoriaProduto;
 	}
 
-	public void setQuantidadeProduto(int quantidadeProduto) {
-		this.quantidadeProduto = quantidadeProduto;
+	public void setCategoriaProduto(CategoriaProduto categoriaProduto) {
+		this.categoriaProduto = categoriaProduto;
 	}
 
-	public boolean isStatusProduto() {
-		return statusProduto;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setStatusProduto(boolean statusProduto) {
-		this.statusProduto = statusProduto;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public String getObservacoesProduto() {
-		return observacoesProduto;
+	public String getMarca() {
+		return marca;
 	}
 
-	public void setObservacoesProduto(String observacoesProduto) {
-		this.observacoesProduto = observacoesProduto;
+	public void setMarca(String marca) {
+		this.marca = marca;
 	}
 
-	public double getPrecoVendaProduto() {
-		return precoVendaProduto;
+	public String getDescricao() {
+		return descricao;
 	}
 
-	public void setPrecoVendaProduto(double precoVendaProduto) {
-		this.precoVendaProduto = precoVendaProduto;
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
-	public LocalDateTime getDataValidadeProduto() {
-		return dataValidadeProduto;
+	public int getQuantidade() {
+		return quantidade;
 	}
 
-	public void setDataValidadeProduto(LocalDateTime dataValidadeProduto) {
-		this.dataValidadeProduto = dataValidadeProduto;
+	public void setQuantidade(int quantidade) {
+		this.quantidade = quantidade;
 	}
 
-	public LocalDateTime getDataActualizacaoProduto() {
-		return dataActualizacaoProduto;
+	public double getPreco() {
+		return preco;
 	}
 
-	public void setDataActualizacaoProduto(LocalDateTime dataActualizacaoProduto) {
-		this.dataActualizacaoProduto = dataActualizacaoProduto;
+	public void setPreco(double preco) {
+		this.preco = preco;
 	}
 
-	public int getIdProduto() {
-		return idProduto;
+	public boolean isStatus() {
+		return status;
 	}
 
-	public int getIdFornecedorProduto() {
-		return idFornecedorProduto;
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
-	public int getIdUsuarioProduto() {
-		return idUsuarioProduto;
+	public LocalDateTime getDataValidade() {
+		return dataValidade;
 	}
 
-	public int getIdProdutoCategoria() {
-		return idProdutoCategoria;
+	public void setDataValidade(LocalDateTime dataValidade) {
+		this.dataValidade = dataValidade;
+	}
+
+	public LocalDateTime getDataRegisto() {
+		return dataRegisto;
+	}
+
+	public void setDataRegisto(LocalDateTime dataRegisto) {
+		this.dataRegisto = dataRegisto;
+	}
+
+	public LocalDateTime getDataActualizacao() {
+		return dataActualizacao;
+	}
+
+	public void setDataActualizacao(LocalDateTime dataActualizacao) {
+		this.dataActualizacao = dataActualizacao;
 	}
 
 	@Override
 	public String toString() {
-		return "Produto [idProduto=" + idProduto + ", idFornecedorProduto=" + idFornecedorProduto
-				+ ", idUsuarioProduto=" + idUsuarioProduto + ", idProdutoCategoria=" + idProdutoCategoria
-				+ ", nomeProduto=" + nomeProduto + ", marcaProduto=" + marcaProduto + ", quantidadeProduto="
-				+ quantidadeProduto + ", statusProduto=" + statusProduto + ", observacoesProduto=" + observacoesProduto
-				+ ", precoVendaProduto=" + precoVendaProduto + ", dataValidadeProduto=" + dataValidadeProduto
-				+ ", dataRegistoProduto=" + dataRegistoProduto + ", dataActualizacaoProduto=" + dataActualizacaoProduto
-				+ "]";
+		return "Produto [id=" + id + ", fornecedor=" + fornecedor + ", categoriaProduto=" + categoriaProduto + ", nome="
+				+ nome + ", marca=" + marca + ", descricao=" + descricao + ", quantidade=" + quantidade + ", preco="
+				+ preco + ", status=" + status + ", dataValidade=" + dataValidade + ", dataRegisto=" + dataRegisto
+				+ ", dataActualizacao=" + dataActualizacao + "]";
 	}
+    	   
 }

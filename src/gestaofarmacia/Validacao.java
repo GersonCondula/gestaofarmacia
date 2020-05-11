@@ -200,6 +200,10 @@ public class Validacao {
 	public static boolean validaDados(String valor){
 		return valor.matches("[a-zA-Z/\\s/]*") && !valor.equals("") || Character.isAlphabetic(valor.charAt(valor.length() -1));
 	}
+	
+	public static boolean validaDados(char valor){
+		return Character.isDigit(valor);
+	}
 
 	/**
 	 *
@@ -262,6 +266,7 @@ public class Validacao {
 		} while (!error);
 		return valor;
 	}
+	
 
 	/**
 	 *
