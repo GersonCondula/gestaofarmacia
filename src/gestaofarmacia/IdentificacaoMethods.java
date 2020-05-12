@@ -350,8 +350,8 @@ public class IdentificacaoMethods {
 	private static void dadosImpressao(int numeracao, int i, Identificacao [] identificacaos, String layoutFormat) {
 		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,identificacaos[i].getId(),Validacao.delimitador,
 				identificacaos[i].getNome(),Validacao.delimitador,identificacaos[i].getAcronimo(),Validacao.delimitador,Validacao.mudarStatus(identificacaos[i].isStatus()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(identificacaos[i].getDataRegisto()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(identificacaos[i].getDataActualizacao()),Validacao.delimitador);
+				Validacao.parseLocalDateTimeToString(identificacaos[i].getDataRegisto()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(identificacaos[i].getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}

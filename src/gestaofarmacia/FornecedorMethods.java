@@ -119,7 +119,7 @@ public class FornecedorMethods {
 
 
 
-	private static int gravar(Fornecedor [] fornecedors) {
+	public static int gravar(Fornecedor [] fornecedors) {
 		int id = 0, i = Validacao.notNull(fornecedors);		
 		boolean error = false;
 		id = geradorID(i, fornecedors);		
@@ -312,9 +312,16 @@ public class FornecedorMethods {
 	 */
 	private static String formatoImpressao(){
 
-		String [] header = new String[]{"|","#","|",Language.language_id(),"|",Language.language_name(),"|",Language.language_address(),
-				"|",Language.language_nuit(),"|",Language.language_state(),
-				"|",Language.language_dateRegistration(),"|",Language.language_updateDate(),"|"};
+		String [] header = new String[]{
+				"|","#",
+				"|",Language.language_id(),
+				"|",Language.language_name(),
+				"|",Language.language_address(),
+				"|",Language.language_nuit(),
+				"|",Language.language_state(),
+				"|",Language.language_dateRegistration(),
+				"|",Language.language_updateDate(),
+				"|"};
 		String formatCaracter = "%s",formatNumero = "%-10.6s", formatNome = "%-43.43s";
 		String formatNumIden = "%-20.20s",formatIdentifica = "%-15.15s";
 		String formatData = "%-19.19s", formatDataLast = "%-26.20s";
@@ -327,7 +334,7 @@ public class FornecedorMethods {
 		System.out.println("************************************************************************************************************************************************************");
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		System.out.format(formatColl,header[0],header[1],header[2],header[3],header[4],header[5],header[6],header[7],header[8],header[9],header[10],
-				header[11],header[12],header[13],header[14],header[15],header[16],header[17],header[18],header[19],header[20]);
+				header[11],header[12],header[13],header[14],header[15],header[16]);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
@@ -338,8 +345,8 @@ public class FornecedorMethods {
 		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,fornecedors[i].getId(),
 				Validacao.delimitador,fornecedors[i].getNome(),Validacao.delimitador,fornecedors[i].getMorada(),
 				Validacao.delimitador,fornecedors[i].getNuit(),Validacao.delimitador,Validacao.mudarStatus(fornecedors[i].isStatus()),
-				Validacao.delimitador,Validacao.parseLocalDateTimeToSring(fornecedors[i].getDataRegisto()),
-				Validacao.delimitador,Validacao.parseLocalDateTimeToSring(fornecedors[i].getDataActualizacao()),Validacao.delimitador);
+				Validacao.delimitador,Validacao.parseLocalDateTimeToString(fornecedors[i].getDataRegisto()),
+				Validacao.delimitador,Validacao.parseLocalDateTimeToString(fornecedors[i].getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}

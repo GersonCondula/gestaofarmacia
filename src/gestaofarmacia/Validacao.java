@@ -21,8 +21,9 @@ public class Validacao {
 	 **/	
 	public static final String ANSI_GREEN = "\u001B[32m";
 
-	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);    
+	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));	
+	private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT); 
+	private static DateTimeFormatter dateTimeFormato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	public static Random random = new Random();
 	private static final int tamanho = 10000;
 	public static final char delimitador = '|'; 
@@ -117,11 +118,10 @@ public class Validacao {
 	 * @return
 	 * @Descrição converte data em string e retornar uma string de data
 	 */
-	public static String parseLocalDateTimeToSring(LocalDateTime data_){
+	public static String parseLocalDateTimeToString(LocalDateTime data_){
 		String _data = null;
 		if (data_!=null)
 			_data = dateTimeFormatter.format(data_);
-
 		return _data;
 	}
 	/**
@@ -301,6 +301,30 @@ public class Validacao {
 		return valor;
 	}
 
+	public static LocalDateTime validaDadosData(String msg) {
+		LocalDateTime date = null;
+		try {
+			System.out.print(msg);
+			String dataValidade = br.readLine();
+			String [] expirationDate = dataValidade.split("-");
+			boolean bool = false;
+			if (expirationDate != null) 
+				for (int i = 0; i < expirationDate.length; i++) 
+					if (expirationDate[0].matches("[0-9]*") || expirationDate[1].matches("[0-9]*") || expirationDate[2].matches("[0-9]*")) 
+						bool = true;
+					else 
+						date = validaDadosData(Language.language_input_valid_expirationDate());
+			if (bool) {				
+				date = LocalDateTime.parse(dataValidade.concat(" 00:00:00"), dateTimeFormato);
+			}else {
+				date = validaDadosData(Language.language_input_valid_expirationDate());
+			}
+		} catch (IOException e) { 
+			e.printStackTrace();
+		}						
+		return date;
+	}
+	
 	/**
 	 *
 	 * @param nome

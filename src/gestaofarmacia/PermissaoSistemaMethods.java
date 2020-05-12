@@ -95,6 +95,7 @@ public class PermissaoSistemaMethods {
 		return permissaoSistema;
 	}
 	
+	@SuppressWarnings("unused")
 	private static boolean gravarDadosNoFicheiro(PermissaoSistema [] permissaoSistemas, String file) {
 		boolean error = false;	
 		try {		
