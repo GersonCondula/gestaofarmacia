@@ -291,8 +291,8 @@ public class UsuarioMethods {
 		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,usuarios[i].getId(),Validacao.delimitador,
 				usuarios[i].getFuncionario().getNome(),Validacao.delimitador,usuarios[i].getPassword(),
 				Validacao.delimitador,Validacao.mudarStatus(usuarios[i].isStatus()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(usuarios[i].getDataRegisto()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(usuarios[i].getDataActualizacao()),Validacao.delimitador);
+				Validacao.parseLocalDateTimeToString(usuarios[i].getDataRegisto()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(usuarios[i].getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}

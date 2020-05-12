@@ -7,8 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.StringTokenizer;
 
 public class ProdutoMethods {
@@ -96,7 +94,7 @@ public class ProdutoMethods {
 	}
 
 	@SuppressWarnings("unused")
-	private static int gravar(Produto [] produtos, Fornecedor [] fornecedors, Usuario []  usuarios, CategoriaProduto [] categoriaProdutos) {
+	private static int gravar(Produto [] produtos, Fornecedor [] fornecedors, CategoriaProduto [] categoriaProdutos) {
 		int id = 0, i = Validacao.notNull(produtos);		
 		boolean error = false;
 		id = geradorID(i, produtos);				
@@ -113,7 +111,7 @@ public class ProdutoMethods {
 							String descricao = Validacao.validaEntradaPalavra(Language.language_input_description());
 							if (descricao != null) {
 								if (descricao != null) {
-									int quantidade = Validacao.validaEntradaInteiro(Language.language_input_nuit());
+									int quantidade = Validacao.validaEntradaInteiro(Language.language_input_amount());
 									if (quantidade!=0) {
 										double preco = Validacao.validaEntradaFlutuante(Language.language_input_price());
 										if (preco != 0) {
@@ -330,7 +328,7 @@ public class ProdutoMethods {
 		return id;		
 	}
 
-	private static boolean lerDadosNoFicheiro(Produto [] produtos, forn [] identificacoes, String file) {
+	private static boolean lerDadosNoFicheiro(Produto [] produtos, Fornecedor [] fornecedors, CategoriaProduto [] categoriaProdutos, String file) {
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
@@ -340,11 +338,18 @@ public class ProdutoMethods {
 				int i = 0;
 				while (linha != null) {					
 					str = new StringTokenizer(linha, "|");
-					Produ funcionarios = new Produ(
-							Integer.parseInt(str.nextToken()),str.nextToken(),
-							IdentificacaoMethods.getById(Integer.parseInt(str.nextToken()), identificacoes),str.nextToken(),Integer.parseInt(str.nextToken()),str.nextToken(),
-							Boolean.parseBoolean(str.nextToken()),Validacao.parseStringToLocalDateTime(str.nextToken()),Validacao.parseStringToLocalDateTime(str.nextToken()));
-					produtos[i] = funcionarios;					
+					Produto produto = new Produto(
+							Integer.parseInt(str.nextToken()),
+							FornecedorMethods.getById(Integer.parseInt(str.nextToken()), fornecedors),
+							CategoriaProdutoMethods.getById(Integer.parseInt(str.nextToken()), categoriaProdutos),
+							str.nextToken(),str.nextToken(),str.nextToken(),
+							Integer.parseInt(str.nextToken()),
+							Double.parseDouble(str.nextToken()),
+							Boolean.parseBoolean(str.nextToken()),
+							Validacao.parseStringToLocalDateTime(str.nextToken()),
+							Validacao.parseStringToLocalDateTime(str.nextToken()),
+							Validacao.parseStringToLocalDateTime(str.nextToken()));							
+					produtos[i] = produto;					
 					linha = br.readLine();
 					i++;					
 				}
@@ -352,7 +357,7 @@ public class ProdutoMethods {
 				error = true;				
 			}else {								
 				Validacao.geraDirectorioFicheiro(file);
-				lerDadosNoFicheiro(produtos, identificacoes, file);				
+				lerDadosNoFicheiro(produtos, fornecedors, categoriaProdutos, file);				
 			}
 		} catch (IOException e) {
 			System.err.println("error" + e.getLocalizedMessage());		
@@ -367,10 +372,21 @@ public class ProdutoMethods {
 	 */
 	private static String formatoImpressao(){
 
-		String [] header = new String[]{"|","#","|",Language.language_id(),"|",Language.language_name(),"|",Language.language_identification(),
-				"|",Language.language_number() + " " + Language.language_identification(),"|",Language.language_nuit(),
-				"|",Language.language_address(),"|",Language.language_state(),"|",Language.language_dateRegistration(),
-				"|",Language.language_updateDate(),"|"};
+		String [] header = new String[]{
+				"|","#",
+				"|",Language.language_id(),					
+				"|",Language.language_name(),
+				"|",Language.language_brand(),
+				"|",Language.language_product_category(),
+				"|",Language.language_employee(),
+				"|",Language.language_description(),
+				"|",Language.language_amount(),
+				"|",Language.language_price(),
+				"|",Language.language_state(),
+				"|",Language.language_expirationDate(),
+				"|",Language.language_dateRegistration(),
+				"|",Language.language_updateDate(),
+				"|"};
 		String formatCaracter = "%s",formatNumero = "%-10.6s", formatNome = "%-43.43s";
 		String formatNumIden = "%-20.20s",formatIdentifica = "%-15.15s";
 		String formatData = "%-19.19s", formatDataLast = "%-26.20s";
@@ -383,7 +399,8 @@ public class ProdutoMethods {
 		System.out.println("************************************************************************************************************************************************************");
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		System.out.format(formatColl,header[0],header[1],header[2],header[3],header[4],header[5],header[6],header[7],header[8],header[9],header[10],
-				header[11],header[12],header[13],header[14],header[15],header[16],header[17],header[18],header[19],header[20]);
+				                     header[11],header[12],header[13],header[14],header[15],header[16],header[17],header[18],header[19],header[20],
+				                     header[21],header[22],header[23],header[24],header[25],header[26]);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
@@ -397,13 +414,14 @@ public class ProdutoMethods {
 				Validacao.delimitador,produtos[i].getNome(),
 				Validacao.delimitador,produtos[i].getMarca(),
 				Validacao.delimitador,produtos[i].getCategoriaProduto().getNome(),
+				Validacao.delimitador,produtos[i].getFornecedor().getNome(),
 				Validacao.delimitador,produtos[i].getDescricao(),
 				Validacao.delimitador,produtos[i].getQuantidade(),
 				Validacao.delimitador,produtos[i].getPreco(),
 				Validacao.delimitador,Validacao.mudarStatus(produtos[i].isStatus()),
-				Validacao.delimitador,Validacao.parseLocalDateTimeToSring(produtos[i].getDataValidade()),
-				Validacao.delimitador,Validacao.parseLocalDateTimeToSring(produtos[i].getDataRegisto()),
-				Validacao.delimitador,Validacao.parseLocalDateTimeToSring(produtos[i].getDataActualizacao()),
+				Validacao.delimitador,Validacao.parseLocalDateTimeToString(produtos[i].getDataValidade()),
+				Validacao.delimitador,Validacao.parseLocalDateTimeToString(produtos[i].getDataRegisto()),
+				Validacao.delimitador,Validacao.parseLocalDateTimeToString(produtos[i].getDataActualizacao()),
 				Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -442,46 +460,51 @@ public class ProdutoMethods {
 	}
 
 	/**
-	 * @param funcionarios
-	 * @param identificacaos
+	 * @param produtos
+	 * @param fornecedors
 	 */	
-	public static void inicializador(Produ [] funcionarios, forn [] identificacaos) {					
-		if (Validacao.notNull(identificacaos) != 0) {
-			if (Validacao.notNull(funcionarios) != 0) {
-				int caso;
-				do {
-					caso = Validacao.menu(Language.language_employee());
-					switch (caso) {
-					case 1:
-						gravar(funcionarios, identificacaos);
-						;
-						break;
-					case 2:
-						actualizar(funcionarios, identificacaos);
-						;
-						break;
-					case 3:
-						deleta(funcionarios);
-						;
-						break;
-					case 4:
-						lista(funcionarios);
-						;
-						break;
-					case 5:
-						;
-						break;
-					default:
-						break;
-					}
-				} while (caso != 5);
+	public static void inicializador(Produto [] produtos, Fornecedor [] fornecedors, CategoriaProduto [] categoriaProdutos) {					
+		if (Validacao.notNull(fornecedors) != 0) {
+			if (Validacao.notNull(categoriaProdutos) != 0) {
+				if (Validacao.notNull(produtos) != 0) {
+					int caso;
+					do {
+						caso = Validacao.menu(Language.language_employee());
+						switch (caso) {
+						case 1:
+							gravar(produtos, fornecedors, categoriaProdutos);
+							;
+							break;
+						case 2:
+							actualizar(produtos, fornecedors, categoriaProdutos);
+							;
+							break;
+						case 3:
+							deleta(produtos);
+							;
+							break;
+						case 4:
+							lista(produtos);
+							;
+							break;
+						case 5:
+							;
+							break;
+						default:
+							break;
+						}
+					} while (caso != 5);
+				} else {
+					System.out.println(Language.language_empty_array(Language.language_product()));
+					gravar(produtos, fornecedors, categoriaProdutos);
+				} 
 			} else {
-				System.out.println(Language.language_empty_array(Language.language_employee()));
-				gravar(funcionarios, identificacaos);
-			} 
+				System.out.println(Language.language_empty_array(Language.language_product_category()));
+				CategoriaProdutoMethods.gravar(categoriaProdutos);
+			}
 		}else {
-			System.out.println(Language.language_empty_array(Language.language_identification()));
-			IdentificacaoMethods.gravaIdentificacao(identificacaos);
+			System.out.println(Language.language_empty_array(Language.language_employee()));
+			FornecedorMethods.gravar(fornecedors);
 		}
 	}
 

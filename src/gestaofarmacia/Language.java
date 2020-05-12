@@ -112,12 +112,12 @@ public class Language {
 		return default_language ? "Data de validade" : "Expiration Date";
 	}
 	public static final String language_input_expirationDate() {
-		return default_language ? "Informe a data de validade [dia-mes-ano]: " :
-								  "Enter the expiration date [day-month-year]: ";
+		return default_language ? "Informe a data de validade [aaaa-MM-dd]: " :
+								  "Enter the expiration date [yyyy-MM-dd]: ";
 	}
 	public static final String language_input_valid_expirationDate() {
-		return default_language ? "Informe a data no formato [dd-mm-aaaa]: " :
-								  "Enter the date on format [dd-mm-yyyy]: ";
+		return default_language ? "Informe a data no formato [aaaa-MM-dd]: " :
+								  "Enter the date on format [yyyy-MM-dd]: ";
 	}
 	public static final String language_dateRegistration() {
 		return default_language ? "Data Reg" : "Reg Data";

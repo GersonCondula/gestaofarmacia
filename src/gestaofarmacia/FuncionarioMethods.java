@@ -407,8 +407,8 @@ public class FuncionarioMethods {
 				Validacao.delimitador,funcionarios[i].getNome(),Validacao.delimitador,funcionarios[i].getIdentificacao().getAcronimo(),
 				Validacao.delimitador,funcionarios[i].getNumeroIdentidade(),Validacao.delimitador,funcionarios[i].getNuit(),
 				Validacao.delimitador,funcionarios[i].getMorada(),Validacao.delimitador,Validacao.mudarStatus(funcionarios[i].isStatus()),
-				Validacao.delimitador,Validacao.parseLocalDateTimeToSring(funcionarios[i].getDataRegisto()),
-				Validacao.delimitador,Validacao.parseLocalDateTimeToSring(funcionarios[i].getDataActualizacao()),Validacao.delimitador);
+				Validacao.delimitador,Validacao.parseLocalDateTimeToString(funcionarios[i].getDataRegisto()),
+				Validacao.delimitador,Validacao.parseLocalDateTimeToString(funcionarios[i].getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}

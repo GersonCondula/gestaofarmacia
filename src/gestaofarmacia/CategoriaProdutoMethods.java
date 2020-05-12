@@ -100,7 +100,7 @@ public class CategoriaProdutoMethods {
 		return categoriaProduto;
 	}
 	
-	public static int grava(CategoriaProduto[] categoriaProdutos) {
+	public static int gravar(CategoriaProduto[] categoriaProdutos) {
 		int id = 0, i = Validacao.notNull(categoriaProdutos);
 		boolean error = false;
 		id = geradorID(i, categoriaProdutos);		
@@ -309,8 +309,8 @@ public class CategoriaProdutoMethods {
 	private static void dadosImpressao(int numeracao, int i, CategoriaProduto [] categoriaProdutos, String layoutFormat) {
 		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,categoriaProdutos[i].getId(),Validacao.delimitador,
 				categoriaProdutos[i].getNome(),Validacao.delimitador,categoriaProdutos[i].getDescricao(),Validacao.delimitador,Validacao.mudarStatus(categoriaProdutos[i].isStatus()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(categoriaProdutos[i].getDataRegisto()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToSring(categoriaProdutos[i].getDataActualizacao()),Validacao.delimitador);
+				Validacao.parseLocalDateTimeToString(categoriaProdutos[i].getDataRegisto()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(categoriaProdutos[i].getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}
@@ -343,7 +343,7 @@ public class CategoriaProdutoMethods {
 				caso = Validacao.menu(Language.language_identification());
 				switch (caso) {
 				case 1:
-					grava(categoriaProdutos);
+					gravar(categoriaProdutos);
 					;
 					break;
 				case 2:
@@ -368,7 +368,7 @@ public class CategoriaProdutoMethods {
 			} while (caso != 5);
 		}else {
 			System.out.println(Language.language_empty_array(Language.language_product_category()));
-			grava(categoriaProdutos);
+			gravar(categoriaProdutos);
 		}
 	}
 }
