@@ -303,8 +303,15 @@ public class Validacao {
 	}
 
 	public static LocalDateTime validaDadosData(String language_expirationDate) {
-		// TODO Auto-generated method stub
-		return null;
+		LocalDateTime date = null;
+		String [] expirationDate = language_expirationDate.split("-"); 
+		if (expirationDate != null) 
+			for (int i = 0; i < expirationDate.length; i++) 
+				if (expirationDate[0].matches("[0-9]*") || expirationDate[1].matches("[0-9]*") || expirationDate[2].matches("[0-9]*")) 
+					date = parseStringToLocalDateTime(language_expirationDate);
+				else 
+					date = validaDadosData(Language.language_input_valid_expirationDate());						
+		return date;
 	}
 	
 	/**

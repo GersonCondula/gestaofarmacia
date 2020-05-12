@@ -115,6 +115,10 @@ public class Language {
 		return default_language ? "Informe a data de validade [dia-mes-ano]: " :
 								  "Enter the expiration date [day-month-year]: ";
 	}
+	public static final String language_input_valid_expirationDate() {
+		return default_language ? "Informe a data no formato [dd-mm-aaaa]: " :
+								  "Enter the date on format [dd-mm-yyyy]: ";
+	}
 	public static final String language_dateRegistration() {
 		return default_language ? "Data Reg" : "Reg Data";
 	}
@@ -323,13 +327,13 @@ public class Language {
 		return default_language ? "Categoria Produto" : "Product Category";
 	}
 	/** 
-	 * ----------------------------- Fornecedor --------------------------	 	 
+	 * ----------------------------- Fornecedor ---------------------------------	 	 
 	 **/
 	public static final String language_provider() {
 		return default_language ? "Fornecedor" : "Provider";
 	}
 	/** 
-	 * ----------------------------- Produto --------------------------	 	 
+	 * ----------------------------- Produto ------------------------------------ 	 
 	 **/
 	public static final String language_product() {
 		return default_language ? "Produto" : "Product";
