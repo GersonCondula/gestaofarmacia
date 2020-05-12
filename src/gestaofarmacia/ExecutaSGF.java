@@ -21,6 +21,7 @@ public class ExecutaSGF {
 		UsuarioMethods.load(usuarios, funcionarios);
 		CategoriaProdutoMethods.load(categoriaProdutos);
 		FornecedorMethods.load(fornecedors);
+		ProdutoMethods.load(produtos, fornecedors, categoriaProdutos);
 	}
 	
 	private static byte menuRH() {
@@ -98,7 +99,7 @@ public class ExecutaSGF {
 			caso = menuStockManagement();
 			switch (caso) {
 			case 1:			
-				
+				ProdutoMethods.inicializador(produtos, fornecedors, categoriaProdutos);
 				break;
 			case 2:
 				CategoriaProdutoMethods.inicializador(categoriaProdutos);
