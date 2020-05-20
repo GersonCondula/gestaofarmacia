@@ -240,7 +240,7 @@ public class PermissaoSistemaMethods {
 			case 1:							
 				lista(permissaoSistemas);
 				;break;			
-			case 0:
+			case 2:
 				;break;
 			default:
 

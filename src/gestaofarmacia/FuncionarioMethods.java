@@ -472,13 +472,13 @@ public class FuncionarioMethods {
 						lista(funcionarios);
 						;
 						break;
-					case 0:
+					case 5:
 						;
 						break;
 					default:
 						break;
 					}
-				} while (caso != 0);
+				} while (caso != 5);
 			} else {
 				System.out.println(Language.language_empty_array(Language.language_employee()));
 				gravar(funcionarios, identificacaos);
