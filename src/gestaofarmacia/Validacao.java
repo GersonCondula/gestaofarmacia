@@ -557,7 +557,7 @@ public class Validacao {
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println("4. "+ Language.language_listing());
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println("5. "+ Language.language_cancel());
+		System.out.println("0. "+ Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_select_option());
 	}
@@ -573,7 +573,7 @@ public class Validacao {
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println("1. "+ Language.language_listing());
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println("2. "+ Language.language_cancel());
+		System.out.println("0. "+ Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_select_option());
 	}

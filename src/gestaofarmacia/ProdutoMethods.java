@@ -487,13 +487,13 @@ public class ProdutoMethods {
 							lista(produtos);
 							;
 							break;
-						case 5:
+						case 0:
 							;
 							break;
 						default:
 							break;
 						}
-					} while (caso != 5);
+					} while (caso != 0);
 				} else {
 					System.out.println(Language.language_empty_array(Language.language_product()));
 					gravar(produtos, fornecedors, categoriaProdutos);

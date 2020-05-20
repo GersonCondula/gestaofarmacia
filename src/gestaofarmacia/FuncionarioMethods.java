@@ -247,7 +247,7 @@ public class FuncionarioMethods {
 		System.out.println("*---------------------------------------------------------------------------------*");
 		System.out.println("*6. "+ Language.language_state());
 		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*7. "+ Language.language_cancel());
+		System.out.println("*0. "+ Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
@@ -303,7 +303,7 @@ public class FuncionarioMethods {
 							funcionarios[i].setDataActualizacao(LocalDateTime.now());
 							lista(funcionarios, id);
 							break;
-						case 7:
+						case 0:
 							error = false;
 							break;
 						default:
@@ -472,13 +472,13 @@ public class FuncionarioMethods {
 						lista(funcionarios);
 						;
 						break;
-					case 5:
+					case 0:
 						;
 						break;
 					default:
 						break;
 					}
-				} while (caso != 5);
+				} while (caso != 0);
 			} else {
 				System.out.println(Language.language_empty_array(Language.language_employee()));
 				gravar(funcionarios, identificacaos);

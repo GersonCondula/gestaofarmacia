@@ -176,7 +176,7 @@ public class IdentificacaoMethods {
 		System.out.println("-----------------------------------------------------------------------------------");     
 		System.out.println("3. "+Language.language_state());
 		System.out.println("-----------------------------------------------------------------------------------");     
-		System.out.println("4. "+Language.language_cancel());
+		System.out.println("0. "+Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
@@ -210,7 +210,7 @@ public class IdentificacaoMethods {
 							identificacaos[i].setDataActualizacao(LocalDateTime.now());
 							listaIdentificacao(identificacaos, id);
 							break;
-						case 4:
+						case 0:
 							error = false;
 							break;
 						default:
@@ -399,14 +399,14 @@ public class IdentificacaoMethods {
 					listaIdentificacao(identificacaos);
 					;
 					break;
-				case 5:
+				case 0:
 					;
 					break;
 				default:
 
 					break;
 				}
-			} while (caso != 5);
+			} while (caso != 0);
 		}else {
 			System.out.println(Language.language_empty_array(Language.language_identification()));
 			gravaIdentificacao(identificacaos);
