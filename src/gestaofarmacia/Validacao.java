@@ -74,7 +74,7 @@ public class Validacao {
 
 	public static String geraDirectorioFicheiro(String fileNames) {
 		Path currentAbsolutePath1 = Paths.get("");
-		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\files");
+		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\resources\\files");
 		File fileDirectory = new File(filePath1);
 		String filePath2 = filePath1.concat("\\"+fileNames);
 		File file = new File(filePath2);
@@ -95,7 +95,7 @@ public class Validacao {
 
 	public static String destroiDirectorioFicheiro(String fileNames) {
 		Path currentAbsolutePath1 = Paths.get("");
-		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\files");
+		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\resources\\files");
 		File fileDirectory = new File(filePath1);
 		String filePath2 = filePath1.concat("\\"+fileNames);
 		File file = new File(filePath2);
