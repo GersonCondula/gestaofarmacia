@@ -217,7 +217,7 @@ public class ProdutoMethods {
 		System.out.println("*---------------------------------------------------------------------------------*");
 		System.out.println("*9. "+ Language.language_expirationDate());
 		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*0. "+ Language.language_cancel());
+		System.out.println("*10. "+ Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
@@ -289,7 +289,7 @@ public class ProdutoMethods {
 							produtos[i].setDataActualizacao(LocalDateTime.now());
 							lista(produtos, id);
 							break;
-						case 0:
+						case 10:
 							error = false;
 							break;
 						default:

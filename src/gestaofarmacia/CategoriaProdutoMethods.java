@@ -135,7 +135,7 @@ public class CategoriaProdutoMethods {
 		System.out.println("-----------------------------------------------------------------------------------");     
 		System.out.println("3. "+Language.language_state());
 		System.out.println("-----------------------------------------------------------------------------------");     
-		System.out.println("4. "+Language.language_cancel());
+		System.out.println("5. "+Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
@@ -169,7 +169,7 @@ public class CategoriaProdutoMethods {
 							categoriaProdutos[i].setDataActualizacao(LocalDateTime.now());
 							lista(categoriaProdutos, id);
 							break;
-						case 4:
+						case 5:
 							error = false;
 							break;
 						default:

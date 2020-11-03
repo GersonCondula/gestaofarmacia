@@ -122,9 +122,9 @@ public class PerfilMethods {
 		System.out.println("*************************** "+ Language.language_update_menu() +" ***************************");
 		System.out.println("***********************************************************************************");
 		System.out.println("*---------------------------------------------------------------------------------*");     		   
-		System.out.println("3. "+Language.language_permissions());
+		System.out.println("1. "+Language.language_permissions());
 		System.out.println("----------------------------------------------------------------------------------");     
-		System.out.println("4. "+Language.language_cancel());
+		System.out.println("2. "+Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
