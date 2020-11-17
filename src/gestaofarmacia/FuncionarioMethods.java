@@ -202,7 +202,8 @@ public class FuncionarioMethods {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
 				for (int i = 0; i < funcionario.length; i++) {
 					if (funcionario[i] != null) {
-						bw.write(funcionario[i].getId() + "|" + funcionario[i].getNome()
+						bw.write(funcionario[i].getId() 
+								+ "|" + funcionario[i].getNome()
 								+ "|" + funcionario[i].getIdentificacao().getId()
 								+ "|" + funcionario[i].getNumeroIdentidade()
 								+ "|" + funcionario[i].getNuit()
@@ -458,23 +459,18 @@ public class FuncionarioMethods {
 					switch (caso) {
 					case 1:
 						gravar(funcionarios, identificacaos);
-						;
-						break;
+						;break;
 					case 2:
 						actualizar(funcionarios, identificacaos);
-						;
-						break;
+						;break;
 					case 3:
 						deleta(funcionarios);
-						;
-						break;
+						;break;
 					case 4:
 						lista(funcionarios);
-						;
-						break;
+						;break;
 					case 5:
-						;
-						break;
+						;break;
 					default:
 						break;
 					}

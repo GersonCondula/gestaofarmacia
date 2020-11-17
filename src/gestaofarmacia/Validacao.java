@@ -448,7 +448,6 @@ public class Validacao {
 				}else {
 					System.err.println(Language.language_valid_value());
 				}
-
 			} catch (Exception e) {
 			}
 		} while (!error);

@@ -1,6 +1,7 @@
 package gestaofarmacia;
 
 import java.io.IOException;
+import java.util.Vector;
 
 public class ExecutaSGF {
 
@@ -12,8 +13,11 @@ public class ExecutaSGF {
 	private static CategoriaProduto [] categoriaProdutos = new CategoriaProduto[Validacao.getTamanho()];
 	private static Fornecedor[] fornecedors =  new Fornecedor[Validacao.getTamanho()];
 	private static Produto [] produtos = new Produto[Validacao.getTamanho()];
-
-	private static void load() {	
+	
+	@SuppressWarnings({"unused", "rawtypes"})
+	private static Vector vetor = new Vector();
+	
+	private static void load() {
 		Language.load();
 		IdentificacaoMethods.load(identificacaos);
 		FuncionarioMethods.load(funcionarios, identificacaos);
