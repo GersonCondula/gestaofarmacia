@@ -8,46 +8,47 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
+@SuppressWarnings("rawtypes") //esta linha é devido a forma como usamos os vetores nesta classe
 public class IdentificacaoMethods {
 
 	private static BufferedReader br;
 	private static BufferedWriter bw;		
 	private static String filePath = Validacao.geraDirectorioFicheiro("identificacao.txt");
+	
 
 	/**
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
-	 **/
-	private static int geradorID(int j, Identificacao[] identificacaos) {
-		boolean exise = false;
-		int id = (1 + Validacao.random.nextInt(identificacaos.length));
-		int newID = 0;
-		for (int i = 0; i < identificacaos.length; i++) {
-			if (identificacaos[i] != null) {
-				if (identificacaos[i].getId() == id || id == 0)
-					exise = true;
+	 **/	
+	private static int geradorID(Vector identificacoes) {		
+		int id = (1 + Validacao.random.nextInt(identificacoes.size()));
+		int iD = 0;	
+		for (int i = 0; i < identificacoes.size(); i++) {
+			Identificacao identificacao = (Identificacao)identificacoes.elementAt(i);
+			if (!identificacoes.isEmpty()) {
+				if (identificacao.getId() == id || id == 0)
+					geradorID(identificacoes);
+				else
+					iD = id;
 			}
-		}
-		if (exise)
-			geradorID(j, identificacaos);
-		else
-			newID = id;
-		return newID;
+		}	
+		return iD;
 	}
 
    /**	 
 	* @Descrição Garante que os nomes das identificacoes sejam unicos
-	*/
-	private static String validaAcronimo(String acronimo, Identificacao[] identificacaos) {
+	*/	
+	private static String validaAcronimo(String acronimo, Vector identificacoes) {
 		String acronimod = null;
 		if (acronimo != null) {
-			for (int i = 0; i < identificacaos.length; i++) {
-				if (identificacaos[i] != null) {
-					if (!identificacaos[i].getAcronimo().equalsIgnoreCase(acronimo)) {
+			for (int i = 0; i < identificacoes.size(); i++) {				
+				Identificacao identificacao = (Identificacao)identificacoes.elementAt(i);
+				if (!identificacoes.isEmpty()) {
+					if (!identificacao.getAcronimo().equalsIgnoreCase(acronimo)) {
 						acronimod = acronimo;
 					}else {
-						acronimod = validaAcronimo(Validacao.validaEntradaPalavra(Language.language_input_exist_acronym()),identificacaos);
-						i = identificacaos.length;
+						acronimod = validaAcronimo(Validacao.validaEntradaPalavra(Language.language_input_exist_acronym()),identificacoes);						
 					}
 				}else {
 					acronimod = acronimo;
@@ -60,16 +61,16 @@ public class IdentificacaoMethods {
 	/**	 
 	 * @Descrição Garante que os nomes das identificacoes sejam unicos
 	 */
-	private static String validaNome(String nome, Identificacao[] identificacaos) {
+	private static String validaNome(String nome, Vector identificacoes) {
 		String nomed = null;
 		if (nome != null) {
-			for (int i = 0; i < identificacaos.length; i++) {
-				if (identificacaos[i] != null) {
-					if (!identificacaos[i].getNome().equalsIgnoreCase(nome)) {
+			for (int i = 0; i < identificacoes.size(); i++) {
+				Identificacao identificacao = (Identificacao)identificacoes.elementAt(i);
+				if (!identificacoes.isEmpty()) {
+					if (!identificacao.getNome().equalsIgnoreCase(nome)) {
 						nomed = nome;
 					}else {
-						nomed = validaNome(Validacao.validaEntradaPalavra(Language.language_input_exist_name()), identificacaos);
-						i = identificacaos.length;
+						nomed = validaNome(Validacao.validaEntradaPalavra(Language.language_input_exist_name()), identificacoes);
 					}
 				}else {
 					nomed = nome;
@@ -85,29 +86,22 @@ public class IdentificacaoMethods {
 	 * @return
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
-	public static Identificacao getByAcronimo(String acronimo, Identificacao [] identificacoes) {
-		Identificacao identificacaos = null;
-		int count = 0;
+	public static Identificacao getByAcronimo(String acronimo, Vector identificacoes) {
+		Identificacao identificacao = null;	
 		if (acronimo != null) {        	  
-			for (int i = 0; i < identificacoes.length; i++) {	          		
-				if (identificacoes[i] != null) {	                	  
-					if (identificacoes[i].getAcronimo().equalsIgnoreCase(acronimo)) {	                    	  
-						identificacaos = new Identificacao(identificacoes[i].getId(), 
-								identificacoes[i].getNome(),identificacoes[i].getAcronimo(), 
-								identificacoes[i].isStatus(),identificacoes[i].getDataRegisto(), 
-								identificacoes[i].getDataActualizacao());
-						count ++;
+			for (int i = 0; i < identificacoes.size(); i++) {	
+				Identificacao identificacaoVetor = (Identificacao)identificacoes.elementAt(i);
+				if (!identificacoes.isEmpty()) {	                	  
+					if (identificacaoVetor.getAcronimo().equalsIgnoreCase(acronimo)) {	                    	  
+						identificacao = new Identificacao(identificacaoVetor.getId(), 
+								identificacaoVetor.getNome(),identificacaoVetor.getAcronimo(), 
+								identificacaoVetor.isStatus(),identificacaoVetor.getDataRegisto(), 
+								identificacaoVetor.getDataActualizacao());						
 					}
 				}	                  
 			} 	          		
-		}       
-		if (identificacaos == null) {
-			identificacaos = getByAcronimo(Validacao.validaEntradaPalavra(Language.language_invalid_acronym()), identificacoes);
-			if (count < 3) {
-
-			}
-		}
-		return identificacaos;
+		}       		
+		return identificacao;
 	}
 	
 	/**
@@ -116,40 +110,34 @@ public class IdentificacaoMethods {
 	 * @return
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
-	public static Identificacao getById(int id, Identificacao [] identificacoes) {
-		Identificacao identificacaos = null;
-		int count = 0;
+	public static Identificacao getById(int id, Vector identificacoes) {
+		Identificacao identificacao = null;	
 		if (id!=0) {        	  
-			for (int i = 0; i < identificacoes.length; i++) {	          		
-				if (identificacoes[i] != null) {	                	  
-					if (identificacoes[i].getId() == id) {	                    	  
-						identificacaos = new Identificacao(identificacoes[i].getId(), 
-								identificacoes[i].getNome(),identificacoes[i].getAcronimo(), 
-								identificacoes[i].isStatus(),identificacoes[i].getDataRegisto(), 
-								identificacoes[i].getDataActualizacao());
-						count ++;
+			for (int i = 0; i < identificacoes.size(); i++) {	          		
+				if (!identificacoes.isEmpty()) {
+					Identificacao identificacaoVetor = (Identificacao)identificacoes.elementAt(i);
+					if (identificacaoVetor.getId() == id) {	                    	  
+						identificacao = new Identificacao(identificacaoVetor.getId(), 
+								identificacaoVetor.getNome(),identificacaoVetor.getAcronimo(), 
+								identificacaoVetor.isStatus(),identificacaoVetor.getDataRegisto(), 
+								identificacaoVetor.getDataActualizacao());						
 					}
 				}	                  
 			} 	          		
-		}       
-		if (identificacaos == null) {
-			identificacaos = getById(Validacao.validaEntradaInteiro(Language.language_input_valid_id()), identificacoes);
-			if (count < 3) {
-
-			}
-		}
-		return identificacaos;
+		}       		
+		return identificacao;
 	}
 
-	public static int gravaIdentificacao(Identificacao[] identificacaos) {
-		int id = 0, i = Validacao.notNull(identificacaos);
+	public static int gravaIdentificacao(Vector identificacoes) {
+		int id = 0;
 		boolean error = false;
-		id = geradorID(i, identificacaos);		
-		String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),identificacaos);		
+		id = geradorID(identificacoes);		
+		String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),identificacoes);		
 		if (nome != null) {
-			String acronimo = validaAcronimo(Validacao.validaEntradaPalavra(Language.language_input_acronym()),identificacaos);
+			String acronimo = validaAcronimo(Validacao.validaEntradaPalavra(Language.language_input_acronym()),identificacoes);
 			if (acronimo != null) {
-				identificacaos[i] = new Identificacao(id, nome, acronimo, true, LocalDateTime.now(), LocalDateTime.now());
+				Identificacao identificacao = new Identificacao(id, nome, acronimo, true, LocalDateTime.now(), LocalDateTime.now());				
+				Validacao.adicionar(identificacoes, identificacao);
 				error = true;
 			}else {
 				id = 0;
@@ -157,7 +145,7 @@ public class IdentificacaoMethods {
 		} else {
 			id = 0;
 		}		
-		gravarDadosIdentificacaoNoFicheiro(identificacaos, filePath);
+		gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());			
 		return id;
 	}
@@ -181,124 +169,114 @@ public class IdentificacaoMethods {
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
 
-	private static int actualizarIdentificacao(Identificacao[] identificacaos) {
+	private static int actualizarIdentificacao(Vector identificacoes) {
 		int id = 0;
-		listaIdentificacao(identificacaos);
+		listaIdentificacao(identificacoes);
 		boolean error = true;		
-		Identificacao identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), identificacaos);
+		Identificacao identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), identificacoes);
 		if (identificacao != null) {
-			for (int i = 0; i < identificacaos.length; i++) {
-				if (identificacaos[i] != null) {
-					if (identificacaos[i].getId() == identificacao.getId()) {
+			for (int i = 0; i < identificacoes.size(); i++) {				
+				if (!identificacoes.isEmpty()) {
+					if (identificacao.getId() == identificacao.getId()) {
 						id = identificacao.getId();
 						switch (menuActualizarIdentificacao()) {
 						case 1:
-							String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),identificacaos);
-							identificacaos[i].setNome(nome);
-							identificacaos[i].setDataActualizacao(LocalDateTime.now());
-							listaIdentificacao(identificacaos, id);
+							String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),identificacoes);
+							identificacao.setNome(nome);
+							identificacao.setDataActualizacao(LocalDateTime.now());
+							listaIdentificacao(identificacoes, id);
 							break;
 						case 2:
-							String acronimo = validaAcronimo(Validacao.validaEntradaPalavra(Language.language_input_acronym()),identificacaos);
-							identificacaos[i].setAcronimo(acronimo);
-							identificacaos[i].setDataActualizacao(LocalDateTime.now());
-							listaIdentificacao(identificacaos, id);
+							String acronimo = validaAcronimo(Validacao.validaEntradaPalavra(Language.language_input_acronym()),identificacoes);
+							identificacao.setAcronimo(acronimo);
+							identificacao.setDataActualizacao(LocalDateTime.now());
+							listaIdentificacao(identificacoes, id);
 							break;
 						case 3:
 							boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
-							identificacaos[i].setStatus(estado);
-							identificacaos[i].setDataActualizacao(LocalDateTime.now());
-							listaIdentificacao(identificacaos, id);
+							identificacao.setStatus(estado);
+							identificacao.setDataActualizacao(LocalDateTime.now());
+							listaIdentificacao(identificacoes, id);
 							break;
 						case 4:
 							error = false;
 							break;
 						default:
-							actualizarIdentificacao(identificacaos);
+							actualizarIdentificacao(identificacoes);
 							break;
 						}
 					}
 				}
 			} 
 		}
-		gravarDadosIdentificacaoNoFicheiro(identificacaos, filePath);		
+		gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);		
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;
 	}
 
-	private static int deletaIdentificacao(Identificacao[] identificacaos){
+	private static int deletaIdentificacao(Vector identificacoes){
 		int id = 0;
-		listaIdentificacao(identificacaos);
+		listaIdentificacao(identificacoes);
 		boolean error = false;		
-		Identificacao identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), identificacaos);
-		if (identificacao != null) {
-			for (int i = 0; i < identificacaos.length; i++) {
-				if (identificacaos[i] != null) {
-					if (identificacaos[i].getId() == identificacao.getId()) {
-						id = identificacao.getId();
-						identificacaos[i] = null;
-						error = true;
-					}
-				}
-			} 
-		}		
+		Identificacao identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), identificacoes);
+		identificacoes.remo		
 		Validacao.destroiDirectorioFicheiro(filePath);
-		gravarDadosIdentificacaoNoFicheiro(identificacaos, filePath);						
+		gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);						
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;		
 	}
-
-	private static boolean gravarDadosIdentificacaoNoFicheiro(Identificacao[] identificacaos, String file) {
+		
+	private static boolean gravarDadosIdentificacaoNoFicheiro(Vector identificacoes, String file) {
 		boolean error = false;	
 		try {						
 			if (new File(file).exists()) {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
-				for (int i = 0; i < identificacaos.length; i++) {
-					if (identificacaos[i] != null) {
-						bw.write(identificacaos[i].getId() + "|" + identificacaos[i].getNome()
-								+ "|" + identificacaos[i].getAcronimo()
-								+ "|" + identificacaos[i].isStatus() 
-								+ "|" + identificacaos[i].getDataRegisto()
-								+ "|" + identificacaos[i].getDataActualizacao());
+				for (int i = 0; i < identificacoes.size(); i++) {
+					if (!identificacoes.isEmpty()) {
+						Identificacao identificacao = (Identificacao)identificacoes.elementAt(i);
+						bw.write(identificacao.getId() + "|" + identificacao.getNome()
+								+ "|" + identificacao.getAcronimo()
+								+ "|" + identificacao.isStatus() 
+								+ "|" + identificacao.getDataRegisto()
+								+ "|" + identificacao.getDataActualizacao());
 						bw.newLine();
-						listaIdentificacao(identificacaos);
+						listaIdentificacao(identificacoes);
 					}
 				}
 				bw.close();
 				error = true;
 			}else {				
 				Validacao.geraDirectorioFicheiro(file);
-				gravarDadosIdentificacaoNoFicheiro(identificacaos,file);
+				gravarDadosIdentificacaoNoFicheiro(identificacoes,file);
 			}			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return error;
 	}
-
-	public static boolean lerDadosNoFicheiro(Identificacao[] identificacaos, String file) {
+	
+	public static boolean lerDadosNoFicheiro(Vector identificacoes, String file) {
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
 			if (new File(file).exists()) {				
 				br = new BufferedReader(new FileReader(new File(file)));
-				String linha = br.readLine();
-				int i = 0;
+				String linha = br.readLine();				
 				while (linha != null) {					
 					str = new StringTokenizer(linha, "|");
 					Identificacao identificacao = new Identificacao(Integer.parseInt(str.nextToken()),
 							str.nextToken(),str.nextToken(), Boolean.parseBoolean(str.nextToken()),
 							Validacao.parseStringToLocalDateTime(str.nextToken()),
 							Validacao.parseStringToLocalDateTime(str.nextToken()));
-					identificacaos[i] = identificacao;					
-					linha = br.readLine();
-					i++;					
+										
+						Validacao.adicionar(identificacoes, identificacao);				
+					linha = br.readLine();								
 				}
 				br.close();
 				error = true;				
 			}else {								
 				Validacao.geraDirectorioFicheiro(file);
-				lerDadosNoFicheiro(identificacaos,file);				
+				lerDadosNoFicheiro(identificacoes,file);				
 			}
 		} catch (IOException e) {
 			System.err.println("error" + e.getLocalizedMessage());		
@@ -333,70 +311,72 @@ public class IdentificacaoMethods {
 
 	/**
 	 * @Descrição imprime a lista de identificacoes
-	 */
-	public static void listaIdentificacao(Identificacao [] identificacaos){
+	 */	
+	public static void listaIdentificacao(Vector identificacoes){
 		int numeracao = 1;
 		int empty_= 0;
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < identificacaos.length; i++){
-			if (identificacaos[i] != null){
-				dadosImpressao(numeracao, i, identificacaos, layoutFormat);
+		for (int i = 0; i < identificacoes.size(); i++){
+			if (!identificacoes.isEmpty()){
+				dadosImpressao(numeracao, (Identificacao)identificacoes.elementAt(i), layoutFormat);
 				numeracao+=1;
 			}else{empty_ += 1; }
 		}
-		Validacao.formatoImpressaoFooter(identificacaos.length,empty_);
+		Validacao.formatoImpressaoFooter(identificacoes.size(),empty_);
 	}
-
-	private static void dadosImpressao(int numeracao, int i, Identificacao [] identificacaos, String layoutFormat) {
-		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,identificacaos[i].getId(),Validacao.delimitador,
-				identificacaos[i].getNome(),Validacao.delimitador,identificacaos[i].getAcronimo(),Validacao.delimitador,Validacao.mudarStatus(identificacaos[i].isStatus()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToString(identificacaos[i].getDataRegisto()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToString(identificacaos[i].getDataActualizacao()),Validacao.delimitador);
+	
+	
+	private static void dadosImpressao(int numeracao, Identificacao identificacoes, String layoutFormat) {
+		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,identificacoes.getId(),Validacao.delimitador,
+				identificacoes.getNome(),Validacao.delimitador,identificacoes.getAcronimo(),Validacao.delimitador,Validacao.mudarStatus(identificacoes.isStatus()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(identificacoes.getDataRegisto()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(identificacoes.getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}
-
-	private static void listaIdentificacao(Identificacao [] identificacaos, int id){
+	
+	
+	private static void listaIdentificacao(Vector identificacoes, int id){
 		int numeracao = 1;
 		int empty_= 0;        
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < identificacaos.length; i++) {
-			if (identificacaos[i] != null && identificacaos[i].getId() == id) {					
-				dadosImpressao(numeracao, i, identificacaos, layoutFormat);
+		for (int i = 0; i < identificacoes.size(); i++) {
+			Identificacao identificacao = (Identificacao)identificacoes.elementAt(i);
+			if ((!identificacoes.isEmpty()) && identificacao.getId() == id) {					
+				dadosImpressao(numeracao, identificacao, layoutFormat);
 				numeracao += 1;					
 			} else {
 				empty_ += 1;
 			}
 		}			
-		Validacao.formatoImpressaoFooter(identificacaos.length, empty_);		
+		Validacao.formatoImpressaoFooter(identificacoes.size(), empty_);		
 	}         	
 
-	public static void load(Identificacao [] identificacaos) {
-		Validacao.init(identificacaos);	
-		lerDadosNoFicheiro(identificacaos, filePath);
+	public static void load(Vector vector) {
+		lerDadosNoFicheiro(vector, filePath);
 	}
 	
-	public static void inicializador(Identificacao [] identificacaos) {			
-		load(identificacaos);
+	public static void inicializador(Identificacao [] identificacoes) {			
+		load(identificacoes);
 		int caso;
-		if (Validacao.notNull(identificacaos) != 0) {
+		if (Validacao.notNull(identificacoes) != 0) {
 			do {
 				caso = Validacao.menu(Language.language_identification());
 				switch (caso) {
 				case 1:
-					gravaIdentificacao(identificacaos);
+					gravaIdentificacao(identificacoes);
 					;
 					break;
 				case 2:
-					actualizarIdentificacao(identificacaos);
+					actualizarIdentificacao(identificacoes);
 					;
 					break;
 				case 3:
-					deletaIdentificacao(identificacaos);
+					deletaIdentificacao(identificacoes);
 					;
 					break;
 				case 4:
-					listaIdentificacao(identificacaos);
+					listaIdentificacao(identificacoes);
 					;
 					break;
 				case 5:
@@ -409,7 +389,7 @@ public class IdentificacaoMethods {
 			} while (caso != 5);
 		}else {
 			System.out.println(Language.language_empty_array(Language.language_identification()));
-			gravaIdentificacao(identificacaos);
+			gravaIdentificacao(identificacoes);
 		}
 	}
 }
