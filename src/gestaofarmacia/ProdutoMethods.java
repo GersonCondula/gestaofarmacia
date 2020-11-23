@@ -217,7 +217,7 @@ public class ProdutoMethods {
 		System.out.println("*---------------------------------------------------------------------------------*");
 		System.out.println("*9. "+ Language.language_expirationDate());
 		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*0. "+ Language.language_cancel());
+		System.out.println("*10. "+ Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
@@ -289,7 +289,7 @@ public class ProdutoMethods {
 							produtos[i].setDataActualizacao(LocalDateTime.now());
 							lista(produtos, id);
 							break;
-						case 0:
+						case 10:
 							error = false;
 							break;
 						default:
@@ -428,7 +428,7 @@ public class ProdutoMethods {
 	}
 
 	/**
-	 * @Descrição imprime a lista
+	 * @Descrição imprime a lista completa
 	 */
 	public static void lista(Produto[] produtos) {
 		int numeracao = 1;
@@ -442,6 +442,9 @@ public class ProdutoMethods {
 		Validacao.formatoImpressaoFooter(produtos.length,empty_);		
 	}
 
+	/**
+	 * @Descrição imprime a lista de um determinado produto
+	 */
 	private static void lista(Produto[] produtos, int id){
 		int numeracao = 1;
 		int empty_= 0;        
@@ -454,6 +457,9 @@ public class ProdutoMethods {
 		Validacao.formatoImpressaoFooter(produtos.length, empty_);		
 	}  
 
+	/**
+	 * @Descrição Carregar os dadods do ficheiro para o array de objectos ao iniciar a applicação
+	 */
 	public static void load(Produto [] produtos, Fornecedor [] fornecedors,CategoriaProduto [] categoriaProdutos ) {
 		Validacao.init(produtos);	
 		lerDadosNoFicheiro(produtos, fornecedors ,categoriaProdutos , filePath);

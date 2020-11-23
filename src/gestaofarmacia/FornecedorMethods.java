@@ -189,11 +189,11 @@ public class FornecedorMethods {
 		System.out.println("*---------------------------------------------------------------------------------*");     
 		System.out.println("*2. "+ Language.language_address());
 		System.out.println("*---------------------------------------------------------------------------------*");	
-		System.out.println("*4. "+ Language.language_nuit());		
+		System.out.println("*3. "+ Language.language_nuit());		
 		System.out.println("*---------------------------------------------------------------------------------*");
-		System.out.println("*6. "+ Language.language_state());
+		System.out.println("*4. "+ Language.language_state());
 		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*7. "+ Language.language_cancel());
+		System.out.println("*5. "+ Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
@@ -229,14 +229,14 @@ public class FornecedorMethods {
 							fornecedors[i].setDataActualizacao(LocalDateTime.now());
 							lista(fornecedors, id);
 							break;
-						case 5:							
+						case 4:							
 							boolean estado = Validacao
 							.validaEntradaStatus(Language.language_input_state());
 							fornecedors[i].setStatus(estado);
 							fornecedors[i].setDataActualizacao(LocalDateTime.now());
 							lista(fornecedors, id);
 							break;
-						case 7:
+						case 5:
 							error = false;
 							break;
 						default:

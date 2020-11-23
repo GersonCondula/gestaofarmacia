@@ -202,7 +202,8 @@ public class FuncionarioMethods {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
 				for (int i = 0; i < funcionario.length; i++) {
 					if (funcionario[i] != null) {
-						bw.write(funcionario[i].getId() + "|" + funcionario[i].getNome()
+						bw.write(funcionario[i].getId() 
+								+ "|" + funcionario[i].getNome()
 								+ "|" + funcionario[i].getIdentificacao().getId()
 								+ "|" + funcionario[i].getNumeroIdentidade()
 								+ "|" + funcionario[i].getNuit()
@@ -247,7 +248,7 @@ public class FuncionarioMethods {
 		System.out.println("*---------------------------------------------------------------------------------*");
 		System.out.println("*6. "+ Language.language_state());
 		System.out.println("*---------------------------------------------------------------------------------*");     
-		System.out.println("*7. "+ Language.language_cancel());
+		System.out.println("*0. "+ Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
@@ -303,7 +304,7 @@ public class FuncionarioMethods {
 							funcionarios[i].setDataActualizacao(LocalDateTime.now());
 							lista(funcionarios, id);
 							break;
-						case 7:
+						case 0:
 							error = false;
 							break;
 						default:
@@ -458,23 +459,18 @@ public class FuncionarioMethods {
 					switch (caso) {
 					case 1:
 						gravar(funcionarios, identificacaos);
-						;
-						break;
+						;break;
 					case 2:
 						actualizar(funcionarios, identificacaos);
-						;
-						break;
+						;break;
 					case 3:
 						deleta(funcionarios);
-						;
-						break;
+						;break;
 					case 4:
 						lista(funcionarios);
-						;
-						break;
+						;break;
 					case 5:
-						;
-						break;
+						;break;
 					default:
 						break;
 					}

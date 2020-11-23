@@ -74,7 +74,7 @@ public class Validacao {
 
 	public static String geraDirectorioFicheiro(String fileNames) {
 		Path currentAbsolutePath1 = Paths.get("");
-		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\files");
+		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\resources\\files");
 		File fileDirectory = new File(filePath1);
 		String filePath2 = filePath1.concat("\\"+fileNames);
 		File file = new File(filePath2);
@@ -95,7 +95,7 @@ public class Validacao {
 
 	public static String destroiDirectorioFicheiro(String fileNames) {
 		Path currentAbsolutePath1 = Paths.get("");
-		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\files");
+		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\resources\\files");
 		File fileDirectory = new File(filePath1);
 		String filePath2 = filePath1.concat("\\"+fileNames);
 		File file = new File(filePath2);
@@ -448,7 +448,6 @@ public class Validacao {
 				}else {
 					System.err.println(Language.language_valid_value());
 				}
-
 			} catch (Exception e) {
 			}
 		} while (!error);
@@ -573,7 +572,7 @@ public class Validacao {
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println("1. "+ Language.language_listing());
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println("2. "+ Language.language_cancel());
+		System.out.println("5. "+ Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_select_option());
 	}
