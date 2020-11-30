@@ -4,28 +4,19 @@ import java.io.IOException;
 import java.util.Vector;
 
 public class ExecutaSGF {
-
-	private static Identificacao [] identificacaos = new Identificacao[Validacao.getTamanho()];
-	private static Funcionario [] funcionarios = new Funcionario[Validacao.getTamanho()];
-	private static PermissaoSistema [] permissaoSistemas = new PermissaoSistema[Validacao.getTamanho()];
-	private static Usuario [] usuarios = new Usuario[Validacao.getTamanho()]; 
-	private static Perfil [] perfils = new Perfil[Validacao.getTamanho()]; 
-	private static CategoriaProduto [] categoriaProdutos = new CategoriaProduto[Validacao.getTamanho()];
-	private static Fornecedor[] fornecedors =  new Fornecedor[Validacao.getTamanho()];
-	private static Produto [] produtos = new Produto[Validacao.getTamanho()];
 	
 	@SuppressWarnings({"unused", "rawtypes"})
-	private static Vector vetor = new Vector();
+	private static Vector vector = new Vector();
 	
 	private static void load() {
 		Language.load();
-		IdentificacaoMethods.load(identificacaos);
-		FuncionarioMethods.load(funcionarios, identificacaos);
-		PermissaoSistemaMethods.load(permissaoSistemas);
-		UsuarioMethods.load(usuarios, funcionarios);
-		CategoriaProdutoMethods.load(categoriaProdutos);
-		FornecedorMethods.load(fornecedors);
-		ProdutoMethods.load(produtos, fornecedors, categoriaProdutos);
+		IdentificacaoMethods.load(vector);
+		FuncionarioMethods.load(vector);
+		PermissaoSistemaMethods.load(vector);
+		UsuarioMethods.load(vector);
+		CategoriaProdutoMethods.load(vector);
+		FornecedorMethods.load(vector);
+		ProdutoMethods.load(vector);
 	}
 	
 	private static byte menuRH() {
@@ -56,19 +47,19 @@ public class ExecutaSGF {
 			caso = menuRH();
 			switch (caso) {
 			case 1:
-				FuncionarioMethods.inicializador(funcionarios, identificacaos);
+				FuncionarioMethods.inicializador(vector);
 				break;
 			case 2:
-				UsuarioMethods.inicializador(usuarios, funcionarios, identificacaos);
+				UsuarioMethods.inicializador(vector);
 				break;
 			case 3:				
-				IdentificacaoMethods.inicializador(identificacaos);
+				IdentificacaoMethods.inicializador(vector);
 				break;
 			case 4:		
-				PermissaoSistemaMethods.inicializador(permissaoSistemas);
+				PermissaoSistemaMethods.inicializador(vector);
 				break;	
 			case 5:				
-				PerfilMethods.inicializador(perfils, permissaoSistemas, usuarios);
+				PerfilMethods.inicializador(vector);
 				break;	
 			case 6:								
 				break;
@@ -103,13 +94,13 @@ public class ExecutaSGF {
 			caso = menuStockManagement();
 			switch (caso) {
 			case 1:			
-				ProdutoMethods.inicializador(produtos, fornecedors, categoriaProdutos);
+				ProdutoMethods.inicializador(vector);
 				break;
 			case 2:
-				CategoriaProdutoMethods.inicializador(categoriaProdutos);
+				CategoriaProdutoMethods.inicializador(vector);
 				break;
 			case 3:		
-				FornecedorMethods.inicializador(fornecedors);
+				FornecedorMethods.inicializador(vector);
 				break;
 			case 4:						
 				break;				
@@ -143,7 +134,7 @@ public class ExecutaSGF {
 
 	private static void inicializador() throws IOException {		
 		load();
-		Usuario usuario = Login.login(usuarios);
+		Usuario usuario = Login.login(vector);
 		if (usuario != null) {
 			Login.setUsuario_id(usuario);
 			int caso;

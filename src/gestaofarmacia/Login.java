@@ -1,7 +1,9 @@
 package gestaofarmacia;
 
 import java.io.IOException;
+import java.util.Vector;
 
+@SuppressWarnings("rawtypes")
 public class Login {
 	private static int count = 0;
 	private static Usuario usuario; 
@@ -11,7 +13,7 @@ public class Login {
 	public static void setUsuario_id(Usuario usuario) {
 		Login.usuario = usuario;
 	}
-	public static Usuario login(Usuario [] usuarios) throws IOException {	
+	public static Usuario login(Vector usuarios) throws IOException {	
 		System.out.println("\n\n");
 		System.out.println("***********************************************************************************");
 		System.out.println("\t\t\t\t\t"+Language.language_login());
@@ -19,8 +21,9 @@ public class Login {
 		String usuario = Validacao.validaEntradaPalavra(Language.language_input_name());		
 		String password = Validacao.validaEntradaPalavra(Language.language_input_password());
 		Usuario usuario1 = null;			
-		for (Usuario usuario2 : usuarios) {
-			if (usuario2 != null) {
+		for (int i =0; i < usuarios.size(); i++) {
+			Usuario usuario2 = (Usuario)usuarios.elementAt(i);
+			if (!usuarios.isEmpty()) {
 				if (usuario2.getUsername().toLowerCase().equals(usuario.toLowerCase())
 						&& usuario2.getPassword().toLowerCase().equals(password.toLowerCase())) {
 					usuario1 = usuario2;

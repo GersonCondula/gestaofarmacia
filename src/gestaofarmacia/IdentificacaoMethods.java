@@ -177,13 +177,13 @@ public class IdentificacaoMethods {
 		if (identificacao != null) {
 			for (int i = 0; i < identificacoes.size(); i++) {				
 				if (!identificacoes.isEmpty()) {
-					if (identificacao.getId() == identificacao.getId()) {
+					if (((Identificacao)identificacoes.elementAt(i)).getId() == identificacao.getId()) {
 						id = identificacao.getId();
 						switch (menuActualizarIdentificacao()) {
 						case 1:
 							String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),identificacoes);
 							identificacao.setNome(nome);
-							identificacao.setDataActualizacao(LocalDateTime.now());
+							identificacao.setDataActualizacao(LocalDateTime.now());											
 							listaIdentificacao(identificacoes, id);
 							break;
 						case 2:
@@ -209,6 +209,7 @@ public class IdentificacaoMethods {
 				}
 			} 
 		}
+		Validacao.adicionar(identificacoes, identificacao);	
 		gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);		
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;
@@ -219,7 +220,7 @@ public class IdentificacaoMethods {
 		listaIdentificacao(identificacoes);
 		boolean error = false;		
 		Identificacao identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), identificacoes);
-		identificacoes.remo		
+		identificacoes.remove(identificacao);	
 		Validacao.destroiDirectorioFicheiro(filePath);
 		gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);						
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
@@ -356,10 +357,10 @@ public class IdentificacaoMethods {
 		lerDadosNoFicheiro(vector, filePath);
 	}
 	
-	public static void inicializador(Identificacao [] identificacoes) {			
+	public static void inicializador(Vector identificacoes) {			
 		load(identificacoes);
 		int caso;
-		if (Validacao.notNull(identificacoes) != 0) {
+		if (!identificacoes.isEmpty()) {
 			do {
 				caso = Validacao.menu(Language.language_identification());
 				switch (caso) {
