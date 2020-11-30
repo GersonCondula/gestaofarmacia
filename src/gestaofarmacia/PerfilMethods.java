@@ -7,7 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
+@SuppressWarnings("rawtypes")
 public class PerfilMethods {
 	
 	private static BufferedReader br;
@@ -17,16 +19,18 @@ public class PerfilMethods {
 	/**
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
 	 **/
-	private static int geradorID(int j, Perfil[] perfils) {
+	private static int geradorID(Vector perfis) {
 		boolean exise = false;
-		int id = (1 + Validacao.random.nextInt(perfils.length));
+		int id = (1 + Validacao.random.nextInt(perfis.size()));
 		int newID = 0;
-		for (int i = 0; i < perfils.length; i++) 
-			if (perfils[i] != null) 
-				if (perfils[i].getId() == id || id == 0)
+		for (int i = 0; i < perfis.size(); i++) {
+			Perfil perfil = (Perfil)perfis.elementAt(i);
+			if (!perfis.isEmpty()) 
+				if (perfil.getId() == id || id == 0)
 					exise = true;					
+		}
 		if (exise)
-			geradorID(j, perfils);
+			geradorID(perfis);
 		else
 			newID = id;
 		return newID;
@@ -39,33 +43,30 @@ public class PerfilMethods {
 	 * @return
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
-	public static Perfil getById(int id, Perfil [] perfils) {
+	public static Perfil getById(int id, Vector perfis) {
 		Perfil perfil = null;
-		int count = 0;
 		if (id!=0) {        	  
-			for (int i = 0; i < perfils.length; i++) {	          		
-				if (perfils[i] != null) {	                	  
-					if (perfils[i].getId() == id) {	                    	  
-						perfil = new Perfil(perfils[i].getId(), perfils[i].getUsuario(),perfils[i].getPermissaoSistema());
-						count ++;
+			for (int i = 0; i < perfis.size(); i++) {
+				Perfil perfil2 = (Perfil)perfis.elementAt(i);
+				if (!perfis.isEmpty()) {	                	  
+					if (perfil2.getId() == id) {	                    	  
+						perfil = new Perfil(perfil2.getId(), perfil2.getUsuario(),perfil2.getPermissaoSistema());						
 					}
 				}	                  
 			} 	          		
 		}       
 		if (perfil == null) {
-			perfil = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), perfils);
-			if (count < 3) {
-
-			}
+			perfil = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), perfis);
 		}
 		return perfil;
 	}
 
-	public static Usuario selecionaUsuario(Usuario [] usuarios) {
+	public static Usuario selecionaUsuario(Vector usuarios) {
 		Usuario usuario = null;		
 		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
-		for (Usuario usuario2 : usuarios) {			
-			if (usuario2 != null) {
+		for (int i = 0; i < usuarios.size(); i++) {
+			Usuario usuario2 = (Usuario)usuarios.elementAt(i);
+			if (!usuarios.isEmpty()) {
 				if (usuario2.getId() == numero) {
 					usuario = usuario2;
 				} 
@@ -77,11 +78,12 @@ public class PerfilMethods {
 		return usuario;
 	}
 
-	public static PermissaoSistema selecionaPermissaoSistema(PermissaoSistema [] permissaoSistemas) {
+	public static PermissaoSistema selecionaPermissaoSistema(Vector permissaoSistemas) {
 		PermissaoSistema permissaoSistema = null;		
 		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
-		for (PermissaoSistema permissaoSistema2 : permissaoSistemas) {			
-			if (permissaoSistema2 != null) {
+		for (int i = 0; i< permissaoSistemas.size(); i++) {
+			PermissaoSistema permissaoSistema2 = (PermissaoSistema)permissaoSistemas.elementAt(i);
+			if (!permissaoSistemas.isEmpty()) {
 				if (permissaoSistema2.getId() == numero) {
 					permissaoSistema = permissaoSistema2;
 				} 
@@ -93,23 +95,24 @@ public class PerfilMethods {
 		return permissaoSistema;
 	}
 
-	private static int gravar(Perfil[] perfils, PermissaoSistema [] permissaoSistemas, Usuario [] usuarios) {
-		int id = 0, i = Validacao.notNull(perfils);	
+	private static int gravar(Vector perfis) {
+		int id = 0;	
 		boolean error = false;
-		id = geradorID(i, perfils);		
-		PermissaoSistemaMethods.lista(permissaoSistemas);
-		PermissaoSistema permissaoSistema = selecionaPermissaoSistema(permissaoSistemas);	
+		id = geradorID(perfis);		
+		PermissaoSistemaMethods.lista(perfis);
+		PermissaoSistema permissaoSistema = selecionaPermissaoSistema(perfis);	
 		if (permissaoSistema != null) {	
-			UsuarioMethods.lista(usuarios);
-			Usuario usuario = selecionaUsuario(usuarios);
+			UsuarioMethods.lista(perfis);
+			Usuario usuario = selecionaUsuario(perfis);
 			if (usuario != null) {
-				perfils[i] = new Perfil(id, usuario, permissaoSistema);
+				Perfil perfil = new Perfil(id, usuario, permissaoSistema);
+				Validacao.adicionar(perfis, perfil);
 				error = true;
 			}			
 		} else {
 			id = 0;
 		}		
-		gravarDadosNoFicheiro(perfils,permissaoSistemas, usuarios);
+		gravarDadosNoFicheiro(perfis);
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());			
 		return id;
 	}
@@ -129,80 +132,83 @@ public class PerfilMethods {
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
 
-	private static int actualizar(Perfil[] perfils, PermissaoSistema [] permissaoSistemas, Usuario [] usuarios) {
+	private static int actualizar(Vector perfis) {
 		int id = 0;
-		lista(perfils);
+		lista(perfis);
 		boolean error = false;
-		Perfil perfil = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), perfils);
+		Perfil perfil = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), perfis);
 		if (perfil != null) {
-			for (int i = 0; i < perfils.length; i++) {
-				if (perfils[i] != null) {
-					if (perfils[i].getId() == perfil.getId()) {
+			for (int i = 0; i < perfis.size(); i++) {
+				Perfil perfil2 = (Perfil)perfis.elementAt(i);
+				if (!perfis.isEmpty()) {
+					if (perfil2.getId() == perfil.getId()) {
 						id = perfil.getId();
 						switch (menuActualizar()) {										
 						case 1:
-							PermissaoSistemaMethods.lista(permissaoSistemas);
-							PermissaoSistema permissaoSistema = selecionaPermissaoSistema(permissaoSistemas);
-							perfils[i].setPermissaoSistema(permissaoSistema);                                                                                                                                                                 							
-							lista(perfils);
+							PermissaoSistemaMethods.lista(perfis);
+							PermissaoSistema permissaoSistema = selecionaPermissaoSistema(perfis);							             
+							Validacao.adicionar(perfis, permissaoSistema);
+							lista(perfis);
 							break;
 						case 2:
 							error = true;
 							break;
 						default:
-							actualizar(perfils, permissaoSistemas, usuarios);
+							actualizar(perfis);
 							break;
 						}
 					}
 				}
 			} 
 		}
-		gravarDadosNoFicheiro(perfils, permissaoSistemas, usuarios);
+		gravarDadosNoFicheiro(perfis);
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;
 	}
 
-	private static int deletar(Perfil [] perfils, PermissaoSistema [] permissaoSistemas, Usuario[] usuarios){
+	private static int deletar(Vector perfis){
 		int id = 0;
-		lista(perfils);
+		lista(perfis);
 		boolean error = false;		
-		Perfil perfil = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), perfils);
+		Perfil perfil = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), perfis);
 		if (perfil != null) {
-			for (int i = 0; i < perfils.length; i++) {
-				if (perfils[i] != null) {
-					if (perfils[i].getId() == perfil.getId()) {
+			for (int i = 0; i < perfis.size(); i++) {
+				Perfil perfil2 = (Perfil)perfis.elementAt(i);
+				if (!perfis.isEmpty()) {
+					if (perfil2.getId() == perfil.getId()) {
 						id = perfil.getId();
-						perfils[i] = null;
+						perfis.remove(perfil);
 						error = true;
 					}
 				}
 			} 
-		}		
+		}
 		Validacao.destroiDirectorioFicheiro(filePath);
-		gravarDadosNoFicheiro(perfils, permissaoSistemas, usuarios);						
+		gravarDadosNoFicheiro(perfis);						
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;		
 	}
 
-	private static boolean gravarDadosNoFicheiro(Perfil [] perfils, PermissaoSistema [] permissaoSistemas, Usuario[] usuarios) {
+	private static boolean gravarDadosNoFicheiro(Vector perfis) {
 		boolean error = false;	
 		try {						
 			if (new File(filePath).exists()) {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
-				for (int i = 0; i < perfils.length; i++) {
-					if (perfils[i] != null) {
-						bw.write(perfils[i].getId() 								
-								+ "|" + perfils[i].getUsuario().getId()
-								+ "|" + perfils[i].getPermissaoSistema().getId());
+				for (int i = 0; i < perfis.size(); i++) {
+					Perfil perfil = (Perfil)perfis.elementAt(i);
+					if (!perfis.isEmpty()) {
+						bw.write(perfil.getId() 								
+								+ "|" + perfil.getUsuario().getId()
+								+ "|" + perfil.getPermissaoSistema().getId());
 						bw.newLine();
-						lista(perfils);
+						lista(perfis);
 					}
 				}
 				bw.close();
 				error = true;
 			}else {				
 				Validacao.geraDirectorioFicheiro(filePath);
-				gravarDadosNoFicheiro(perfils, permissaoSistemas, usuarios);
+				gravarDadosNoFicheiro(perfis);
 			}			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -210,28 +216,26 @@ public class PerfilMethods {
 		return error;
 	}
 
-	public static boolean lerDadosNoFicheiro(Perfil[] perfils, PermissaoSistema [] permissaoSistemas, Usuario [] usuarios) {
+	public static boolean lerDadosNoFicheiro(Vector perfis) {
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
 			if (new File(filePath).exists()) {				
 				br = new BufferedReader(new FileReader(new File(filePath)));
-				String linha = br.readLine();
-				int i = 0;
+				String linha = br.readLine();				
 				while (linha != null) {					
 					str = new StringTokenizer(linha, "|");
 					Perfil perfil = new Perfil(Integer.parseInt(str.nextToken()),							
-							UsuarioMethods.getById(Integer.parseInt(str.nextToken()), usuarios),
-							PermissaoSistemaMethods.getById(Integer.parseInt(str.nextToken()), permissaoSistemas));
-					perfils[i] = perfil;					
-					linha = br.readLine();
-					i++;					
+							UsuarioMethods.getById(Integer.parseInt(str.nextToken()), perfis),
+							PermissaoSistemaMethods.getById(Integer.parseInt(str.nextToken()), perfis));					
+					Validacao.adicionar(perfis, perfil);
+					linha = br.readLine();									
 				}
 				br.close();
 				error = true;				
 			}else {								
 				Validacao.geraDirectorioFicheiro(filePath);
-				lerDadosNoFicheiro(perfils,permissaoSistemas,usuarios);				
+				lerDadosNoFicheiro(perfis);				
 			}
 		} catch (IOException e) {
 			System.err.println("error" + e.getLocalizedMessage());		
@@ -263,64 +267,65 @@ public class PerfilMethods {
 	/**
 	 * @Descrição imprime a lista
 	 */
-	public static void lista(Perfil [] perfils){
+	public static void lista(Vector perfis){
 		int numeracao = 1;
 		int empty_= 0;
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < perfils.length; i++){
-			if (perfils[i] != null){
-				dadosImpressao(numeracao, i, perfils, layoutFormat);
+		for (int i = 0; i < perfis.size(); i++){
+			Perfil perfil = (Perfil)perfis.elementAt(i);
+			if (!perfis.isEmpty()){
+				dadosImpressao(numeracao, i, perfil, layoutFormat);
 				numeracao+=1;
 			}else{empty_ += 1; }
 		}
-		Validacao.formatoImpressaoFooter(perfils.length,empty_);
+		Validacao.formatoImpressaoFooter(perfis.size(),empty_);
 	}
 
-	private static void dadosImpressao(int numeracao, int i, Perfil [] perfils, String layoutFormat) {
-		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,perfils[i].getId(),Validacao.delimitador,
-				perfils[i].getUsuario().getFuncionario().getNome(),Validacao.delimitador,perfils[i].getPermissaoSistema().getNome(),Validacao.delimitador);
+	private static void dadosImpressao(int numeracao, int i, Perfil perfil, String layoutFormat) {
+		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,perfil.getId(),Validacao.delimitador,
+				perfil.getUsuario().getFuncionario().getNome(),Validacao.delimitador,perfil.getPermissaoSistema().getNome(),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}
 
 	@SuppressWarnings("unused")
-	private static void lista(Perfil [] perfils, int id){
+	private static void lista(Vector perfis, int id){
 		int numeracao = 1;
 		int empty_= 0;        
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < perfils.length; i++) {
-			if (perfils[i] != null && perfils[i].getId() == id) {					
-				dadosImpressao(numeracao, i, perfils, layoutFormat);
+		for (int i = 0; i < perfis.size(); i++) {
+			Perfil perfil = (Perfil)perfis.elementAt(i);
+			if (perfil != null && perfil.getId() == id) {					
+				dadosImpressao(numeracao, i, perfil, layoutFormat);
 				numeracao += 1;					
 			} else {
 				empty_ += 1;
 			}
 		}			
-		Validacao.formatoImpressaoFooter(perfils.length, empty_);		
+		Validacao.formatoImpressaoFooter(perfis.size(), empty_);		
 	}         
 
-	public static void load(Perfil [] perfils, PermissaoSistema [] permissaoSistemas, Usuario [] usuarios) {
-		Validacao.init(perfils);	
-		lerDadosNoFicheiro(perfils, permissaoSistemas, usuarios);
+	public static void load(Vector perfis) {		
+		lerDadosNoFicheiro(perfis);
 	}
 
-	public static void inicializador(Perfil [] perfils, PermissaoSistema [] permissaoSistemas, Usuario [] usuarios) {			
-		load(perfils, permissaoSistemas, usuarios);
+	public static void inicializador(Vector perfis) {			
+		load(perfis);
 		int caso;
 		do {
 			caso = Validacao.menu(Language.language_profile());
 			switch (caso) {
 			case 1:
-				gravar(perfils, permissaoSistemas, usuarios);
+				gravar(perfis);
 				break;
 			case 2:
-				actualizar(perfils, permissaoSistemas, usuarios);
+				actualizar(perfis);
 				break;
 			case 3:
-				deletar(perfils, permissaoSistemas, usuarios);
+				deletar(perfis);
 				break;
 			case 4:
-				lista(perfils);
+				lista(perfis);
 				break;			
 			case 5:
 				;break;

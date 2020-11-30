@@ -8,7 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
+@SuppressWarnings("rawtypes")
 public class FornecedorMethods {
 
 	private static BufferedReader br;
@@ -18,16 +20,18 @@ public class FornecedorMethods {
 	/**
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
 	 **/
-	private static int geradorID(int j, Fornecedor[] fornecedors) {
+	private static int geradorID(Vector fornecedors) {
 		boolean existe = false;
-		int id = (1 + Validacao.random.nextInt(fornecedors.length));
+		int id = (1 + Validacao.random.nextInt(fornecedors.size()));
 		int newID = 0;		
-		for (Fornecedor fornecedor : fornecedors) 
-			if(fornecedor != null) 
+		for (int i = 0; i < fornecedors.size(); i++) {
+			Fornecedor fornecedor = (Fornecedor)fornecedors.elementAt(i);
+			if(!fornecedors.isEmpty()) 
 				if (fornecedor.getId() == id || id == 0) 
-					existe = true;									
+					existe = true;						
+		}
 		if (existe)
-			geradorID(j, fornecedors);
+			geradorID(fornecedors);
 		else
 			newID = id;
 		return newID;
@@ -36,16 +40,17 @@ public class FornecedorMethods {
 	/**	 
 	 * @Descrição Garante que os nomes sejam unicos
 	 */
-	private static String validaNome(String nome, Fornecedor [] fornecedors) {
+	private static String validaNome(String nome, Vector fornecedors) {
 		String nomed = null;
 		if (nome != null) {
-			for (int i = 0; i < fornecedors.length; i++) {
-				if (fornecedors[i] != null) {
-					if (!fornecedors[i].getNome().equalsIgnoreCase(nome)) {
+			for (int i = 0; i < fornecedors.size(); i++) {
+				Fornecedor fornecedor = (Fornecedor)fornecedors.elementAt(i);
+				if (!fornecedors.isEmpty()) {
+					if (!fornecedor.getNome().equalsIgnoreCase(nome)) {
 						nomed = nome;
 					}else {
 						nomed = validaNome(Validacao.validaEntradaPalavra(Language.language_input_exist_name()),fornecedors);
-						i = fornecedors.length;
+						i = fornecedors.size();
 					}
 				}else {
 					nomed = nome;
@@ -55,16 +60,17 @@ public class FornecedorMethods {
 		return nomed;
 	}
 
-	private static int validaNuit(int nuit_, Fornecedor [] fornecedors) {
+	private static int validaNuit(int nuit_, Vector fornecedors) {
 		int nuit = 0;
 		if (nuit_ != 0) {
-			for (int i = 0; i < fornecedors.length; i++) {
-				if (fornecedors[i] != null) {
-					if (fornecedors[i].getNuit() != nuit_) {
+			for (int i = 0; i < fornecedors.size(); i++) {
+				Fornecedor fornecedor = (Fornecedor)fornecedors.elementAt(i);
+				if (!fornecedors.isEmpty()) {
+					if (fornecedor.getNuit() != nuit_) {
 						nuit = nuit_;
 					}else {
 						nuit = validaNuit(Validacao.validaEntradaInteiro(Language.language_input_exist_number()),fornecedors);
-						i = fornecedors.length;
+						i = fornecedors.size();
 					}
 				}else {
 					nuit = nuit_;
@@ -74,13 +80,15 @@ public class FornecedorMethods {
 		return nuit;
 	}
 
-	public static Fornecedor selecionaFornecedor(Fornecedor [] fornecedors) {
+	public static Fornecedor selecionaFornecedor(Vector fornecedors) {
 		Fornecedor fornecedor = null;		
 		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
-		for (Fornecedor fornecedor2 : fornecedors)			
-			if (fornecedor2 != null) 
+		for (int i = 0; i < fornecedors.size(); i++) {	
+			Fornecedor fornecedor2 = (Fornecedor)fornecedors.elementAt(i);
+			if (!fornecedors.isEmpty()) 
 				if (fornecedor2.getId() == numero) 
 					fornecedor = fornecedor2;		
+		}
 		if (fornecedor == null) 
 			return selecionaFornecedor(fornecedors);		
 		return fornecedor;
@@ -92,11 +100,11 @@ public class FornecedorMethods {
 	 * @return
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
-	public static Fornecedor getById(int id, Fornecedor [] fornecedors) {
+	public static Fornecedor getById(int id, Vector fornecedors) {
 		Fornecedor fornecedor = null;
-		int count = 0;
 		if (id!=0) {    
-			for (Fornecedor fornecedor2 : fornecedors) {
+			for (int i = 0; i < fornecedors.size(); i++) {	
+				Fornecedor fornecedor2 = (Fornecedor)fornecedors.elementAt(i);
 				if (fornecedor2 != null) {	                	  
 					if (fornecedor2.getId() == id) {
 						fornecedor = new Fornecedor(fornecedor2.getId(),
@@ -104,32 +112,30 @@ public class FornecedorMethods {
 								fornecedor2.getNuit(),fornecedor2.isStatus(),
 								fornecedor2.getDataRegisto(),
 								fornecedor2.getDataActualizacao());
-						count ++;
 					}
 				}
 			}			 	          	
 		}       
 		if (fornecedor == null) {
-			fornecedor = getById(Validacao.validaEntradaInteiro(Language.language_input_invalid_number()), fornecedors);
-			if (count < 3) {
-			}
+			fornecedor = getById(Validacao.validaEntradaInteiro(Language.language_input_invalid_number()), fornecedors);			
 		}
 		return fornecedor;
 	}
 
 
 
-	public static int gravar(Fornecedor [] fornecedors) {
-		int id = 0, i = Validacao.notNull(fornecedors);		
+	public static int gravar(Vector fornecedors) {
+		int id = 0;		
 		boolean error = false;
-		id = geradorID(i, fornecedors);		
+		id = geradorID(fornecedors);		
 		String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()), fornecedors);
 		if (nome != null) {
 			String morada = Validacao.validaEntradaPalavra(Language.language_input_address());
 			if (morada != null) {				
 				int nuit = validaNuit(Validacao.validaEntradaInteiro(Language.language_input_nuit()), fornecedors);
 				if (nuit != 0) {											
-					fornecedors[i] = new Fornecedor(id, nome, morada, nuit, true, LocalDateTime.now(), LocalDateTime.now());
+					Fornecedor fornecedor = new Fornecedor(id, nome, morada, nuit, true, LocalDateTime.now(), LocalDateTime.now());
+					Validacao.adicionar(fornecedors, fornecedor);
 					error = true;						
 				} else {
 					id = 0;
@@ -146,20 +152,21 @@ public class FornecedorMethods {
 	}
 
 
-	private static boolean gravarDadosNoFicheiro(Fornecedor[] fornecedors, String file) {
+	private static boolean gravarDadosNoFicheiro(Vector fornecedors, String file) {
 		boolean error = false;	
 		try {						
 			if (new File(file).exists()) {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
-				for (int i = 0; i < fornecedors.length; i++) {
-					if (fornecedors[i] != null) {
-						bw.write(fornecedors[i].getId()
-								+ "|" + fornecedors[i].getNome()
-								+ "|" + fornecedors[i].getMorada()
-								+ "|" + fornecedors[i].getNuit()								
-								+ "|" + fornecedors[i].isStatus() 
-								+ "|" + fornecedors[i].getDataRegisto()
-								+ "|" + fornecedors[i].getDataActualizacao());
+				for (int i = 0; i < fornecedors.size(); i++) {
+					Fornecedor fornecedor2 = (Fornecedor)fornecedors.elementAt(i);
+					if (!fornecedors.isEmpty()) {
+						bw.write(fornecedor2.getId()
+								+ "|" + fornecedor2.getNome()
+								+ "|" + fornecedor2.getMorada()
+								+ "|" + fornecedor2.getNuit()								
+								+ "|" + fornecedor2.isStatus() 
+								+ "|" + fornecedor2.getDataRegisto()
+								+ "|" + fornecedor2.getDataActualizacao());
 						bw.newLine();
 						lista(fornecedors);
 					}
@@ -198,42 +205,45 @@ public class FornecedorMethods {
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
 
-	private static int actualizar(Fornecedor[] fornecedors) {
+	private static int actualizar(Vector fornecedors) {
 		int id = 0;
 		lista(fornecedors);
 		boolean error = false;		
 		Fornecedor fornecedor = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), fornecedors);
 		if (fornecedor != null) {
-			for (int i = 0; i < fornecedors.length; i++) {
-				if (fornecedors[i] != null) {
-					if (fornecedors[i].getId() == fornecedor.getId()) {
+			for (int i = 0; i < fornecedors.size(); i++) {
+				Fornecedor fornecedor2 = (Fornecedor)fornecedors.elementAt(i);
+				if (!fornecedors.isEmpty()) {
+					if (fornecedor2.getId() == fornecedor.getId()) {
 						id = fornecedor.getId();
 						switch (menuActualizacao()) {
 						case 1:
-							String nome = validaNome(
-									Validacao.validaEntradaPalavra(Language.language_input_name()),
-									fornecedors);
-							fornecedors[i].setNome(nome);
-							fornecedors[i].setDataActualizacao(LocalDateTime.now());
+							String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()), fornecedors);
+							fornecedor2.setNome(nome);
+							fornecedor2.setDataActualizacao(LocalDateTime.now());
+							Validacao.adicionar(fornecedors, fornecedor2);
 							lista(fornecedors, id);
 							break;
 						case 2:
 							String morada = Validacao.validaEntradaPalavra(Language.language_input_address());						
-							fornecedors[i].setMorada(morada);
-							fornecedors[i].setDataActualizacao(LocalDateTime.now());
+							fornecedor2.setMorada(morada);
+							fornecedor2.setDataActualizacao(LocalDateTime.now());
+							Validacao.adicionar(fornecedors, fornecedor2);
 							lista(fornecedors, id);
 							break;
 						case 3:							
 							int nuit = Validacao.validaEntradaInteiro(Language.language_input_nuit());						
-							fornecedors[i].setNuit(nuit);
-							fornecedors[i].setDataActualizacao(LocalDateTime.now());
+							fornecedor2.setNuit(nuit);
+							fornecedor2.setDataActualizacao(LocalDateTime.now());
+							Validacao.adicionar(fornecedors, fornecedor2);
 							lista(fornecedors, id);
 							break;
 						case 4:							
 							boolean estado = Validacao
 							.validaEntradaStatus(Language.language_input_state());
-							fornecedors[i].setStatus(estado);
-							fornecedors[i].setDataActualizacao(LocalDateTime.now());
+							fornecedor2.setStatus(estado);
+							fornecedor2.setDataActualizacao(LocalDateTime.now());
+							Validacao.adicionar(fornecedors, fornecedor2);
 							lista(fornecedors, id);
 							break;
 						case 5:
@@ -253,17 +263,18 @@ public class FornecedorMethods {
 		return id;
 	}
 
-	private static int deleta(Fornecedor[] fornecedors){
+	private static int deleta(Vector fornecedors){
 		int id = 0;
 		lista(fornecedors);
 		boolean error = false;		
 		Fornecedor fornecedor = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), fornecedors);
 		if (fornecedor != null) {
-			for (int i = 0; i < fornecedors.length; i++) {
-				if (fornecedors[i] != null) {
-					if (fornecedors[i].getId() == fornecedor.getId()) {
+			for (int i = 0; i < fornecedors.size(); i++) {
+				Fornecedor fornecedor2 = (Fornecedor)fornecedors.elementAt(i);
+				if (!fornecedors.isEmpty()) {
+					if (fornecedor2.getId() == fornecedor.getId()) {
 						id = fornecedor.getId();
-						fornecedors[i] = null;
+						fornecedors.remove(fornecedor2);
 						error =  true;
 					}
 				}
@@ -275,23 +286,21 @@ public class FornecedorMethods {
 		return id;		
 	}
 
-	private static boolean lerDadosNoFicheiro(Fornecedor[] fornecedors, String file) {
+	private static boolean lerDadosNoFicheiro(Vector fornecedors, String file) {
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
 			if (new File(file).exists()) {				
 				br = new BufferedReader(new FileReader(new File(file)));
-				String linha = br.readLine();
-				int i = 0;
+				String linha = br.readLine();				
 				while (linha != null) {					
 					str = new StringTokenizer(linha, "|");
 					Fornecedor fornecedor = new Fornecedor(
 							Integer.parseInt(str.nextToken()),str.nextToken(),
 							str.nextToken(),Integer.parseInt(str.nextToken()),
 							Boolean.parseBoolean(str.nextToken()),Validacao.parseStringToLocalDateTime(str.nextToken()),Validacao.parseStringToLocalDateTime(str.nextToken()));
-					fornecedors[i] = fornecedor;					
-					linha = br.readLine();
-					i++;					
+					Validacao.adicionar(fornecedors, fornecedor);
+					linha = br.readLine();									
 				}
 				br.close();
 				error = true;				
@@ -341,12 +350,12 @@ public class FornecedorMethods {
 		return formatColl;
 	}
 
-	private static void dadosImpressao(int numeracao, int i, Fornecedor [] fornecedors, String layoutFormat) {
-		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,fornecedors[i].getId(),
-				Validacao.delimitador,fornecedors[i].getNome(),Validacao.delimitador,fornecedors[i].getMorada(),
-				Validacao.delimitador,fornecedors[i].getNuit(),Validacao.delimitador,Validacao.mudarStatus(fornecedors[i].isStatus()),
-				Validacao.delimitador,Validacao.parseLocalDateTimeToString(fornecedors[i].getDataRegisto()),
-				Validacao.delimitador,Validacao.parseLocalDateTimeToString(fornecedors[i].getDataActualizacao()),Validacao.delimitador);
+	private static void dadosImpressao(int numeracao, Fornecedor fornecedor, String layoutFormat) {
+		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,fornecedor.getId(),
+				Validacao.delimitador,fornecedor.getNome(),Validacao.delimitador,fornecedor.getMorada(),
+				Validacao.delimitador,fornecedor.getNuit(),Validacao.delimitador,Validacao.mudarStatus(fornecedor.isStatus()),
+				Validacao.delimitador,Validacao.parseLocalDateTimeToString(fornecedor.getDataRegisto()),
+				Validacao.delimitador,Validacao.parseLocalDateTimeToString(fornecedor.getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}
@@ -354,40 +363,43 @@ public class FornecedorMethods {
 	/**
 	 * @Descrição imprime a lista
 	 */
-	public static void lista(Fornecedor[] fornecedors) {
+	public static void lista(Vector fornecedors) {
 		int numeracao = 1;
 		int empty_= 0;
 		String layoutFormat = formatoImpressao();	
-		for (int i = 0; i < fornecedors.length; i++)
-			if (fornecedors[i] != null){
-				dadosImpressao(numeracao, i, fornecedors, layoutFormat);
+		for (int i = 0; i < fornecedors.size(); i++) {
+			Fornecedor fornecedor = (Fornecedor)fornecedors.elementAt(i);
+			if (!fornecedors.isEmpty()){
+				dadosImpressao(numeracao, fornecedor, layoutFormat);
 				numeracao+=1;
 			}else empty_ += 1; 		
-		Validacao.formatoImpressaoFooter(fornecedors.length,empty_);		
+		}
+		Validacao.formatoImpressaoFooter(fornecedors.size(),empty_);		
 	}
 
-	private static void lista(Fornecedor[] fornecedors, int id){
+	private static void lista(Vector fornecedors, int id){
 		int numeracao = 1;
 		int empty_= 0;        
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < fornecedors.length; i++) 
-			if (fornecedors[i] != null && fornecedors[i].getId() == id) {					
-				dadosImpressao(numeracao, i, fornecedors, layoutFormat);
+		for (int i = 0; i < fornecedors.size(); i++) {
+			Fornecedor fornecedor = (Fornecedor)fornecedors.elementAt(i);
+			if (!fornecedors.isEmpty() && fornecedor.getId() == id) {					
+				dadosImpressao(numeracao, fornecedor, layoutFormat);
 				numeracao += 1;					
 			}else empty_ += 1;						
-		Validacao.formatoImpressaoFooter(fornecedors.length, empty_);		
+		}
+		Validacao.formatoImpressaoFooter(fornecedors.size(), empty_);		
 	}  
 
-	public static void load(Fornecedor [] fornecedors) {
-		Validacao.init(fornecedors);	
+	public static void load(Vector fornecedors) {
 		lerDadosNoFicheiro(fornecedors, filePath);
 	}
 
 	/**
 	 * @param fornecedors 
 	 */	
-	public static void inicializador(Fornecedor [] fornecedors) {							
-			if (Validacao.notNull(fornecedors) != 0) {
+	public static void inicializador(Vector fornecedors) {							
+			if (fornecedors.isEmpty()) {
 				int caso;
 				do {
 					caso = Validacao.menu(Language.language_provider());

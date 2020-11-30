@@ -10,10 +10,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Random;
-
+import java.util.Vector;
 
 public class Validacao {
-
 
 
 	/**
@@ -36,6 +35,18 @@ public class Validacao {
 									Metodos genericos
 	  #--------------------------------------------------------------------------------#*/
 
+	/**
+	 * 
+	 * @param vector
+	 * @param obj
+	 * @Descrition Adiciona um objecto no final do vector e incrimenta o tamanho do vector
+	 */
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public static void adicionar(Vector vector, Object obj) {
+		vector.add(obj);
+		vector.trimToSize();
+	}
+	
 	/**	 	
 	 * @param <E>
 	 * @param <obj>

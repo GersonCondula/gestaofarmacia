@@ -8,7 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
+@SuppressWarnings("rawtypes")
 public class UsuarioMethods {
 
 	private static BufferedReader br;
@@ -18,16 +20,18 @@ public class UsuarioMethods {
 	/**
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
 	 **/
-	private static int geradorID(int j, Usuario[] usuarios) {
+	private static int geradorID(Vector usuarios) {
 		boolean exise = false;
-		int id = (1 + Validacao.random.nextInt(usuarios.length));
+		int id = (1 + Validacao.random.nextInt(usuarios.size()));
 		int newID = 0;
-		for (int i = 0; i < usuarios.length; i++) 
-			if (usuarios[i] != null) 
-				if (usuarios[i].getId() == id || id == 0)
+		for (int i = 0; i < usuarios.size(); i++) {
+			Usuario usuario = (Usuario)usuarios.elementAt(i);
+			if (!usuarios.isEmpty()) 
+				if (usuario.getId() == id || id == 0)
 					exise = true;					
+		}
 		if (exise)
-			geradorID(j, usuarios);
+			geradorID(usuarios);
 		else
 			newID = id;
 		return newID;
@@ -40,49 +44,49 @@ public class UsuarioMethods {
 	 * @return
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
-	public static Usuario getById(int id, Usuario [] usuarios) {
-		Usuario usuario = null;
-		int count = 0;
+	public static Usuario getById(int id, Vector usuarios) {
+		Usuario usuario = null;		
 		if (id!=0) {        	  
-			for (int i = 0; i < usuarios.length; i++) {	          		
-				if (usuarios[i] != null) {	                	  
-					if (usuarios[i].getId() == id) {	                    	  
-						usuario = new Usuario(usuarios[i].getId(), 
-								usuarios[i].getFuncionario(),
-								usuarios[i].getPassword(),
-								usuarios[i].isStatus(),usuarios[i].getDataRegisto(), 
-								usuarios[i].getDataActualizacao());
-						count ++;
+			for (int i = 0; i < usuarios.size(); i++) {	 
+				Usuario usuario2 = (Usuario)usuarios.elementAt(i);
+				if (!usuarios.isEmpty()) {	                	  
+					if (usuario2.getId() == id) {	                    	  
+						usuario = new Usuario(usuario2.getId(), 
+								usuario2.getFuncionario(),
+								usuario2.getPassword(),
+								usuario2.isStatus(),
+								usuario2.getDataRegisto(), 
+								usuario2.getDataActualizacao());						
 					}
 				}	                  
 			} 	          		
 		}       
 		if (usuario == null) {
 			usuario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), usuarios);
-			if (count < 3) {
-
-			}
 		}
 		return usuario;
 	}
 
-	public static Usuario selecionaUsuario(Usuario [] usuarios) {
+	public static Usuario selecionaUsuario(Vector usuarios) {
 		Usuario usuario = null;		
 		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
-		for (Usuario usuario2 : usuarios)			
-			if (usuario2 != null) 
+		for (int i = 0; i < usuarios.size(); i++) {
+			Usuario usuario2 = (Usuario)usuarios.elementAt(i);
+			if (!usuarios.isEmpty()) 
 				if (usuario2.getId() == numero) 
-					usuario = usuario2;									
+					usuario = usuario2;				
+		}
 		if (usuario == null) 
 			return selecionaUsuario(usuarios);		
 		return usuario;
 	}
 
-	public static PermissaoSistema selecionaPermissaoSistema(PermissaoSistema [] permissaoSistemas) {
+	public static PermissaoSistema selecionaPermissaoSistema(Vector permissaoSistemas) {
 		PermissaoSistema permissaoSistema = null;		
 		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
-		for (PermissaoSistema permissaoSistema2 : permissaoSistemas) {			
-			if (permissaoSistema2 != null) {
+		for (int i = 0; i < permissaoSistemas.size(); i++) {
+			PermissaoSistema permissaoSistema2 = (PermissaoSistema)permissaoSistema;
+			if (!permissaoSistemas.isEmpty()) {
 				if (permissaoSistema2.getId() == numero) {
 					permissaoSistema = permissaoSistema2;
 				} 
@@ -93,16 +97,17 @@ public class UsuarioMethods {
 		}
 		return permissaoSistema;
 	}
-	private static int gravar(Usuario[] usuarios, Funcionario [] funcionarios) {
-		int id = 0, i = Validacao.notNull(usuarios);		
+	
+	private static int gravar(Vector usuarios) {			
 		boolean error =  false;
-		id = geradorID(i, usuarios);		
-		FuncionarioMethods.lista(funcionarios);
-		Funcionario funcionario = FuncionarioMethods.selecionaFuncionario(funcionarios);	
+		int id = geradorID(usuarios);		
+		FuncionarioMethods.lista(usuarios);
+		Funcionario funcionario = FuncionarioMethods.selecionaFuncionario(usuarios);	
 		if (funcionario != null) {
 			String password = Validacao.validaEntradaPalavra(Language.language_input_password());
 			if (password != null) {
-				usuarios[i] = new Usuario(id, funcionario,password ,true, LocalDateTime.now(), LocalDateTime.now());
+				Usuario usuario = new Usuario(id, funcionario,password ,true, LocalDateTime.now(), LocalDateTime.now());
+				Validacao.adicionar(usuarios, usuario);
 				error = true;
 			} else {
 				id = 0;
@@ -131,21 +136,22 @@ public class UsuarioMethods {
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
 
-	private static int actualizar(Usuario[] usuarios) {
+	private static int actualizar(Vector usuarios) {
 		int id = 0;
 		lista(usuarios);
 		boolean error = false;		
 		Usuario identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), usuarios);
 		if (identificacao != null) {
-			for (int i = 0; i < usuarios.length; i++) {
-				if (usuarios[i] != null) {
-					if (usuarios[i].getId() == identificacao.getId()) {
+			for (int i = 0; i < usuarios.size(); i++) {
+				Usuario usuario = (Usuario)usuarios.elementAt(i);
+				if (!usuarios.isEmpty()) {
+					if (usuario.getId() == identificacao.getId()) {
 						id = identificacao.getId();
 						switch (menuActualizar()) {										
 						case 1:
 							boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
-							usuarios[i].setStatus(estado);
-							usuarios[i].setDataActualizacao(LocalDateTime.now());
+							usuario.setStatus(estado);
+							usuario.setDataActualizacao(LocalDateTime.now());
 							lista(usuarios, id);
 							break;
 						case 2:
@@ -164,17 +170,18 @@ public class UsuarioMethods {
 		return id;
 	}
 
-	private static int deletar(Usuario[] usuarios){
+	private static int deletar(Vector usuarios){
 		int id = 0;
 		lista(usuarios);
 		boolean error = false;		
 		Usuario usuario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), usuarios);
 		if (usuario != null) {
-			for (int i = 0; i < usuarios.length; i++) {
-				if (usuarios[i] != null) {
-					if (usuarios[i].getId() == usuario.getId()) {
+			for (int i = 0; i < usuarios.size(); i++) {
+				Usuario usuario2 = (Usuario)usuarios.elementAt(i);
+				if (!usuarios.isEmpty()) {
+					if (usuario2.getId() == usuario.getId()) {
 						id = usuario.getId();
-						usuarios[i] = null;
+						usuarios.remove(usuario);
 						error = true;
 					}
 				}
@@ -186,19 +193,20 @@ public class UsuarioMethods {
 		return id;		
 	}
 
-	private static boolean gravarDadosNoFicheiro(Usuario[] usuarios, String file) {
+	private static boolean gravarDadosNoFicheiro(Vector usuarios, String file) {
 		boolean error = false;	
 		try {						
 			if (new File(file).exists()) {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
-				for (int i = 0; i < usuarios.length; i++) {
-					if (usuarios[i] != null) {
-						bw.write(usuarios[i].getId() 
-								+ "|" + usuarios[i].getFuncionario().getId()
-								+ "|" + usuarios[i].getPassword() 
-								+ "|" + usuarios[i].isStatus() 
-								+ "|" + usuarios[i].getDataRegisto()
-								+ "|" + usuarios[i].getDataActualizacao());
+				for (int i = 0; i < usuarios.size(); i++) {
+					Usuario usuario = (Usuario)usuarios.elementAt(i);
+					if (!usuarios.isEmpty()) {
+						bw.write(usuario.getId() 
+								+ "|" + usuario.getFuncionario().getId()
+								+ "|" + usuario.getPassword() 
+								+ "|" + usuario.isStatus() 
+								+ "|" + usuario.getDataRegisto()
+								+ "|" + usuario.getDataActualizacao());
 						bw.newLine();
 						lista(usuarios);
 					}
@@ -215,30 +223,28 @@ public class UsuarioMethods {
 		return error;
 	}
 
-	public static boolean lerDadosNoFicheiro(Usuario[] usuarios, Funcionario [] funcionarios, String file) {
+	public static boolean lerDadosNoFicheiro(Vector usuarios, String file) {
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
 			if (new File(file).exists()) {				
 				br = new BufferedReader(new FileReader(new File(file)));
-				String linha = br.readLine();
-				int i = 0;
+				String linha = br.readLine();			
 				while (linha != null) {					
 					str = new StringTokenizer(linha, "|");
-					Usuario identificacao = new Usuario(Integer.parseInt(str.nextToken()),
-							FuncionarioMethods.getById(Integer.parseInt(str.nextToken()), funcionarios),
+					Usuario usuario = new Usuario(Integer.parseInt(str.nextToken()),
+							FuncionarioMethods.getById(Integer.parseInt(str.nextToken()), usuarios),
 							str.nextToken(), Boolean.parseBoolean(str.nextToken()),
 							Validacao.parseStringToLocalDateTime(str.nextToken()),
-							Validacao.parseStringToLocalDateTime(str.nextToken()));
-					usuarios[i] = identificacao;					
-					linha = br.readLine();
-					i++;					
+							Validacao.parseStringToLocalDateTime(str.nextToken()));								
+					Validacao.adicionar(usuarios, usuario);
+					linha = br.readLine();						
 				}
 				br.close();
 				error = true;				
 			}else {								
 				Validacao.geraDirectorioFicheiro(file);
-				lerDadosNoFicheiro(usuarios, funcionarios, file);				
+				lerDadosNoFicheiro(usuarios, file);				
 			}
 		} catch (IOException e) {
 			System.err.println("error" + e.getLocalizedMessage());		
@@ -274,58 +280,59 @@ public class UsuarioMethods {
 	/**
 	 * @Descrição imprime a lista
 	 */
-	public static void lista(Usuario [] usuarios){
+	public static void lista(Vector usuarios){
 		int numeracao = 1;
 		int empty_= 0;
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < usuarios.length; i++){
-			if (usuarios[i] != null){
-				dadosImpressao(numeracao, i, usuarios, layoutFormat);
+		for (int i = 0; i < usuarios.size(); i++){
+			Usuario usuario = (Usuario)usuarios.elementAt(i);
+			if (!usuarios.isEmpty()){
+				dadosImpressao(numeracao, i, usuario, layoutFormat);
 				numeracao+=1;
 			}else{empty_ += 1; }
 		}
-		Validacao.formatoImpressaoFooter(usuarios.length,empty_);
+		Validacao.formatoImpressaoFooter(usuarios.size(), empty_);
 	}
 
-	private static void dadosImpressao(int numeracao, int i, Usuario [] usuarios, String layoutFormat) {
-		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,usuarios[i].getId(),Validacao.delimitador,
-				usuarios[i].getFuncionario().getNome(),Validacao.delimitador,usuarios[i].getPassword(),
-				Validacao.delimitador,Validacao.mudarStatus(usuarios[i].isStatus()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToString(usuarios[i].getDataRegisto()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToString(usuarios[i].getDataActualizacao()),Validacao.delimitador);
+	private static void dadosImpressao(int numeracao, int i, Usuario usuario, String layoutFormat) {
+		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,usuario.getId(),Validacao.delimitador,
+				usuario.getFuncionario().getNome(),Validacao.delimitador,usuario.getPassword(),
+				Validacao.delimitador,Validacao.mudarStatus(usuario.isStatus()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(usuario.getDataRegisto()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(usuario.getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}
 
-	private static void lista(Usuario [] usuarios, int id){
+	private static void lista(Vector usuarios, int id){
 		int numeracao = 1;
 		int empty_= 0;        
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < usuarios.length; i++) {
-			if (usuarios[i] != null && usuarios[i].getId() == id) {					
-				dadosImpressao(numeracao, i, usuarios, layoutFormat);
+		for (int i = 0; i < usuarios.size(); i++) {
+			Usuario usuario = (Usuario)usuarios.elementAt(i);
+			if (!usuarios.isEmpty() && usuario.getId() == id) {					
+				dadosImpressao(numeracao, i, usuario, layoutFormat);
 				numeracao += 1;					
 			} else {
 				empty_ += 1;
 			}
 		}			
-		Validacao.formatoImpressaoFooter(usuarios.length, empty_);		
+		Validacao.formatoImpressaoFooter(usuarios.size(), empty_);		
 	}         
 
-	public static void load(Usuario [] usuarios, Funcionario [] funcionarios) {
-		Validacao.init(usuarios);	
-		lerDadosNoFicheiro(usuarios, funcionarios, filePath);
+	public static void load(Vector usuarios) {
+		lerDadosNoFicheiro(usuarios, filePath);
 	}
 
-	public static void inicializador(Usuario [] usuarios, Funcionario [] funcionarios, Identificacao [] identificacaos) {			
-		load(usuarios, funcionarios);
+	public static void inicializador(Vector usuarios) {			
+		load(usuarios);
 		int caso;
-		if (Validacao.notNull(funcionarios) != 0) {
+		if (!usuarios.isEmpty()) {
 			do {
 				caso = Validacao.menu(Language.language_user());
 				switch (caso) {
 				case 1:
-					gravar(usuarios, funcionarios);
+					gravar(usuarios);
 					;
 					break;
 				case 2:
@@ -348,8 +355,8 @@ public class UsuarioMethods {
 				}
 			} while (caso != 5);
 		}else {
-			FuncionarioMethods.inicializador(funcionarios, identificacaos);
-			gravar(usuarios, funcionarios);
+			FuncionarioMethods.inicializador(usuarios);
+			gravar(usuarios);
 		}
 	}
 }

@@ -7,7 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
+@SuppressWarnings("rawtypes")
 public class PermissaoSistemaMethods {
 
 	private static BufferedReader br;
@@ -18,16 +20,17 @@ public class PermissaoSistemaMethods {
 	 * @Descrição Garante que os nomes sejam unicos
 	 */
 	@SuppressWarnings("unused")
-	private static String validaNome(String nome, PermissaoSistema[] permissaoSistemas) {
+	private static String validaNome(String nome, Vector permissaoSistemas) {
 		String nomed = null;
 		if (nome != null) { 
-			for (int i = 0; i < permissaoSistemas.length; i++) {
-				if (permissaoSistemas[i] != null) {
-					if (!permissaoSistemas[i].getNome().equalsIgnoreCase(nome)) {
+			for (int i = 0; i < permissaoSistemas.size(); i++) {
+				PermissaoSistema permissaoSistema = (PermissaoSistema)permissaoSistemas.elementAt(i);
+				if (!permissaoSistemas.isEmpty()) {
+					if (!permissaoSistema.getNome().equalsIgnoreCase(nome)) {
 						nomed = nome;
 					}else {
 						nomed = validaNome(Validacao.validaEntradaPalavra(Language.language_input_exist_name()),permissaoSistemas);
-						i = permissaoSistemas.length;
+						i = permissaoSistemas.size();
 					}
 				}else {
 					nomed = nome;
@@ -43,25 +46,20 @@ public class PermissaoSistemaMethods {
 	 * @return
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
-	public static PermissaoSistema getByNome(String nome, PermissaoSistema [] permissaoSistemas) {
-		PermissaoSistema permissaoSistema = null;
-		int count = 0;
+	public static PermissaoSistema getByNome(String nome, Vector permissaoSistemas) {
+		PermissaoSistema permissaoSistema = null;		
 		if (nome != null) {        	  
-			for (int i = 0; i < permissaoSistemas.length; i++) {	          		
-				if (permissaoSistemas[i] != null) {	                	  
-					if (permissaoSistemas[i].getNome().equalsIgnoreCase(nome)) {	                    	  
-						permissaoSistema = new PermissaoSistema(permissaoSistemas[i].getId(), 
-								permissaoSistemas[i].getNome());
-						count ++;
+			for (int i = 0; i < permissaoSistemas.size(); i++) {	 
+				PermissaoSistema permissaoSistema2 = (PermissaoSistema)permissaoSistemas.elementAt(i);
+				if (!permissaoSistemas.isEmpty()) {	                	  
+					if (permissaoSistema2.getNome().equalsIgnoreCase(nome)) {	                    	  
+						permissaoSistema = permissaoSistema2;
 					}
 				}	                  
 			} 	          		
 		}       
 		if (permissaoSistema == null) {
-			permissaoSistema = getByNome(Validacao.validaEntradaPalavra(Language.language_input_valid_name()), permissaoSistemas);
-			if (count < 3) {
-
-			}
+			permissaoSistema = getByNome(Validacao.validaEntradaPalavra(Language.language_input_valid_name()), permissaoSistemas);			
 		}
 		return permissaoSistema;
 	}
@@ -72,40 +70,35 @@ public class PermissaoSistemaMethods {
 	 * @return
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
-	public static PermissaoSistema getById(int id, PermissaoSistema [] permissaoSistemas) {
+	public static PermissaoSistema getById(int id, Vector permissaoSistemas) {
 		PermissaoSistema permissaoSistema = null;
-		int count = 0;
 		if (id!=0) {        	  
-			for (int i = 0; i < permissaoSistemas.length; i++) {	          		
-				if (permissaoSistemas[i] != null) {	                	  
-					if (permissaoSistemas[i].getId() == id) {	                    	  
-						permissaoSistema = new PermissaoSistema(permissaoSistemas[i].getId(), 
-								permissaoSistemas[i].getNome());
-						count ++;
+			for (int i = 0; i < permissaoSistemas.size(); i++) {	
+				PermissaoSistema permissaoSistema2 = (PermissaoSistema)permissaoSistemas.elementAt(i);
+				if (!permissaoSistemas.isEmpty()) {	                	  
+					if (permissaoSistema.getId() == id) {	                    	  
+						permissaoSistema = permissaoSistema2;						
 					}
 				}	                  
 			} 	          		
 		}       
 		if (permissaoSistema == null) {
 			permissaoSistema = getByNome(Validacao.validaEntradaPalavra(Language.language_input_valid_name()), permissaoSistemas);
-			if (count < 3) {
-
-			}
 		}
 		return permissaoSistema;
 	}
-	
 	@SuppressWarnings("unused")
-	private static boolean gravarDadosNoFicheiro(PermissaoSistema [] permissaoSistemas, String file) {
+	private static boolean gravarDadosNoFicheiro(Vector permissaoSistemas, String file) {
 		boolean error = false;	
 		try {		
 			br = new BufferedReader(new FileReader(new File(file)));
 			String linha = br.readLine();
 			if (new File(file).exists() || linha == null) {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
-				for (int i = 0; i < permissaoSistemas.length; i++) {
-					if (permissaoSistemas[i] != null) {
-						bw.write(permissaoSistemas[i].getId() + "|" + permissaoSistemas[i].getNome());
+				for (int i = 0; i < permissaoSistemas.size(); i++) {
+					PermissaoSistema permissaoSistema = (PermissaoSistema)permissaoSistemas.elementAt(i);
+					if (!permissaoSistemas.isEmpty()) {
+						bw.write(permissaoSistema.getId() + "|" + permissaoSistema.getNome());
 						bw.newLine();						
 					}
 				}
@@ -121,34 +114,33 @@ public class PermissaoSistemaMethods {
 		return error;
 	}
 	
-	public static boolean lerDadosNoFicheiro(PermissaoSistema[] permissaoSistemas, String file) {
+	public static boolean lerDadosNoFicheiro(Vector permissaoSistemas, String file) {
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
 			if (new File(file).exists()) {				
 				br = new BufferedReader(new FileReader(new File(file)));
-				String linha = br.readLine();
-				int i = 0;
+				String linha = br.readLine();				
 				if (linha!=null) {
 					while (linha != null) {
 						str = new StringTokenizer(linha, "|");
-						PermissaoSistema identificacao = new PermissaoSistema(Integer.parseInt(str.nextToken()),
-								str.nextToken());
-						permissaoSistemas[i] = identificacao;
-						linha = br.readLine();
-						i++;
+						PermissaoSistema permissaoSistema = new PermissaoSistema(Integer.parseInt(str.nextToken()), str.nextToken());
+						Validacao.adicionar(permissaoSistemas, permissaoSistema);					
+						linha = br.readLine();						
 					} 
 				}else {
-					PermissaoSistema permissaoSistemas1 = new PermissaoSistema(2222,"Administracao");
-					PermissaoSistema permissaoSistemas2 = new PermissaoSistema(3333,"Gestor");
-					PermissaoSistema permissaoSistemas3 = new PermissaoSistema(4444,"Farmaceutico");
-					permissaoSistemas[0]= permissaoSistemas1;
-					permissaoSistemas[1]= permissaoSistemas2;
-					permissaoSistemas[2]= permissaoSistemas3;
+					PermissaoSistema permissaoSistema1 = new PermissaoSistema(2222,"Administracao");
+					PermissaoSistema permissaoSistema2 = new PermissaoSistema(3333,"Gestor");
+					PermissaoSistema permissaoSistema3 = new PermissaoSistema(4444,"Farmaceutico");
+					Validacao.adicionar(permissaoSistemas, permissaoSistema1);
+					Validacao.adicionar(permissaoSistemas, permissaoSistema2);
+					Validacao.adicionar(permissaoSistemas, permissaoSistema3);
+
 					bw = new BufferedWriter(new FileWriter(new File(filePath)));				
-					for (int ii = 0; ii < 3; ii++) {
-						if (permissaoSistemas[ii] != null) {
-							bw.write(permissaoSistemas[ii].getId() + "|" + permissaoSistemas[ii].getNome());
+					for (int i = 0; i < 3; i++) {
+						PermissaoSistema permissaoSistema = (PermissaoSistema)permissaoSistemas.elementAt(i);
+						if (!permissaoSistemas.isEmpty()) {
+							bw.write(permissaoSistema.getId() + "|" + permissaoSistema.getNome());
 							bw.newLine();						
 						}
 					}
@@ -190,49 +182,48 @@ public class PermissaoSistemaMethods {
 	/**
 	 * @Descrição imprime a lista
 	 */
-	public static void lista(PermissaoSistema [] permissaoSistemas){
+	public static void lista(Vector permissaoSistemas){
 		int numeracao = 1;
 		int empty_= 0;
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < permissaoSistemas.length; i++){
-			if (permissaoSistemas[i] != null){
-				dadosImpressao(numeracao, i, permissaoSistemas, layoutFormat);
+		for (int i = 0; i < permissaoSistemas.size(); i++){			
+			if (!permissaoSistemas.isEmpty()){
+				dadosImpressao(numeracao, i, (PermissaoSistema)permissaoSistemas.elementAt(i), layoutFormat);
 				numeracao+=1;
 			}else{empty_ += 1; }
 		}
-		Validacao.formatoImpressaoFooter(permissaoSistemas.length,empty_);
+		Validacao.formatoImpressaoFooter(permissaoSistemas.size(),empty_);
 	}
 
-	private static void dadosImpressao(int numeracao, int i, PermissaoSistema [] identificacaos, String layoutFormat) {
-		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,identificacaos[i].getId(),Validacao.delimitador,
-				identificacaos[i].getNome(),Validacao.delimitador);
+	private static void dadosImpressao(int numeracao, int i, PermissaoSistema identificacao, String layoutFormat) {
+		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,identificacao.getId(),Validacao.delimitador,
+				identificacao.getNome(),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}
 
 	@SuppressWarnings("unused")
-	private static void listaIdentificacao(PermissaoSistema [] permissaoSistemas, int id){
+	private static void listaIdentificacao(Vector permissaoSistemas, int id){
 		int numeracao = 1;
 		int empty_= 0;        
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < permissaoSistemas.length; i++) {
-			if (permissaoSistemas[i] != null && permissaoSistemas[i].getId() == id) {					
-				dadosImpressao(numeracao, i, permissaoSistemas, layoutFormat);
+		for (int i = 0; i < permissaoSistemas.size(); i++) {
+			PermissaoSistema permissaoSistema = (PermissaoSistema)permissaoSistemas.elementAt(i);
+			if (!permissaoSistemas.isEmpty() && permissaoSistema.getId() == id) {					
+				dadosImpressao(numeracao, i, permissaoSistema, layoutFormat);
 				numeracao += 1;					
 			} else {
 				empty_ += 1;
 			}
 		}			
-		Validacao.formatoImpressaoFooter(permissaoSistemas.length, empty_);		
+		Validacao.formatoImpressaoFooter(permissaoSistemas.size(), empty_);		
 	}         
 
-	public static void load(PermissaoSistema [] permissaoSistemas) {
-		Validacao.init(permissaoSistemas);			
+	public static void load(Vector permissaoSistemas) {				
 		lerDadosNoFicheiro(permissaoSistemas, filePath);
 	}
 
-	public static void inicializador(PermissaoSistema [] permissaoSistemas) {			
-		load(permissaoSistemas);
+	public static void inicializador(Vector permissaoSistemas) {				
 		int caso;
 		do {
 			caso = Validacao.menuPermissions(Language.language_permissions());

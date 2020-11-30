@@ -8,7 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
+@SuppressWarnings("rawtypes")
 public class CategoriaProdutoMethods {
 	
 	private static BufferedReader br;
@@ -18,18 +20,19 @@ public class CategoriaProdutoMethods {
 	/**
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
 	 **/
-	private static int geradorID(int j, CategoriaProduto[] categoriaProdutos) {
+	private static int geradorID(Vector categoriaProdutos) {
 		boolean exise = false;
-		int id = (1 + Validacao.random.nextInt(categoriaProdutos.length));
+		int id = (1 + Validacao.random.nextInt(categoriaProdutos.size()));
 		int newID = 0;
-		for (int i = 0; i < categoriaProdutos.length; i++) {
-			if (categoriaProdutos[i] != null) {
-				if (categoriaProdutos[i].getId() == id || id == 0)
+		for (int i = 0; i < categoriaProdutos.size(); i++) {
+			CategoriaProduto categoriaProduto = (CategoriaProduto)categoriaProdutos.elementAt(i);
+			if (!categoriaProdutos.isEmpty()) {
+				if (categoriaProduto.getId() == id || id == 0)
 					exise = true;
 			}
 		}
 		if (exise)
-			geradorID(j, categoriaProdutos);
+			geradorID(categoriaProdutos);
 		else
 			newID = id;
 		return newID;
@@ -38,16 +41,17 @@ public class CategoriaProdutoMethods {
 	/**	 
 	 * @Descrição Garante que os nomes sejam unicos
 	 */
-	private static String validaNome(String nome, CategoriaProduto[] categoriaProdutos) {
+	private static String validaNome(String nome, Vector categoriaProdutos) {
 		String nomed = null;
 		if (nome != null) {
-			for (int i = 0; i < categoriaProdutos.length; i++) {
-				if (categoriaProdutos[i] != null) {
-					if (!categoriaProdutos[i].getNome().equalsIgnoreCase(nome)) {
+			for (int i = 0; i < categoriaProdutos.size(); i++) {
+				CategoriaProduto categoriaProduto = (CategoriaProduto)categoriaProdutos.elementAt(i);
+				if (!categoriaProdutos.isEmpty()) {
+					if (!categoriaProduto.getNome().equalsIgnoreCase(nome)) {
 						nomed = nome;
 					}else {
 						nomed = validaNome(Validacao.validaEntradaPalavra(Language.language_input_exist_name()), categoriaProdutos);
-						i = categoriaProdutos.length;
+						i = categoriaProdutos.size();
 					}
 				}else {
 					nomed = nome;
@@ -63,17 +67,18 @@ public class CategoriaProdutoMethods {
 	 * @return
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
-	public static CategoriaProduto getById(int id, CategoriaProduto [] categoriaProdutos) {
+	public static CategoriaProduto getById(int id, Vector categoriaProdutos) {
 		CategoriaProduto categoriaProduto = null;
 		int count = 0;
 		if (id!=0) {        	  
-			for (int i = 0; i < categoriaProdutos.length; i++) {	          		
-				if (categoriaProdutos[i] != null) {	                	  
-					if (categoriaProdutos[i].getId() == id) {	                    	  
-						categoriaProduto = new CategoriaProduto(categoriaProdutos[i].getId(), 
-								categoriaProdutos[i].getNome(),categoriaProdutos[i].getDescricao(), 
-								categoriaProdutos[i].isStatus(),categoriaProdutos[i].getDataRegisto(), 
-								categoriaProdutos[i].getDataActualizacao());
+			for (int i = 0; i < categoriaProdutos.size(); i++) {
+				CategoriaProduto categoriaProduto2 = (CategoriaProduto)categoriaProdutos.elementAt(i);
+				if (!categoriaProdutos.isEmpty()) {	                	  
+					if (categoriaProduto2.getId() == id) {	                    	  
+						categoriaProduto = new CategoriaProduto(categoriaProduto2.getId(), 
+								categoriaProduto2.getNome(),categoriaProduto2.getDescricao(), 
+								categoriaProduto2.isStatus(),categoriaProduto2.getDataRegisto(), 
+								categoriaProduto2.getDataActualizacao());
 						count ++;
 					}
 				}	                  
@@ -88,27 +93,30 @@ public class CategoriaProdutoMethods {
 		return categoriaProduto;
 	}
 
-	public static CategoriaProduto selecionaCategoriaProduo(CategoriaProduto [] categoriaProdutos) {
+	public static CategoriaProduto selecionaCategoriaProduo(Vector categoriaProdutos) {
 		CategoriaProduto categoriaProduto = null;		
 		int numero = Validacao.validaEntradaInteiro(Language.language_input_id());
-		for (CategoriaProduto categoriaProduto2 : categoriaProdutos)			
+		for (int i = 0; i < categoriaProdutos.size(); i++) {
+			CategoriaProduto categoriaProduto2 = (CategoriaProduto)categoriaProdutos.elementAt(i);			
 			if (categoriaProduto2 != null) 
 				if (categoriaProduto2.getId() == numero) 
-					categoriaProduto = categoriaProduto2;		
+					categoriaProduto = categoriaProduto2;	
+		}
 		if (categoriaProduto == null) 
 			return selecionaCategoriaProduo(categoriaProdutos);
 		return categoriaProduto;
 	}
 	
-	public static int gravar(CategoriaProduto[] categoriaProdutos) {
-		int id = 0, i = Validacao.notNull(categoriaProdutos);
+	public static int gravar(Vector categoriaProdutos) {
+		int id = 0;
 		boolean error = false;
-		id = geradorID(i, categoriaProdutos);		
+		id = geradorID(categoriaProdutos);		
 		String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),categoriaProdutos);		
 		if (nome != null) {
 			String descricao = Validacao.validaEntradaPalavra(Language.language_input_acronym());
 			if (descricao != null) {
-				categoriaProdutos[i] = new CategoriaProduto(id, nome, descricao, true, LocalDateTime.now(), LocalDateTime.now());
+				CategoriaProduto categoriaProduto = new CategoriaProduto(id, nome, descricao, true, LocalDateTime.now(), LocalDateTime.now());
+				Validacao.adicionar(categoriaProdutos, categoriaProduto);
 				error = true;
 			}else {
 				id = 0;
@@ -140,33 +148,37 @@ public class CategoriaProdutoMethods {
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
 
-	private static int actualizar(CategoriaProduto[] categoriaProdutos) {
+	private static int actualizar(Vector categoriaProdutos) {
 		int id = 0;
 		lista(categoriaProdutos);
 		boolean error = true;		
 		CategoriaProduto categoriaProduto = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), categoriaProdutos);
 		if (categoriaProduto != null) {
-			for (int i = 0; i < categoriaProdutos.length; i++) {
-				if (categoriaProdutos[i] != null) {
-					if (categoriaProdutos[i].getId() == categoriaProduto.getId()) {
+			for (int i = 0; i < categoriaProdutos.size(); i++) {
+				CategoriaProduto categoriaProduto2 = (CategoriaProduto)categoriaProdutos.elementAt(i);
+				if (!categoriaProdutos.isEmpty()) {
+					if (categoriaProduto2.getId() == categoriaProduto.getId()) {
 						id = categoriaProduto.getId();
 						switch (menuActualizar()) {
 						case 1:
 							String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),categoriaProdutos);
-							categoriaProdutos[i].setNome(nome);
-							categoriaProdutos[i].setDataActualizacao(LocalDateTime.now());
+							categoriaProduto2.setNome(nome);
+							categoriaProduto2.setDataActualizacao(LocalDateTime.now());
+							Validacao.adicionar(categoriaProdutos, categoriaProduto2);
 							lista(categoriaProdutos, id);
 							break;
 						case 2:
 							String descricao = Validacao.validaEntradaPalavra(Language.language_input_acronym());
-							categoriaProdutos[i].setDescricao(descricao);
-							categoriaProdutos[i].setDataActualizacao(LocalDateTime.now());
+							categoriaProduto2.setDescricao(descricao);
+							categoriaProduto2.setDataActualizacao(LocalDateTime.now());
+							Validacao.adicionar(categoriaProdutos, categoriaProduto2);
 							lista(categoriaProdutos, id);
 							break;
 						case 3:
 							boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
-							categoriaProdutos[i].setStatus(estado);
-							categoriaProdutos[i].setDataActualizacao(LocalDateTime.now());
+							categoriaProduto2.setStatus(estado);
+							categoriaProduto2.setDataActualizacao(LocalDateTime.now());
+							Validacao.adicionar(categoriaProdutos, categoriaProduto2);
 							lista(categoriaProdutos, id);
 							break;
 						case 5:
@@ -185,17 +197,18 @@ public class CategoriaProdutoMethods {
 		return id;
 	}
 
-	private static int deleta(CategoriaProduto[] categoriaProdutos){
+	private static int deleta(Vector categoriaProdutos){
 		int id = 0;
 		lista(categoriaProdutos);
 		boolean error = false;		
 		CategoriaProduto categoriaProduto = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), categoriaProdutos);
 		if (categoriaProduto != null) {
-			for (int i = 0; i < categoriaProdutos.length; i++) {
-				if (categoriaProdutos[i] != null) {
-					if (categoriaProdutos[i].getId() == categoriaProduto.getId()) {
+			for (int i = 0; i < categoriaProdutos.size(); i++) {
+				CategoriaProduto categoriaProduto2 = (CategoriaProduto)categoriaProdutos.elementAt(i);
+				if (!categoriaProdutos.isEmpty()) {
+					if (categoriaProduto2.getId() == categoriaProduto.getId()) {
 						id = categoriaProduto.getId();
-						categoriaProdutos[i] = null;
+						categoriaProdutos.remove(categoriaProduto2);
 						error = true;
 					}
 				}
@@ -207,18 +220,19 @@ public class CategoriaProdutoMethods {
 		return id;		
 	}
 
-	private static boolean gravarDadosNoFicheiro(CategoriaProduto[] categoriaProdutos, String file) {
+	private static boolean gravarDadosNoFicheiro(Vector categoriaProdutos, String file) {
 		boolean error = false;	
 		try {						
 			if (new File(file).exists()) {
 				bw = new BufferedWriter(new FileWriter(new File(filePath)));				
-				for (int i = 0; i < categoriaProdutos.length; i++) {
-					if (categoriaProdutos[i] != null) {
-						bw.write(categoriaProdutos[i].getId() + "|" + categoriaProdutos[i].getNome()
-								+ "|" + categoriaProdutos[i].getDescricao()
-								+ "|" + categoriaProdutos[i].isStatus() 
-								+ "|" + categoriaProdutos[i].getDataRegisto()
-								+ "|" + categoriaProdutos[i].getDataActualizacao());
+				for (int i = 0; i < categoriaProdutos.size(); i++) {
+					CategoriaProduto categoriaProduto = (CategoriaProduto)categoriaProdutos.elementAt(i);
+					if (!categoriaProdutos.isEmpty()) {
+						bw.write(categoriaProduto.getId() + "|" + categoriaProduto.getNome()
+								+ "|" + categoriaProduto.getDescricao()
+								+ "|" + categoriaProduto.isStatus() 
+								+ "|" + categoriaProduto.getDataRegisto()
+								+ "|" + categoriaProduto.getDataActualizacao());
 						bw.newLine();
 						lista(categoriaProdutos);
 					}
@@ -235,23 +249,21 @@ public class CategoriaProdutoMethods {
 		return error;
 	}
 
-	public static boolean lerDadosNoFicheiro(CategoriaProduto[] categoriaProdutos, String file) {
+	public static boolean lerDadosNoFicheiro(Vector categoriaProdutos, String file) {
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
 			if (new File(file).exists()) {				
 				br = new BufferedReader(new FileReader(new File(file)));
-				String linha = br.readLine();
-				int i = 0;
+				String linha = br.readLine();				
 				while (linha != null) {					
 					str = new StringTokenizer(linha, "|");		
 					CategoriaProduto categoriaProduto = new CategoriaProduto(Integer.parseInt(str.nextToken()),
 							str.nextToken(),str.nextToken(), Boolean.parseBoolean(str.nextToken()),
 							Validacao.parseStringToLocalDateTime(str.nextToken()),
 							Validacao.parseStringToLocalDateTime(str.nextToken()));
-					categoriaProdutos[i] = categoriaProduto;					
-					linha = br.readLine();
-					i++;					
+					Validacao.adicionar(categoriaProdutos, categoriaProduto);						
+					linha = br.readLine();							
 				}
 				br.close();
 				error = true;				
@@ -293,52 +305,53 @@ public class CategoriaProdutoMethods {
 	/**
 	 * @Descrição imprime a lista de identificacoes
 	 */
-	public static void lista(CategoriaProduto [] categoriaProdutos){
+	public static void lista(Vector categoriaProdutos){
 		int numeracao = 1;
 		int empty_= 0;
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < categoriaProdutos.length; i++){
-			if (categoriaProdutos[i] != null){
-				dadosImpressao(numeracao, i, categoriaProdutos, layoutFormat);
+		for (int i = 0; i < categoriaProdutos.size(); i++){
+			CategoriaProduto categoriaProduto = (CategoriaProduto)categoriaProdutos.elementAt(i);
+			if (!categoriaProdutos.isEmpty()){
+				dadosImpressao(numeracao, categoriaProduto, layoutFormat);
 				numeracao+=1;
 			}else{empty_ += 1; }
 		}
-		Validacao.formatoImpressaoFooter(categoriaProdutos.length,empty_);
+		Validacao.formatoImpressaoFooter(categoriaProdutos.size(),empty_);
 	}
 
-	private static void dadosImpressao(int numeracao, int i, CategoriaProduto [] categoriaProdutos, String layoutFormat) {
-		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,categoriaProdutos[i].getId(),Validacao.delimitador,
-				categoriaProdutos[i].getNome(),Validacao.delimitador,categoriaProdutos[i].getDescricao(),Validacao.delimitador,Validacao.mudarStatus(categoriaProdutos[i].isStatus()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToString(categoriaProdutos[i].getDataRegisto()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToString(categoriaProdutos[i].getDataActualizacao()),Validacao.delimitador);
+	private static void dadosImpressao(int numeracao, CategoriaProduto categoriaProduto, String layoutFormat) {
+		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,categoriaProduto.getId(),Validacao.delimitador,
+				categoriaProduto.getNome(),Validacao.delimitador,categoriaProduto.getDescricao(),Validacao.delimitador,Validacao.mudarStatus(categoriaProduto.isStatus()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(categoriaProduto.getDataRegisto()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(categoriaProduto.getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}
 
-	private static void lista(CategoriaProduto [] categoriaProdutos, int id){
+	private static void lista(Vector categoriaProdutos, int id){
 		int numeracao = 1;
 		int empty_= 0;        
 		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < categoriaProdutos.length; i++) {
-			if (categoriaProdutos[i] != null && categoriaProdutos[i].getId() == id) {					
-				dadosImpressao(numeracao, i, categoriaProdutos, layoutFormat);
+		for (int i = 0; i < categoriaProdutos.size(); i++) {
+			CategoriaProduto categoriaProduto = (CategoriaProduto)categoriaProdutos.elementAt(i);
+			if (!categoriaProdutos.isEmpty() && categoriaProduto.getId() == id) {					
+				dadosImpressao(numeracao, categoriaProduto, layoutFormat);
 				numeracao += 1;					
 			} else {
 				empty_ += 1;
 			}
 		}			
-		Validacao.formatoImpressaoFooter(categoriaProdutos.length, empty_);		
+		Validacao.formatoImpressaoFooter(categoriaProdutos.size(), empty_);		
 	}         	
 
-	public static void load(CategoriaProduto [] categoriaProdutos) {
-		Validacao.init(categoriaProdutos);	
+	public static void load(Vector categoriaProdutos) {		
 		lerDadosNoFicheiro(categoriaProdutos, filePath);
 	}
 	
-	public static void inicializador(CategoriaProduto [] categoriaProdutos) {			
+	public static void inicializador(Vector categoriaProdutos) {			
 		load(categoriaProdutos);
 		int caso;
-		if (Validacao.notNull(categoriaProdutos) != 0) {
+		if (!categoriaProdutos.isEmpty()) {
 			do {
 				caso = Validacao.menu(Language.language_identification());
 				switch (caso) {
