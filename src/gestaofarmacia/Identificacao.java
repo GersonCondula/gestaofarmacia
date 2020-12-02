@@ -122,8 +122,7 @@ public class Identificacao {
 
 	@Override
 	public String toString() {
-		return  "[Identificacao: "+ Validacao.delimitador + id + Validacao.delimitador + nome
-				+ Validacao.delimitador + acronimo + Validacao.delimitador + status + Validacao.delimitador
-				+ dataRegisto + Validacao.delimitador + dataActualizacao + Validacao.delimitador + "]";
-	}	
+		return "Identificacao [id=" + id + ", nome=" + nome + ", acronimo=" + acronimo + ", status=" + status
+				+ ", dataRegisto=" + dataRegisto + ", dataActualizacao=" + dataActualizacao + "]";
+	}
 }

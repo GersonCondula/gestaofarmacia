@@ -98,11 +98,11 @@ public class UsuarioMethods {
 		return permissaoSistema;
 	}
 	
-	private static int gravar(Vector usuarios) {			
+	private static int gravar(Vector usuarios, Vector funcionarios) {			
 		boolean error =  false;
 		int id = geradorID(usuarios);		
-		FuncionarioMethods.lista(usuarios);
-		Funcionario funcionario = FuncionarioMethods.selecionaFuncionario(usuarios);	
+		FuncionarioMethods.lista(funcionarios);
+		Funcionario funcionario = FuncionarioMethods.selecionaFuncionario(funcionarios);	
 		if (funcionario != null) {
 			String password = Validacao.validaEntradaPalavra(Language.language_input_password());
 			if (password != null) {
@@ -115,7 +115,7 @@ public class UsuarioMethods {
 			
 		} else {
 			id = 0;
-		}		
+		}			
 		gravarDadosNoFicheiro(usuarios, filePath);
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());				
 		return id;
@@ -129,9 +129,9 @@ public class UsuarioMethods {
 		System.out.println("*************************** "+ Language.language_update_menu() +" ***************************");
 		System.out.println("***********************************************************************************");
 		System.out.println("-----------------------------------------------------------------------------------");     		   
-		System.out.println("3. "+Language.language_state());
+		System.out.println("1. "+Language.language_state());
 		System.out.println("----------------------------------------------------------------------------------");     
-		System.out.println("4. "+Language.language_cancel());
+		System.out.println("2. "+Language.language_cancel());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
@@ -140,52 +140,51 @@ public class UsuarioMethods {
 		int id = 0;
 		lista(usuarios);
 		boolean error = false;		
-		Usuario identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), usuarios);
-		if (identificacao != null) {
-			for (int i = 0; i < usuarios.size(); i++) {
-				Usuario usuario = (Usuario)usuarios.elementAt(i);
-				if (!usuarios.isEmpty()) {
-					if (usuario.getId() == identificacao.getId()) {
-						id = identificacao.getId();
-						switch (menuActualizar()) {										
-						case 1:
-							boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
-							usuario.setStatus(estado);
-							usuario.setDataActualizacao(LocalDateTime.now());
-							lista(usuarios, id);
-							break;
-						case 2:
-							error = true;
-							break;
-						default:
-							actualizar(usuarios);
-							break;
-						}
-					}
-				}
-			} 
+		Usuario usuario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), usuarios);
+		if (usuario != null) {									
+			id = usuario.getId();
+			switch (menuActualizar()) {										
+			case 1:
+				deleta(usuario, usuarios);					
+				Validacao.destroiDirectorioFicheiro(filePath);
+				boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
+				usuario.setStatus(estado);
+				usuario.setDataActualizacao(LocalDateTime.now());
+				Validacao.adicionar(usuarios, usuario);
+				gravarDadosNoFicheiro(usuarios, filePath);
+				lista(usuarios, id);
+				error = true;
+				break;
+			case 2:
+				error = false;
+				break;
+			default:
+				actualizar(usuarios);
+				break;
+			}										
 		}
 		gravarDadosNoFicheiro(usuarios, filePath);		
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;
 	}
 
+	private static void deleta(Usuario usuario, Vector usuarios) {
+		for (int i = 0; i < usuarios.size(); i++) {
+			Usuario usuarioI = (Usuario)usuarios.elementAt(i);
+			if (usuarioI.getId() == usuario.getId()) {
+				usuario = (Usuario)usuarios.remove(i);
+			}					
+		}	
+	}
+	
 	private static int deletar(Vector usuarios){
 		int id = 0;
 		lista(usuarios);
 		boolean error = false;		
 		Usuario usuario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), usuarios);
 		if (usuario != null) {
-			for (int i = 0; i < usuarios.size(); i++) {
-				Usuario usuario2 = (Usuario)usuarios.elementAt(i);
-				if (!usuarios.isEmpty()) {
-					if (usuario2.getId() == usuario.getId()) {
-						id = usuario.getId();
-						usuarios.remove(usuario);
-						error = true;
-					}
-				}
-			} 
+			deleta(usuario, usuarios);
+			error = true;
 		}		
 		Validacao.destroiDirectorioFicheiro(filePath);
 		gravarDadosNoFicheiro(usuarios, filePath);						
@@ -223,32 +222,32 @@ public class UsuarioMethods {
 		return error;
 	}
 
-	public static boolean lerDadosNoFicheiro(Vector usuarios, String file) {
+	public static boolean lerDadosNoFicheiro(Vector usuarios, Vector funcionarios, String file) {		
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
-			if (new File(file).exists()) {				
+			if (new File(file).exists()) {						
 				br = new BufferedReader(new FileReader(new File(file)));
-				String linha = br.readLine();			
+				String linha = br.readLine();						
 				while (linha != null) {					
-					str = new StringTokenizer(linha, "|");
+					str = new StringTokenizer(linha, "|");					
 					Usuario usuario = new Usuario(Integer.parseInt(str.nextToken()),
-							FuncionarioMethods.getById(Integer.parseInt(str.nextToken()), usuarios),
+							FuncionarioMethods.getById(Integer.parseInt(str.nextToken()), funcionarios),
 							str.nextToken(), Boolean.parseBoolean(str.nextToken()),
 							Validacao.parseStringToLocalDateTime(str.nextToken()),
-							Validacao.parseStringToLocalDateTime(str.nextToken()));								
+							Validacao.parseStringToLocalDateTime(str.nextToken()));										
 					Validacao.adicionar(usuarios, usuario);
 					linha = br.readLine();						
-				}
+				}				
 				br.close();
 				error = true;				
 			}else {								
 				Validacao.geraDirectorioFicheiro(file);
-				lerDadosNoFicheiro(usuarios, file);				
+				lerDadosNoFicheiro(usuarios,funcionarios, file);				
 			}
 		} catch (IOException e) {
 			System.err.println("error" + e.getLocalizedMessage());		
-		}		
+		}				
 		return error;
 	}
 
@@ -276,6 +275,16 @@ public class UsuarioMethods {
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		return formatColl;
 	}
+	
+	private static void dadosImpressao(int numeracao, Usuario usuario, String layoutFormat) {
+		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,usuario.getId(),Validacao.delimitador,
+				usuario.getFuncionario().getNome(),Validacao.delimitador,usuario.getPassword(),
+				Validacao.delimitador,Validacao.mudarStatus(usuario.isStatus()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(usuario.getDataRegisto()),Validacao.delimitador,
+				Validacao.parseLocalDateTimeToString(usuario.getDataActualizacao()),Validacao.delimitador);
+		System.out.println();
+		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
+	}
 
 	/**
 	 * @Descrição imprime a lista
@@ -287,52 +296,41 @@ public class UsuarioMethods {
 		for (int i = 0; i < usuarios.size(); i++){
 			Usuario usuario = (Usuario)usuarios.elementAt(i);
 			if (!usuarios.isEmpty()){
-				dadosImpressao(numeracao, i, usuario, layoutFormat);
+				dadosImpressao(numeracao, usuario, layoutFormat);
 				numeracao+=1;
-			}else{empty_ += 1; }
+			}else
+				empty_ += 1; 
 		}
 		Validacao.formatoImpressaoFooter(usuarios.size(), empty_);
-	}
-
-	private static void dadosImpressao(int numeracao, int i, Usuario usuario, String layoutFormat) {
-		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,usuario.getId(),Validacao.delimitador,
-				usuario.getFuncionario().getNome(),Validacao.delimitador,usuario.getPassword(),
-				Validacao.delimitador,Validacao.mudarStatus(usuario.isStatus()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToString(usuario.getDataRegisto()),Validacao.delimitador,
-				Validacao.parseLocalDateTimeToString(usuario.getDataActualizacao()),Validacao.delimitador);
-		System.out.println();
-		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
 	}
 
 	private static void lista(Vector usuarios, int id){
 		int numeracao = 1;
 		int empty_= 0;        
-		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < usuarios.size(); i++) {
-			Usuario usuario = (Usuario)usuarios.elementAt(i);
-			if (!usuarios.isEmpty() && usuario.getId() == id) {					
-				dadosImpressao(numeracao, i, usuario, layoutFormat);
-				numeracao += 1;					
-			} else {
-				empty_ += 1;
-			}
-		}			
+		String layoutFormat = formatoImpressao();	
+		Usuario usuario = getById(id, usuarios);
+		if (!usuarios.isEmpty() && usuario.getId() == id) {					
+			dadosImpressao(numeracao, usuario, layoutFormat);
+			numeracao += 1;					
+		} else {
+			empty_ += 1;
+		}					
 		Validacao.formatoImpressaoFooter(usuarios.size(), empty_);		
 	}         
 
-	public static void load(Vector usuarios) {
-		lerDadosNoFicheiro(usuarios, filePath);
+	
+	public static void load(Vector usuarios, Vector funcionarios) {
+		lerDadosNoFicheiro(usuarios, funcionarios, filePath);
 	}
 
-	public static void inicializador(Vector usuarios) {			
-		load(usuarios);
+	public static void inicializador(Vector usuarios, Vector funcionarios, Vector identificacoes) {				
 		int caso;
 		if (!usuarios.isEmpty()) {
 			do {
 				caso = Validacao.menu(Language.language_user());
 				switch (caso) {
 				case 1:
-					gravar(usuarios);
+					gravar(usuarios, funcionarios);
 					;
 					break;
 				case 2:
@@ -355,8 +353,8 @@ public class UsuarioMethods {
 				}
 			} while (caso != 5);
 		}else {
-			FuncionarioMethods.inicializador(usuarios);
-			gravar(usuarios);
+			FuncionarioMethods.inicializador(funcionarios, identificacoes);
+			gravar(usuarios, funcionarios);
 		}
 	}
 }

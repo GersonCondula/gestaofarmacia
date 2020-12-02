@@ -20,18 +20,23 @@ public class FuncionarioMethods {
 	/**
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
 	 **/
-	private static int geradorID(Vector funcionarios) {		
-		int id = (1 + Validacao.random.nextInt(funcionarios.size()));
-		int iD = 0;	
-		for (int i = 0; i < funcionarios.size(); i++) {
-			Funcionario funcionario = (Funcionario)funcionarios.elementAt(i);
-			if (!funcionarios.isEmpty()) {
-				if (funcionario.getId() == id || id == 0)
-					geradorID(funcionarios);
-				else
-					iD = id;
-			}
-		}	
+	private static int geradorID(Vector funcionarios) {
+		int id = 0, iD = 0;	
+		if (funcionarios.isEmpty()) {
+			id = 1;
+		}else{					
+			int novoId = (Validacao.random.nextInt(funcionarios.size()+1));
+			id = (2 + novoId);		
+			for (int i = 0; i < funcionarios.size(); i++) {
+				Funcionario funcionario = (Funcionario)funcionarios.elementAt(i);
+				if (!funcionarios.isEmpty()) {
+					if (funcionario.getId() == id || id == 0)
+						geradorID(funcionarios);
+					else
+						iD = id;
+				}				
+			}	
+		}
 		return iD;
 	}
 	
@@ -106,27 +111,23 @@ public class FuncionarioMethods {
 	 * @Descrição recebe o ID, consulta se existe e devolve um objecto
 	 */
 	public static Funcionario getById(int id, Vector funcionarios) {
-		Funcionario funcionario = null;
-		int count = 0;
+		Funcionario funcionario = null;		
 		if (id!=0) {    	
 			for (int i = 0; i < funcionarios.size(); i++) {
-				Funcionario funcionario2 = (Funcionario)funcionarios.elementAt(i);
+				Funcionario funcionario2 = (Funcionario)funcionarios.elementAt(i);				
 				if (!funcionarios.isEmpty()) {	                	  
 					if (funcionario2.getId() == id) {
 						funcionario = new Funcionario(funcionario2.getId(),
 								funcionario2.getNome(), funcionario2.getIdentificacao(), 
 								funcionario2.getNumeroIdentidade(), funcionario2.getNuit(),
 								funcionario2.getMorada(), funcionario2.isStatus(), 
-								funcionario2.getDataRegisto(), funcionario2.getDataActualizacao());
-						count ++;
+								funcionario2.getDataRegisto(), funcionario2.getDataActualizacao());						
 					}
 				}
 			}			 	          	
 		}       
 		if (funcionario == null) {
-			funcionario = getById(Validacao.validaEntradaInteiro(Language.language_input_invalid_number()), funcionarios);
-			if (count < 3) {
-			}
+			funcionario = getById(Validacao.validaEntradaInteiro(Language.language_input_invalid_number()), funcionarios);	
 		}
 		return funcionario;
 	}
@@ -149,8 +150,9 @@ public class FuncionarioMethods {
 		Identificacao identificacao = null;		
 		int id = Validacao.validaEntradaInteiro(Language.language_input_id());
 		for (int i = 0; i < identificacaos.size(); i++) {
-			if (!identificacaos.isEmpty() && ((Identificacao)identificacaos.elementAt(i)).getId()==id) {
-				identificacao = (Identificacao)identificacaos.elementAt(i);
+			Identificacao identificacao2 = (Identificacao)identificacaos.elementAt(i);
+			if (!identificacaos.isEmpty() && identificacao2.getId()==id) {
+				identificacao = identificacao2;
 			}
 		}
 		if (identificacao == null) {
@@ -159,13 +161,13 @@ public class FuncionarioMethods {
 		return identificacao;
 	}
 
-	private static int gravar(Vector funcionarios) {		
+	private static int gravar(Vector funcionarios, Vector identificacoes) {		
 		boolean error = false;
 		int id = geradorID(funcionarios);		
 		String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()), funcionarios);
 		if (nome != null) {
-			IdentificacaoMethods.listaIdentificacao(funcionarios);
-			Identificacao identificacao = selecionaIdentificacao(funcionarios);
+			IdentificacaoMethods.listaIdentificacao(identificacoes);
+			Identificacao identificacao = selecionaIdentificacao(identificacoes);
 			if (identificacao != null) {
 				String numeroIdentidade = ValidaNumeroIdentificacao(
 						Validacao.validaEntradaPalavra(Language.language_input_number()), funcionarios);
@@ -216,7 +218,7 @@ public class FuncionarioMethods {
 								+ "|" + funcionario.isStatus() 
 								+ "|" + funcionario.getDataRegisto()
 								+ "|" + funcionario.getDataActualizacao());
-						bw.newLine();
+						bw.newLine();		
 						lista(funcionarios);
 					}
 				}
@@ -257,97 +259,108 @@ public class FuncionarioMethods {
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
-
-	private static int actualizar(Vector funcionarios) {
+	
+	private static int actualizar(Vector funcionarios, Vector identificacoes) {
 		int id = 0;
 		lista(funcionarios);
 		boolean error = false;		
-		Funcionario funcionario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), funcionarios);
-		if (funcionario != null) {
-			for (int i = 0; i < funcionarios.size(); i++) {
-				if (!funcionarios.isEmpty()) {
-					if (((Funcionario)funcionarios.elementAt(i)).getId() == funcionario.getId()) {
-						id = funcionario.getId();
-						switch (menuActualizacao()) {
-						case 1:
-							String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),funcionarios);
-							funcionario.setNome(nome);
-							funcionario.setDataActualizacao(LocalDateTime.now());
-							lista(funcionarios, id);
-							break;
-						case 2:
-							IdentificacaoMethods.listaIdentificacao(funcionarios);
-							Identificacao identificacao = selecionaIdentificacao(funcionarios);
-							funcionario.setIdentificacao(identificacao);
-							funcionario.setDataActualizacao(LocalDateTime.now());
-							lista(funcionarios, id);
-							break;
-						case 3:
-							String numeroIdentidade = ValidaNumeroIdentificacao(Validacao.validaEntradaPalavra(Language.language_input_number()),funcionario.getId(), funcionarios);
-							funcionario.setNumeroIdentidade(numeroIdentidade);
-							funcionario.setDataActualizacao(LocalDateTime.now());
-							lista(funcionarios, id);
-							break;
-						case 4:
-							int nuit = Validacao.validaEntradaInteiro(Language.language_input_nuit());						
-							funcionario.setNuit(nuit);
-							funcionario.setDataActualizacao(LocalDateTime.now());
-							lista(funcionarios, id);
-							break;
-						case 5:
-							String morada = Validacao.validaEntradaPalavra(Language.language_input_address());						
-							funcionario.setMorada(morada);
-							funcionario.setDataActualizacao(LocalDateTime.now());
-							lista(funcionarios, id);
-							break;
-						case 6:
-							boolean estado = Validacao
-							.validaEntradaStatus(Language.language_input_state());
-							funcionario.setStatus(estado);
-							funcionario.setDataActualizacao(LocalDateTime.now());
-							lista(funcionarios, id);
-							break;
-						case 0:
-							error = false;
-							break;
-						default:
-							lista(funcionarios);
-							break;
-						}
-					}
-					error = true;
-				}
-			} 
-		}
-		Validacao.adicionar(funcionarios,funcionario);
-		gravarDadosNoFicheiro(funcionarios, filePath);		
+		Funcionario funcionario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), funcionarios);		
+		if (funcionario != null) {		
+			switch (menuActualizacao()) {
+			case 1:
+				deleta(funcionario, funcionarios);					
+				Validacao.destroiDirectorioFicheiro(filePath);
+				String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),funcionarios);
+				funcionario.setNome(nome);
+				funcionario.setDataActualizacao(LocalDateTime.now());
+				Validacao.adicionar(funcionarios, funcionario);
+				id = funcionario.getId();
+				gravarDadosNoFicheiro(funcionarios, filePath);
+				lista(funcionarios, id);
+				break;
+			case 2:
+				deleta(funcionario, funcionarios);	
+				Validacao.destroiDirectorioFicheiro(filePath);
+				IdentificacaoMethods.listaIdentificacao(identificacoes);
+				Identificacao identificacao = selecionaIdentificacao(identificacoes);
+				funcionario.setIdentificacao(identificacao);
+				funcionario.setDataActualizacao(LocalDateTime.now());
+				Validacao.adicionar(funcionarios, funcionario);
+				id = funcionario.getId();
+				gravarDadosNoFicheiro(funcionarios, filePath);
+				lista(funcionarios, id);
+				break;
+			case 3:
+				deleta(funcionario, funcionarios);	
+				Validacao.destroiDirectorioFicheiro(filePath);				
+				String numeroIdentidade = ValidaNumeroIdentificacao(Validacao.validaEntradaPalavra(Language.language_input_number()),funcionario.getId(), funcionarios);
+				funcionario.setNumeroIdentidade(numeroIdentidade);
+				funcionario.setDataActualizacao(LocalDateTime.now());
+				Validacao.adicionar(funcionarios, funcionario);
+				gravarDadosNoFicheiro(funcionarios, filePath);
+				id = funcionario.getId();
+				lista(funcionarios, id);
+				break;
+			case 4:								
+				deleta(funcionario, funcionarios);					
+				Validacao.destroiDirectorioFicheiro(filePath);									
+				funcionario.setNuit(Validacao.validaEntradaInteiro(Language.language_input_nuit()));
+				funcionario.setDataActualizacao(LocalDateTime.now());				
+				Validacao.adicionar(funcionarios, funcionario);
+				gravarDadosNoFicheiro(funcionarios, filePath);
+				lista(funcionarios);					
+				break;
+			case 5:
+				deleta(funcionario, funcionarios);	
+				Validacao.destroiDirectorioFicheiro(filePath);				
+				String morada = Validacao.validaEntradaPalavra(Language.language_input_address());						
+				funcionario.setMorada(morada);
+				funcionario.setDataActualizacao(LocalDateTime.now());
+				Validacao.adicionar(funcionarios, funcionario);
+				gravarDadosNoFicheiro(funcionarios, filePath);
+				lista(funcionarios, id);
+				break;
+			case 6:
+				deleta(funcionario, funcionarios);	
+				Validacao.destroiDirectorioFicheiro(filePath);				
+				boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
+				funcionario.setStatus(estado);
+				funcionario.setDataActualizacao(LocalDateTime.now());
+				Validacao.adicionar(funcionarios, funcionario);
+				gravarDadosNoFicheiro(funcionarios, filePath);
+				lista(funcionarios, id);
+				break;
+			case 0:							
+				break;
+			default:
+				actualizar(funcionarios, identificacoes);
+				break;
+			}			
+		}						
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;
 	}
 
-	private static int deleta(Vector funcionarios){
-		int id = 0;
-		lista(funcionarios);
-		boolean error = false;		
+	private static void deleta(Funcionario funcionario, Vector funcionarios) {
+		for (int i = 0; i < funcionarios.size(); i++) {
+			Funcionario funcionarioI = (Funcionario)funcionarios.elementAt(i);
+			if (funcionarioI.getId() == funcionario.getId()) {
+				funcionario = (Funcionario)funcionarios.remove(i);
+			}					
+		}	
+	}
+	
+	private static void deletaFuncionario(Vector funcionarios){		
+		lista(funcionarios);			
 		Funcionario funcionario = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), funcionarios);
 		if (funcionario != null) {
-			for (int i = 0; i < funcionarios.size(); i++) {
-				if (!funcionarios.isEmpty()) {
-					if (((Funcionario)funcionarios.elementAt(i)).getId() == funcionario.getId()) {
-						id = funcionario.getId();
-						funcionarios.remove(funcionario);
-						error =  true;
-					}
-				}
-			} 
+			deleta(funcionario, funcionarios);
 		}		
 		Validacao.destroiDirectorioFicheiro(filePath);
-		gravarDadosNoFicheiro(funcionarios, filePath);						
-		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
-		return id;		
+		gravarDadosNoFicheiro(funcionarios, filePath);									
 	}
 
-	private static boolean lerDadosNoFicheiro(Vector funcionarios, String file) {
+	private static boolean lerDadosNoFicheiro(Vector funcionarios, Vector identificacoes, String file) {
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
@@ -356,10 +369,17 @@ public class FuncionarioMethods {
 				String linha = br.readLine();				
 				while (linha != null) {					
 					str = new StringTokenizer(linha, "|");
-					Funcionario funcionario = new Funcionario(
-							Integer.parseInt(str.nextToken()),str.nextToken(),
-							IdentificacaoMethods.getById(Integer.parseInt(str.nextToken()), funcionarios),str.nextToken(),Integer.parseInt(str.nextToken()),str.nextToken(),
-							Boolean.parseBoolean(str.nextToken()),Validacao.parseStringToLocalDateTime(str.nextToken()),Validacao.parseStringToLocalDateTime(str.nextToken()));
+					int id = Integer.parseInt(str.nextToken());
+					String nome = str.nextToken();
+					int idIdentificacao = Integer.parseInt(str.nextToken());
+					Identificacao identificacao = IdentificacaoMethods.getById(idIdentificacao, identificacoes);
+					String numeroIdentificacao = str.nextToken();
+					int nuit = Integer.parseInt(str.nextToken());
+					String morada = str.nextToken();
+					Boolean status = Boolean.parseBoolean(str.nextToken());
+					LocalDateTime dRegisto = Validacao.parseStringToLocalDateTime(str.nextToken());
+					LocalDateTime dAtualiza = Validacao.parseStringToLocalDateTime(str.nextToken());
+					Funcionario funcionario = new Funcionario(id, nome, identificacao, numeroIdentificacao, nuit, morada, status, dRegisto, dAtualiza);
 					Validacao.adicionar(funcionarios, funcionario);					
 					linha = br.readLine();									
 				}
@@ -367,7 +387,7 @@ public class FuncionarioMethods {
 				error = true;				
 			}else {								
 				Validacao.geraDirectorioFicheiro(file);
-				lerDadosNoFicheiro(funcionarios, file);				
+				lerDadosNoFicheiro(funcionarios, identificacoes, file);				
 			}
 		} catch (IOException e) {
 			System.err.println("error" + e.getLocalizedMessage());		
@@ -405,7 +425,7 @@ public class FuncionarioMethods {
 		return formatColl;
 	}
 
-	private static void dadosImpressao(int numeracao, int i, Funcionario funcionario, String layoutFormat) {
+	private static void dadosImpressao(int numeracao, Funcionario funcionario, String layoutFormat) {
 		System.out.format(layoutFormat,Validacao.delimitador,numeracao,Validacao.delimitador,funcionario.getId(),
 				Validacao.delimitador,funcionario.getNome(),Validacao.delimitador,funcionario.getIdentificacao().getAcronimo(),
 				Validacao.delimitador,funcionario.getNumeroIdentidade(),Validacao.delimitador,funcionario.getNuit(),
@@ -414,8 +434,8 @@ public class FuncionarioMethods {
 				Validacao.delimitador,Validacao.parseLocalDateTimeToString(funcionario.getDataActualizacao()),Validacao.delimitador);
 		System.out.println();
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------");
-	}
-
+	}	
+	
 	/**
 	 * @Descrição imprime a lista
 	 */
@@ -423,49 +443,52 @@ public class FuncionarioMethods {
 		int numeracao = 1;
 		int empty_= 0;
 		String layoutFormat = formatoImpressao();	
-		for (int i = 0; i < funcionarios.size(); i++)
+		for (int i = 0; i < funcionarios.size(); i++) {
+			Funcionario funcionario = (Funcionario)funcionarios.elementAt(i);
 			if (!funcionarios.isEmpty()){
-				dadosImpressao(numeracao, i, (Funcionario)funcionarios.elementAt(i), layoutFormat);
+				dadosImpressao(numeracao, funcionario, layoutFormat);
 				numeracao+=1;
 			}else empty_ += 1; 		
+		}
 		Validacao.formatoImpressaoFooter(funcionarios.size(),empty_);		
 	}
 
 	private static void lista(Vector funcionarios, int id){
 		int numeracao = 1;
-		int empty_= 0;        
-		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < funcionarios.size(); i++) 
-			if (!funcionarios.isEmpty() && ((Funcionario)funcionarios.elementAt(i)).getId() == id) {					
-				dadosImpressao(numeracao, i, (Funcionario)funcionarios.elementAt(i), layoutFormat);
-				numeracao += 1;					
-			}else empty_ += 1;						
+		int empty_= 0;        		 
+		String layoutFormat = formatoImpressao();		
+		Funcionario funcionario = getById(id, funcionarios);		
+		if (funcionario != null) {					
+			dadosImpressao(numeracao, funcionario, layoutFormat);
+			numeracao += 1;					
+		}else
+			empty_ += 1;							
 		Validacao.formatoImpressaoFooter(funcionarios.size(), empty_);		
 	}  
 
-	public static void load(Vector funcionarios) {		
-		lerDadosNoFicheiro(funcionarios, filePath);
+	public static void load(Vector funcionarios, Vector identificacoes) {		
+		lerDadosNoFicheiro(funcionarios, identificacoes, filePath);
 	}
-
+	
 	/**
 	 * @param funcionarios
 	 * @param identificacaos
 	 */	
-	public static void inicializador(Vector funcionarios) {
-		if ((Identificacao)funcionarios.firstElement() != null) {
+	public static void inicializador(Vector funcionarios, Vector identificacoes) {
+		if (!identificacoes.isEmpty()) {
 			if (!funcionarios.isEmpty()) {
 				int caso;
 				do {
 					caso = Validacao.menu(Language.language_employee());
 					switch (caso) {
 					case 1:
-						gravar(funcionarios);
+						gravar(funcionarios, identificacoes);
 						;break;
 					case 2:
-						actualizar(funcionarios);
+						actualizar(funcionarios, identificacoes);
 						;break;
 					case 3:
-						deleta(funcionarios);
+						deletaFuncionario(funcionarios);
 						;break;
 					case 4:
 						lista(funcionarios);
@@ -478,11 +501,11 @@ public class FuncionarioMethods {
 				} while (caso != 5);
 			} else {
 				System.out.println(Language.language_empty_array(Language.language_employee()));
-				gravar(funcionarios);
+				gravar(funcionarios, identificacoes);
 			} 
 		}else {
 			System.out.println(Language.language_empty_array(Language.language_identification()));
-			IdentificacaoMethods.gravaIdentificacao(funcionarios);
+			IdentificacaoMethods.gravaIdentificacao(identificacoes);
 		}
 	}	
 }

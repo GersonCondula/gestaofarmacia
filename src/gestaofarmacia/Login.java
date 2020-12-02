@@ -22,19 +22,11 @@ public class Login {
 		String password = Validacao.validaEntradaPalavra(Language.language_input_password());
 		Usuario usuario1 = null;			
 		for (int i =0; i < usuarios.size(); i++) {
-			Usuario usuario2 = (Usuario)usuarios.elementAt(i);
+			Usuario usuario2 = (Usuario)usuarios.elementAt(i);			
 			if (!usuarios.isEmpty()) {
 				if (usuario2.getUsername().toLowerCase().equals(usuario.toLowerCase())
 						&& usuario2.getPassword().toLowerCase().equals(password.toLowerCase())) {
-					usuario1 = usuario2;
-				} else {
-					count++;
-					if (count < 3) {
-						System.out.println(count);
-						usuario1 = login(usuarios);
-					}else {
-						System.err.println(Language.language_time_out());
-					}
+					usuario1 = usuario2;				
 				} 
 			}
 		}

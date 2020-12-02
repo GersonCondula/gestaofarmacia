@@ -83,7 +83,7 @@ public class Pessoa {
 
 	@Override
 	public String toString() {
-		return "Pessoa [id=" + id + ", nome=" + nome + ", morada=" + morada + ", identificacao=" + identificacao
+		return "Pessoa [id=" + id + ", nome=" + nome + ", morada=" + morada + "\n, identificacao=" + identificacao
 				+ ", numeroIdentidade=" + numeroIdentidade + ", nuit=" + nuit + "]";
 	}
 }
