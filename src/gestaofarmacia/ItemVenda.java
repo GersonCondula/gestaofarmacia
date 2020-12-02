@@ -3,43 +3,57 @@ package gestaofarmacia;
 import java.time.LocalDateTime;
 
 public class ItemVenda {
-	private int idItemVenda;
-    private int idVendaItemVenda;
-    private int idProdutoItemVenda;               
-    private LocalDateTime dataActualizacaoItemVenda;
-    
-	public ItemVenda(int idItemVenda, int idVendaItemVenda, int idProdutoItemVenda,
-			LocalDateTime dataActualizacaoItemVenda) {			
-		this.idItemVenda = idItemVenda;
-		this.idVendaItemVenda = idVendaItemVenda;
-		this.idProdutoItemVenda = idProdutoItemVenda;
-		this.dataActualizacaoItemVenda = dataActualizacaoItemVenda;
+	private int id;
+    private Venda venda;
+    private Produto produto;
+    private int quantidade;    
+    private LocalDateTime dataActualizacao;
+	public ItemVenda() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
-
-	public LocalDateTime getDataActualizacaoItemVenda() {
-		return dataActualizacaoItemVenda;
+	public ItemVenda(int id, Venda venda, Produto produto, int quantidade, LocalDateTime dataActualizacao) {
+		super();
+		this.id = id;
+		this.venda = venda;
+		this.produto = produto;
+		this.quantidade = quantidade;
+		this.dataActualizacao = dataActualizacao;
 	}
-
-	public void setDataActualizacaoItemVenda(LocalDateTime dataActualizacaoItemVenda) {
-		this.dataActualizacaoItemVenda = dataActualizacaoItemVenda;
+	public int getId() {
+		return id;
 	}
-
-	public int getIdItemVenda() {
-		return idItemVenda;
+	public void setId(int id) {
+		this.id = id;
 	}
-
-	public int getIdVendaItemVenda() {
-		return idVendaItemVenda;
+	public Venda getVenda() {
+		return venda;
 	}
-
-	public int getIdProdutoItemVenda() {
-		return idProdutoItemVenda;
+	public void setVenda(Venda venda) {
+		this.venda = venda;
 	}
-
+	public Produto getProduto() {
+		return produto;
+	}
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+	public int getQuantidade() {
+		return quantidade;
+	}
+	public void setQuantidade(int quantidade) {
+		this.quantidade = quantidade;
+	}
+	public LocalDateTime getDataActualizacao() {
+		return dataActualizacao;
+	}
+	public void setDataActualizacao(LocalDateTime dataActualizacao) {
+		this.dataActualizacao = dataActualizacao;
+	}
 	@Override
 	public String toString() {
-		return "ItemVenda [idItemVenda=" + idItemVenda + ", idVendaItemVenda=" + idVendaItemVenda
-				+ ", idProdutoItemVenda=" + idProdutoItemVenda + ", dataActualizacaoItemVenda="
-				+ dataActualizacaoItemVenda + "]";
+		return "ItemVenda [id=" + id + ", venda=" + venda + ", produto=" + produto + ", quantidade=" + quantidade
+				+ ", dataActualizacao=" + dataActualizacao + "]";
 	}
+	
 }

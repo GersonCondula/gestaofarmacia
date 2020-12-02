@@ -53,6 +53,12 @@ public class Language {
 	public static final String language_stock_management() {
 		return default_language ? "Gestao de estoque" : "Stock Management";
 	}
+	public static final String language_sales_management() {
+		return default_language ? "Gestao de Vednas" : "Sales Management";
+	}
+	public static final String language_account_statics_management() {
+		return default_language ? "Gestao de Contas e Estatisticas" : "Account Management and Statistics";
+	}
 	public static final String language_active() {
 		return default_language ? "Activo" : "Active";
 	}
@@ -267,10 +273,6 @@ public class Language {
 		return default_language ? "Selecione uma opcao: " 
 				: "Select one option: ";
 	}
-	public static final String language_other() {
-		return default_language ? "Outro" 
-				: "Other";
-	}
 	public static final String language_empty_array(String obj) {
 		return default_language ? "Nao ha nenhum tipo de "+obj+" no sistema, registe o primeiro" :
 								  "There is no type of "+obj+" in the system, register the first";
@@ -341,4 +343,23 @@ public class Language {
 	public static final String language_product() {
 		return default_language ? "Produto" : "Product";
 	}
+	/** 
+	 * ----------------------------- Vendas ------------------------------------ 	 
+	 **/
+	public static final String language_sales() {
+		return default_language ? "Vendas" : "Sales";
+	}
+	public static final String language_sales_devolution() {
+		return default_language ? "Devolucoes" : "Devolutions";
+	}
+	/** 
+	 * ----------------------------- Contas e estatisticas ------------------------------------ 	 
+	 **/
+	public static final String language_account() {
+		return default_language ? "Contas" : "Account";
+	}
+	public static final String language_account_statics() {
+		return default_language ? "Contas" : "Account";
+	}
+	
 }

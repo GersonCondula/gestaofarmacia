@@ -20,21 +20,23 @@ public class ProdutoMethods {
 	/**
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
 	 **/
-	private static int geradorID(Vector produtos) {
-		boolean existe = false;
-		int id = (1 + Validacao.random.nextInt(produtos.size()));
-		int newID = 0;		
-		for (int i = 0; i < produtos.size(); i++) {
-			Produto produto = (Produto)produtos.elementAt(i);
-			if(!produtos.isEmpty()) 
-				if (produto.getId() == id || id == 0) 
-					existe = true;				
+	private static int geradorID(Vector produtos) {	
+		int id = 0,	iD = 0;		
+		if (produtos.isEmpty()) {
+			id = 1;
+		}else {
+			int novoId = (Validacao.random.nextInt(produtos.size()) +1);
+			id = (2 + novoId);
+			for (int i = 0; i < produtos.size(); i++) {
+				Produto produto = (Produto)produtos.elementAt(i);
+				if(!produtos.isEmpty()) 
+					if (produto.getId() == id || id == 0) 
+						geradorID(produtos);
+					else
+						iD = id;				
+			}		
 		}
-		if (existe)
-			geradorID(produtos);
-		else
-			newID = id;
-		return newID;
+		return iD;
 	}
 
 	/**	 
@@ -95,6 +97,21 @@ public class ProdutoMethods {
 		return produto;
 	}
 
+	public static Produto selecionaProduto(Vector produtos) {
+		Produto produto = null;		
+		int id = Validacao.validaEntradaInteiro(Language.language_input_id());
+		for (int i = 0; i < produtos.size(); i++) {
+			Produto produto2 = (Produto)produtos.elementAt(i);
+			if (!produtos.isEmpty() && produto2.getId()==id) {
+				produto = produto2;
+			}
+		}
+		if (produto == null) {
+			return selecionaProduto(produtos);
+		}
+		return produto;
+	}
+	
 	@SuppressWarnings("unused")
 	private static int gravar(Vector produtos, Vector fornecedores, Vector CategoriasProdutos) {
 		int id = 0;		
@@ -231,114 +248,140 @@ public class ProdutoMethods {
 		lista(produtos);
 		boolean error = false;		
 		Produto produto = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), produtos);
-		if (produto != null) {
-			for (int i = 0; i < produtos.size(); i++) {
-				Produto produto2 = (Produto)produtos.elementAt(i);
-				if (!produtos.isEmpty()) {
-					if (produto2.getId() == produto.getId()) {
-						id = produto.getId();
-						switch (menuActualizacao()) {
-						case 1:
-							FornecedorMethods.lista(fornecedores);
-							Fornecedor fornecedor = FornecedorMethods.selecionaFornecedor(fornecedores);
-							produto2.setFornecedor(fornecedor);
-							produto2.setDataActualizacao(LocalDateTime.now());
-							Validacao.adicionar(produtos, produto2);
-							lista(produtos, id);
-							break;
-						case 2:
-							CategoriaProdutoMethods.lista(categoriasProdutos);
-							CategoriaProduto categoriaProduto = CategoriaProdutoMethods.selecionaCategoriaProduo(categoriasProdutos);
-							produto2.setCategoriaProduto(categoriaProduto);
-							produto2.setDataActualizacao(LocalDateTime.now());
-							Validacao.adicionar(produtos, produto2);
-							lista(produtos, id);
-							break;
-						case 3:
-							String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),produtos);
-							produto2.setNome(nome);
-							produto2.setDataActualizacao(LocalDateTime.now());
-							Validacao.adicionar(produtos, produto2);
-							lista(produtos, id);
-							break;
-						case 4:
-							String marca = Validacao.validaEntradaPalavra(Language.language_input_brand());
-							produto2.setMarca(marca);
-							produto2.setDataActualizacao(LocalDateTime.now());
-							Validacao.adicionar(produtos, produto2);
-							lista(produtos, id);
-							break;
-						case 5:
-							String descricao = Validacao.validaEntradaPalavra(Language.language_input_description());
-							produto2.setDescricao(descricao);
-							produto2.setDataActualizacao(LocalDateTime.now());
-							Validacao.adicionar(produtos, produto2);
-							lista(produtos, id);
-							break;
-						case 6:
-							int quantidade = Validacao.validaEntradaInteiro(Language.language_input_nuit());						
-							produto2.setQuantidade(quantidade);
-							produto2.setDataActualizacao(LocalDateTime.now());
-							Validacao.adicionar(produtos, produto2);
-							lista(produtos, id);
-							break;
-						case 7:
-							double preco = Validacao.validaEntradaFlutuante(Language.language_input_price());					
-							produto2.setPreco(preco);
-							produto2.setDataActualizacao(LocalDateTime.now());
-							Validacao.adicionar(produtos, produto2);
-							lista(produtos, id);
-							break;
-						case 8:
-							LocalDateTime dataValidade = Validacao.validaDadosData(Language.language_input_expirationDate());
-							produto2.setDataValidade(dataValidade);
-							produto2.setDataActualizacao(LocalDateTime.now());
-							Validacao.adicionar(produtos, produto2);
-							lista(produtos, id);
-							break;							
-						case 9:
-							boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
-							produto2.setStatus(estado);
-							produto2.setDataActualizacao(LocalDateTime.now());
-							Validacao.adicionar(produtos, produto2);
-							lista(produtos, id);
-							break;
-						case 10:
-							error = false;
-							break;
-						default:
-							lista(produtos);
-							break;
-						}
-					}
-					error = true;
-				}
-			} 
+		if (produto != null) {			
+				switch (menuActualizacao()) {
+				case 1:					
+					deleta(produto, categoriasProdutos);
+					Validacao.destroiDirectorioFicheiro(filePath);
+					FornecedorMethods.lista(fornecedores);
+					Fornecedor fornecedor = FornecedorMethods.selecionaFornecedor(fornecedores);
+					produto.setFornecedor(fornecedor);
+					produto.setDataActualizacao(LocalDateTime.now());
+					Validacao.adicionar(produtos, produto);
+					id = produto.getId();
+					gravarDadosNoFicheiro(categoriasProdutos, filePath);
+					lista(produtos, id);
+					break;
+				case 2:
+					deleta(produto, categoriasProdutos);
+					Validacao.destroiDirectorioFicheiro(filePath);
+					CategoriaProdutoMethods.lista(categoriasProdutos);
+					CategoriaProduto categoriaProduto = CategoriaProdutoMethods.selecionaCategoriaProduo(categoriasProdutos);
+					produto.setCategoriaProduto(categoriaProduto);
+					produto.setDataActualizacao(LocalDateTime.now());
+					Validacao.adicionar(produtos, produto);
+					id = produto.getId();
+					gravarDadosNoFicheiro(categoriasProdutos, filePath);
+					lista(produtos, id);
+					break;
+				case 3:
+					deleta(produto, categoriasProdutos);
+					Validacao.destroiDirectorioFicheiro(filePath);
+					String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),produtos);
+					produto.setNome(nome);
+					produto.setDataActualizacao(LocalDateTime.now());
+					Validacao.adicionar(produtos, produto);
+					id = produto.getId();
+					gravarDadosNoFicheiro(categoriasProdutos, filePath);
+					lista(produtos, id);
+					break;
+				case 4:
+					deleta(produto, categoriasProdutos);
+					Validacao.destroiDirectorioFicheiro(filePath);
+					String marca = Validacao.validaEntradaPalavra(Language.language_input_brand());
+					produto.setMarca(marca);
+					produto.setDataActualizacao(LocalDateTime.now());
+					Validacao.adicionar(produtos, produto);
+					id = produto.getId();
+					gravarDadosNoFicheiro(categoriasProdutos, filePath);
+					lista(produtos, id);
+					break;
+				case 5:
+					deleta(produto, categoriasProdutos);
+					Validacao.destroiDirectorioFicheiro(filePath);
+					String descricao = Validacao.validaEntradaPalavra(Language.language_input_description());
+					produto.setDescricao(descricao);
+					produto.setDataActualizacao(LocalDateTime.now());
+					Validacao.adicionar(produtos, produto);
+					id = produto.getId();
+					gravarDadosNoFicheiro(categoriasProdutos, filePath);
+					lista(produtos, id);
+					break;
+				case 6:
+					deleta(produto, categoriasProdutos);
+					Validacao.destroiDirectorioFicheiro(filePath);
+					int quantidade = Validacao.validaEntradaInteiro(Language.language_input_nuit());						
+					produto.setQuantidade(quantidade);
+					produto.setDataActualizacao(LocalDateTime.now());
+					Validacao.adicionar(produtos, produto);
+					id = produto.getId();
+					gravarDadosNoFicheiro(categoriasProdutos, filePath);
+					lista(produtos, id);
+					break;
+				case 7:
+					deleta(produto, categoriasProdutos);
+					Validacao.destroiDirectorioFicheiro(filePath);
+					double preco = Validacao.validaEntradaFlutuante(Language.language_input_price());					
+					produto.setPreco(preco);
+					produto.setDataActualizacao(LocalDateTime.now());
+					Validacao.adicionar(produtos, produto);
+					id = produto.getId();
+					gravarDadosNoFicheiro(categoriasProdutos, filePath);
+					lista(produtos, id);
+					break;
+				case 8:
+					deleta(produto, categoriasProdutos);
+					Validacao.destroiDirectorioFicheiro(filePath);
+					LocalDateTime dataValidade = Validacao.validaDadosData(Language.language_input_expirationDate());
+					produto.setDataValidade(dataValidade);
+					produto.setDataActualizacao(LocalDateTime.now());
+					Validacao.adicionar(produtos, produto);
+					id = produto.getId();
+					gravarDadosNoFicheiro(categoriasProdutos, filePath);
+					lista(produtos, id);
+					break;							
+				case 9:
+					deleta(produto, categoriasProdutos);
+					Validacao.destroiDirectorioFicheiro(filePath);
+					boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
+					produto.setStatus(estado);
+					produto.setDataActualizacao(LocalDateTime.now());
+					Validacao.adicionar(produtos, produto);
+					id = produto.getId();
+					gravarDadosNoFicheiro(categoriasProdutos, filePath);
+					lista(produtos, id);
+					break;
+				case 10:
+					error = false;
+					break;
+				default:
+					lista(produtos);
+					break;
+				}					
+			error = true;				
 		}
 		gravarDadosNoFicheiro(produtos, filePath);		
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;
 	}
 
-	private static int deleta(Vector produtos){
-		int id = 0;
-		lista(produtos);
-		boolean error = false;		
+	private static void deleta(Produto produto, Vector produtos) {
+		for (int i = 0; i < produtos.size(); i++) {
+			Produto produto2 = (Produto)produtos.elementAt(i);
+			if (produto2.getId() == produto.getId()) {
+				produto = (Produto)produtos.remove(i);
+			}					
+		}	
+	}
+	
+	private static void deleta(Vector produtos){		
+		lista(produtos);		
 		Produto produto = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), produtos);
-		if (!produtos.isEmpty()) {
-			for (int i = 0; i < produtos.size(); i++) {
-				Produto produto2 = (Produto)produtos.elementAt(i);			
-				if (produto2.getId() == produto.getId()) {
-					id = produto.getId();
-					produtos.remove(produto2);
-					error =  true;
-				}				
-			} 
+		if (produtos != null) {
+			deleta(produto, produtos);
 		}		
 		Validacao.destroiDirectorioFicheiro(filePath);
-		gravarDadosNoFicheiro(produtos, filePath);						
-		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
-		return id;		
+		gravarDadosNoFicheiro(produtos, filePath);									
 	}
 
 	private static boolean lerDadosNoFicheiro(Vector produtos, Vector fornecedores, Vector categoriasProdutos, String file) {
@@ -461,14 +504,12 @@ public class ProdutoMethods {
 	private static void lista(Vector produtos, int id){
 		int numeracao = 1;
 		int empty_= 0;        
-		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < produtos.size(); i++) {
-			Produto produto = (Produto)produtos.elementAt(i);
-			if (!produtos.isEmpty() && produto.getId() == id) {					
-				dadosImpressao(numeracao, produto, layoutFormat);
-				numeracao += 1;					
-			}else empty_ += 1;					
-		}
+		String layoutFormat = formatoImpressao();		
+		Produto produto = getById(id, produtos);
+		if (!produtos.isEmpty() && produto.getId() == id) {					
+			dadosImpressao(numeracao, produto, layoutFormat);
+			numeracao += 1;					
+		}else empty_ += 1;							
 		Validacao.formatoImpressaoFooter(produtos.size(), empty_);		
 	}  
 

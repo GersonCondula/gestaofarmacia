@@ -4,39 +4,47 @@ import java.time.LocalDateTime;
 
 public class Venda {
 	
-	private int idVenda;
-    private int idClienteVenda;
-    private int idUsuarioVenda;
-    private int quantidadeItensVenda;
-    private double valorPagoVenda;
+	private int id; 
+    private Usuario usuario;
     private LocalDateTime dataRegistoVenda;
     private LocalDateTime dataActualizacaoVenda;
     
-	public Venda(int idVenda, int idClienteVenda, int idUsuarioVenda, int quantidadeItensVenda, double valorPagoVenda,
-			LocalDateTime dataRegistoVenda, LocalDateTime dataActualizacaoVenda) {	
-		this.idVenda = idVenda;
-		this.idClienteVenda = idClienteVenda;
-		this.idUsuarioVenda = idUsuarioVenda;
-		this.quantidadeItensVenda = quantidadeItensVenda;
-		this.valorPagoVenda = valorPagoVenda;
+	public Venda() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Venda(int id, Usuario usuario, LocalDateTime dataRegistoVenda,
+			LocalDateTime dataActualizacaoVenda) {
+		super();
+		this.id = id;		
+		this.usuario = usuario;
 		this.dataRegistoVenda = dataRegistoVenda;
 		this.dataActualizacaoVenda = dataActualizacaoVenda;
 	}
-	
-	public int getQuantidadeItensVenda() {
-		return quantidadeItensVenda;
+
+	public int getId() {
+		return id;
 	}
 
-	public void setQuantidadeItensVenda(int quantidadeItensVenda) {
-		this.quantidadeItensVenda = quantidadeItensVenda;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public double getValorPagoVenda() {
-		return valorPagoVenda;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setValorPagoVenda(double valorPagoVenda) {
-		this.valorPagoVenda = valorPagoVenda;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public LocalDateTime getDataRegistoVenda() {
+		return dataRegistoVenda;
+	}
+
+	public void setDataRegistoVenda(LocalDateTime dataRegistoVenda) {
+		this.dataRegistoVenda = dataRegistoVenda;
 	}
 
 	public LocalDateTime getDataActualizacaoVenda() {
@@ -47,22 +55,9 @@ public class Venda {
 		this.dataActualizacaoVenda = dataActualizacaoVenda;
 	}
 
-	public int getIdVenda() {
-		return idVenda;
-	}
-
-	public int getIdClienteVenda() {
-		return idClienteVenda;
-	}
-
-	public int getIdUsuarioVenda() {
-		return idUsuarioVenda;
-	}
-
 	@Override
 	public String toString() {
-		return "Venda [idVenda=" + idVenda + ", idClienteVenda=" + idClienteVenda + ", idUsuarioVenda=" + idUsuarioVenda
-				+ ", quantidadeItensVenda=" + quantidadeItensVenda + ", valorPagoVenda=" + valorPagoVenda
-				+ ", dataRegistoVenda=" + dataRegistoVenda + ", dataActualizacaoVenda=" + dataActualizacaoVenda + "]";
+		return "Venda [id=" + id + ", usuario=" + usuario + ", dataRegistoVenda=" + dataRegistoVenda
+				+ ", dataActualizacaoVenda=" + dataActualizacaoVenda + "]";
 	}
 }
