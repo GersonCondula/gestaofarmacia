@@ -11,8 +11,8 @@ public class Pessoa {
 	public Pessoa() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-
+	}	
+	
 	// Constructor para o fornecedor
 	public Pessoa(int id, String nome, String morada, int nuit) {
 		super();
@@ -20,6 +20,16 @@ public class Pessoa {
 		this.nome = nome;
 		this.morada = morada;
 		this.nuit = nuit;
+	}
+	
+	// Constructor para o cliente
+	public Pessoa(int id, String nome, String morada, Identificacao identificacao, String numeroIdentidade) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.morada = morada;
+		this.identificacao = identificacao;
+		this.numeroIdentidade = numeroIdentidade;			
 	}
 	
 	// Constructor para o funcionario

@@ -5,7 +5,9 @@ import java.util.Vector;
 
 @SuppressWarnings("rawtypes")
 public class ExecutaSGF {
-		
+	
+	public static Usuario userLogado;
+	
 	private static Vector identificacaoVector = new Vector();
 	private static Vector funcionarioVector = new Vector();
 	private static Vector fornecedorVector = new Vector();
@@ -14,6 +16,8 @@ public class ExecutaSGF {
 	private static Vector categoriaProdutoVector = new Vector();
 	private static Vector produtoVector = new Vector();
 	private static Vector perfilVector = new Vector();
+	private static Vector vendaVector = new Vector();
+	private static Vector itemVendaVector = new Vector();	
 	
 	
 	private static void load() {
@@ -24,7 +28,9 @@ public class ExecutaSGF {
 		ProdutoMethods.load(produtoVector, fornecedorVector, categoriaProdutoVector);
 		PermissaoSistemaMethods.load(permissaoSistemaVector);
 		PerfilMethods.load(perfilVector);
-		UsuarioMethods.load(usuarioVector, funcionarioVector);
+		UsuarioMethods.load(usuarioVector, funcionarioVector);		
+		VendaMethods.load(vendaVector, itemVendaVector, produtoVector, usuarioVector);
+		
 		Language.load();		
 	}
 	
@@ -45,7 +51,7 @@ public class ExecutaSGF {
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println("5. "+Language.language_profile());
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println("6. "+Language.language_cancel());
+		System.out.println("6. "+Language.language_logout());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_select_option());
 	}
@@ -80,7 +86,6 @@ public class ExecutaSGF {
 	}
 
 	private static byte menuStockManagement() {
-
 		System.out.println();
 		System.out.println("***********************************************************************************");
 		System.out.println("\t\t\t\t"+Language.language_pharmacy_management());
@@ -92,7 +97,7 @@ public class ExecutaSGF {
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println("3. "+Language.language_provider());
 		System.out.println("-----------------------------------------------------------------------------------");		
-		System.out.println("4. "+Language.language_cancel());
+		System.out.println("4. "+Language.language_logout());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_select_option());
 	}
@@ -120,6 +125,63 @@ public class ExecutaSGF {
 		} while (caso!=4);
 	}
 	
+	private static byte menu_sales(){
+		System.out.println();
+		System.out.println("***********************************************************************************");
+		System.out.println("\t\t\t\t"+Language.language_sales_management());
+		System.out.println("***********************************************************************************");
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("1. "+Language.language_sales());		
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("2. "+Language.language_logout());
+		System.out.println("***********************************************************************************");
+		return Validacao.validaEntradaByte(Language.language_select_option());
+	}
+	
+	private static void sales() {
+		int caso;
+		do {
+			caso = menu_sales();
+			switch(caso) {
+			case 1:
+				VendaMethods.inicializador(vendaVector, itemVendaVector, produtoVector, usuarioVector);
+				;break;
+			case 2:				
+				;break;			
+			default:				
+				;break;
+			}
+		}while(caso!=3);
+	}
+	
+	private static byte menu_account_statics(){
+		System.out.println();
+		System.out.println("***********************************************************************************");
+		System.out.println("\t\t\t\t"+Language.language_account_statics_management());
+		System.out.println("***********************************************************************************");
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("1. "+Language.language_account());
+		System.out.println("-----------------------------------------------------------------------------------");     	       
+		System.out.println("2. "+Language.language_account_statics());
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("3. "+Language.language_logout());
+		System.out.println("***********************************************************************************");
+		return Validacao.validaEntradaByte(Language.language_select_option());
+	}
+	
+	private static void account_statics() {
+		int caso;
+		do {
+			caso = menu_account_statics();			
+			switch(caso) {
+			case 1:;break;
+			case 2:;break;
+			case 3:;break;
+			default:;break;
+			}			
+		}while(caso!=3);
+	}
+	
 	/**       
 	 * @Descrição Menu da Farmacia
 	 */
@@ -134,9 +196,9 @@ public class ExecutaSGF {
 		System.out.println("-----------------------------------------------------------------------------------");     	       
 		System.out.println("2. "+Language.language_stock_management());
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println("3. "+Language.language_other());
+		System.out.println("3. "+Language.language_sales());
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println("4. "+Language.language_cancel());
+		System.out.println("4. "+Language.language_logout());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_select_option());
 	}
@@ -144,8 +206,10 @@ public class ExecutaSGF {
 	private static void inicializador() throws IOException {		
 		load();
 		Usuario usuario = Login.login(usuarioVector);
+		userLogado = usuario;
 		if (usuario != null) {
 			Login.setUsuario_id(usuario);
+			
 			int caso;
 			do {
 				caso = menu();
@@ -156,9 +220,11 @@ public class ExecutaSGF {
 				case 2:				
 					stockManagement();
 					break;
-				case 3:				
+				case 3:			
+					sales();
 					break;
-				case 4:					
+				case 4:		
+					account_statics();
 					break;
 				default:
 					break;

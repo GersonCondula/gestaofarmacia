@@ -63,7 +63,7 @@ public class FuncionarioMethods {
 		return nomed;
 	}
 	
-	private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, Vector funcionarios) {
+	public static String ValidaNumeroIdentificacao(String validaEntradaPalavra, Vector funcionarios) {
 		String funcioanrioStr = null;
 		if (validaEntradaPalavra != null) {
 			for (int i = 0; i < funcionarios.size(); i++) {
@@ -83,7 +83,7 @@ public class FuncionarioMethods {
 		return funcioanrioStr;
 	}
 
-	private static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int id, Vector funcionarios) {
+	public static String ValidaNumeroIdentificacao(String validaEntradaPalavra, int id, Vector funcionarios) {
 
 		String funcioanrioStr = null;
 		if (validaEntradaPalavra != null) {
