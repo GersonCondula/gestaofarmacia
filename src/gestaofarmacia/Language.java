@@ -108,6 +108,9 @@ public class Language {
 	public static final String language_cancel() {
 		return default_language ? "Cancelar" :"Cancel";
 	}
+	public static final String language_logout() {
+		return default_language ? "Sair" :"Logout";
+	}
 	public static final String language_expirationDate() {
 		return default_language ? "Data de validade" : "Expiration Date";
 	}

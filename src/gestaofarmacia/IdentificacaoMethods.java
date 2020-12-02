@@ -22,17 +22,22 @@ public class IdentificacaoMethods {
 	  @Descrição Gerador de ID e nao permite repeticao de ID's usando o metodo recursivo
 	 **/	
 	private static int geradorID(Vector identificacoes) {		
-		int id = (1 + Validacao.random.nextInt(identificacoes.size()));
-		int iD = 0;	
-		for (int i = 0; i < identificacoes.size(); i++) {
-			Identificacao identificacao = (Identificacao)identificacoes.elementAt(i);
-			if (!identificacoes.isEmpty()) {
-				if (identificacao.getId() == id || id == 0)
-					geradorID(identificacoes);
-				else
-					iD = id;
-			}
-		}	
+		int id = 0, iD = 0;
+		if (identificacoes.isEmpty()) {
+			
+		}else {
+			int novoId = (1 + Validacao.random.nextInt(identificacoes.size())+1);
+			id = (2 + novoId);
+			for (int i = 0; i < identificacoes.size(); i++) {
+				Identificacao identificacao = (Identificacao)identificacoes.elementAt(i);
+				if (!identificacoes.isEmpty()) {
+					if (identificacao.getId() == id || id == 0)
+						geradorID(identificacoes);
+					else
+						iD = id;
+				}
+			}	
+		}
 		return iD;
 	}
 
@@ -174,53 +179,68 @@ public class IdentificacaoMethods {
 		listaIdentificacao(identificacoes);
 		boolean error = true;		
 		Identificacao identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), identificacoes);
-		if (identificacao != null) {
-			for (int i = 0; i < identificacoes.size(); i++) {				
-				if (!identificacoes.isEmpty()) {
-					if (((Identificacao)identificacoes.elementAt(i)).getId() == identificacao.getId()) {
-						id = identificacao.getId();
-						switch (menuActualizarIdentificacao()) {
-						case 1:
-							String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),identificacoes);
-							identificacao.setNome(nome);
-							identificacao.setDataActualizacao(LocalDateTime.now());											
-							listaIdentificacao(identificacoes, id);
-							break;
-						case 2:
-							String acronimo = validaAcronimo(Validacao.validaEntradaPalavra(Language.language_input_acronym()),identificacoes);
-							identificacao.setAcronimo(acronimo);
-							identificacao.setDataActualizacao(LocalDateTime.now());
-							listaIdentificacao(identificacoes, id);
-							break;
-						case 3:
-							boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
-							identificacao.setStatus(estado);
-							identificacao.setDataActualizacao(LocalDateTime.now());
-							listaIdentificacao(identificacoes, id);
-							break;
-						case 4:
-							error = false;
-							break;
-						default:
-							actualizarIdentificacao(identificacoes);
-							break;
-						}
-					}
-				}
-			} 
-		}
-		Validacao.adicionar(identificacoes, identificacao);	
-		gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);		
+		if (identificacao != null) {			
+			switch (menuActualizarIdentificacao()) {
+			case 1:
+				deleta(identificacao, identificacoes);
+				Validacao.destroiDirectorioFicheiro(filePath);
+				String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()),identificacoes);
+				identificacao.setNome(nome);
+				identificacao.setDataActualizacao(LocalDateTime.now());		
+				id = identificacao.getId();
+				gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);
+				listaIdentificacao(identificacoes, id);
+				break;
+			case 2:
+				deleta(identificacao, identificacoes);
+				Validacao.destroiDirectorioFicheiro(filePath);
+				String acronimo = validaAcronimo(Validacao.validaEntradaPalavra(Language.language_input_acronym()),identificacoes);
+				identificacao.setAcronimo(acronimo);
+				identificacao.setDataActualizacao(LocalDateTime.now());
+				id = identificacao.getId();
+				gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);
+				listaIdentificacao(identificacoes, id);
+				break;
+			case 3:
+				deleta(identificacao, identificacoes);
+				Validacao.destroiDirectorioFicheiro(filePath);
+				boolean estado = Validacao.validaEntradaStatus(Language.language_input_state());
+				identificacao.setStatus(estado);
+				identificacao.setDataActualizacao(LocalDateTime.now());
+				id = identificacao.getId();
+				gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);
+				listaIdentificacao(identificacoes, id);
+				break;
+			case 4:
+				error = false;
+				break;
+			default:
+				actualizarIdentificacao(identificacoes);
+				break;
+			}
+		}						
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
 		return id;
 	}
 
+	private static void deleta(Identificacao identificacao, Vector identificacoes) {
+		for (int i = 0; i < identificacoes.size(); i++) {
+			Identificacao identificacao2 = (Identificacao)identificacoes.elementAt(i);
+			if (identificacao2.getId() == identificacao.getId()) {
+				identificacao = (Identificacao)identificacoes.remove(i);
+			}					
+		}	
+	}
+	
 	private static int deletaIdentificacao(Vector identificacoes){
 		int id = 0;
 		listaIdentificacao(identificacoes);
 		boolean error = false;		
 		Identificacao identificacao = getById(Validacao.validaEntradaInteiro(Language.language_input_id()), identificacoes);
-		identificacoes.remove(identificacao);	
+		if (identificacao!=null) {
+			deleta(identificacao, identificacoes);
+			error = true;
+		}			
 		Validacao.destroiDirectorioFicheiro(filePath);
 		gravarDadosIdentificacaoNoFicheiro(identificacoes, filePath);						
 		Validacao.validaGravacao(id, error, Language.language_save_successs(),Language.language_save_unsuccesss());
@@ -340,16 +360,14 @@ public class IdentificacaoMethods {
 	private static void listaIdentificacao(Vector identificacoes, int id){
 		int numeracao = 1;
 		int empty_= 0;        
-		String layoutFormat = formatoImpressao();
-		for (int i = 0; i < identificacoes.size(); i++) {
-			Identificacao identificacao = (Identificacao)identificacoes.elementAt(i);
-			if ((!identificacoes.isEmpty()) && identificacao.getId() == id) {					
-				dadosImpressao(numeracao, identificacao, layoutFormat);
-				numeracao += 1;					
-			} else {
-				empty_ += 1;
-			}
-		}			
+		String layoutFormat = formatoImpressao();		
+		Identificacao identificacao = getById(id, identificacoes);
+		if ((!identificacoes.isEmpty()) && identificacao.getId() == id) {					
+			dadosImpressao(numeracao, identificacao, layoutFormat);
+			numeracao += 1;					
+		} else {
+			empty_ += 1;
+		}					
 		Validacao.formatoImpressaoFooter(identificacoes.size(), empty_);		
 	}         	
 

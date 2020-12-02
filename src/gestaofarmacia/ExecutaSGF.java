@@ -3,20 +3,29 @@ package gestaofarmacia;
 import java.io.IOException;
 import java.util.Vector;
 
+@SuppressWarnings("rawtypes")
 public class ExecutaSGF {
+		
+	private static Vector identificacaoVector = new Vector();
+	private static Vector funcionarioVector = new Vector();
+	private static Vector fornecedorVector = new Vector();
+	private static Vector permissaoSistemaVector = new Vector();
+	private static Vector usuarioVector = new Vector();
+	private static Vector categoriaProdutoVector = new Vector();
+	private static Vector produtoVector = new Vector();
+	private static Vector perfilVector = new Vector();
 	
-	@SuppressWarnings({"unused", "rawtypes"})
-	private static Vector vector = new Vector();
 	
 	private static void load() {
-		Language.load();
-		IdentificacaoMethods.load(vector);
-		FuncionarioMethods.load(vector);
-		PermissaoSistemaMethods.load(vector);
-		UsuarioMethods.load(vector);
-		CategoriaProdutoMethods.load(vector);
-		FornecedorMethods.load(vector);
-		ProdutoMethods.load(vector);
+		IdentificacaoMethods.load(identificacaoVector);
+		FuncionarioMethods.load(funcionarioVector, identificacaoVector);						
+		FornecedorMethods.load(fornecedorVector);
+		CategoriaProdutoMethods.load(categoriaProdutoVector);		
+		ProdutoMethods.load(produtoVector, fornecedorVector, categoriaProdutoVector);
+		PermissaoSistemaMethods.load(permissaoSistemaVector);
+		PerfilMethods.load(perfilVector);
+		UsuarioMethods.load(usuarioVector, funcionarioVector);
+		Language.load();		
 	}
 	
 	private static byte menuRH() {
@@ -47,19 +56,19 @@ public class ExecutaSGF {
 			caso = menuRH();
 			switch (caso) {
 			case 1:
-				FuncionarioMethods.inicializador(vector);
+				FuncionarioMethods.inicializador(funcionarioVector, identificacaoVector);
 				break;
 			case 2:
-				UsuarioMethods.inicializador(vector);
+				UsuarioMethods.inicializador(usuarioVector, funcionarioVector,identificacaoVector);
 				break;
 			case 3:				
-				IdentificacaoMethods.inicializador(vector);
+				IdentificacaoMethods.inicializador(identificacaoVector);
 				break;
 			case 4:		
-				PermissaoSistemaMethods.inicializador(vector);
+				PermissaoSistemaMethods.inicializador(permissaoSistemaVector);
 				break;	
 			case 5:				
-				PerfilMethods.inicializador(vector);
+				PerfilMethods.inicializador(perfilVector);
 				break;	
 			case 6:								
 				break;
@@ -94,13 +103,13 @@ public class ExecutaSGF {
 			caso = menuStockManagement();
 			switch (caso) {
 			case 1:			
-				ProdutoMethods.inicializador(vector);
+				ProdutoMethods.inicializador(produtoVector,fornecedorVector, categoriaProdutoVector);
 				break;
 			case 2:
-				CategoriaProdutoMethods.inicializador(vector);
+				CategoriaProdutoMethods.inicializador(categoriaProdutoVector);
 				break;
 			case 3:		
-				FornecedorMethods.inicializador(vector);
+				FornecedorMethods.inicializador(fornecedorVector);
 				break;
 			case 4:						
 				break;				
@@ -131,10 +140,10 @@ public class ExecutaSGF {
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_select_option());
 	}
-
+	
 	private static void inicializador() throws IOException {		
 		load();
-		Usuario usuario = Login.login(vector);
+		Usuario usuario = Login.login(usuarioVector);
 		if (usuario != null) {
 			Login.setUsuario_id(usuario);
 			int caso;
@@ -142,7 +151,7 @@ public class ExecutaSGF {
 				caso = menu();
 				switch (caso) {
 				case 1:
-					humanResources();
+					humanResources();						
 					break;
 				case 2:				
 					stockManagement();
@@ -159,6 +168,6 @@ public class ExecutaSGF {
 	}
 
 	public static void main(String[]args) throws IOException {				
-		inicializador();
+		inicializador();		
 	}
 }

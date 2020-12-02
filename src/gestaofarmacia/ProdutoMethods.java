@@ -96,15 +96,15 @@ public class ProdutoMethods {
 	}
 
 	@SuppressWarnings("unused")
-	private static int gravar(Vector produtos) {
+	private static int gravar(Vector produtos, Vector fornecedores, Vector CategoriasProdutos) {
 		int id = 0;		
 		boolean error = false;
 		id = geradorID(produtos);				
-			FornecedorMethods.lista(produtos);
-			Fornecedor fornecedor = FornecedorMethods.selecionaFornecedor(produtos);
+			FornecedorMethods.lista(fornecedores);
+			Fornecedor fornecedor = FornecedorMethods.selecionaFornecedor(fornecedores);
 			if (fornecedor != null) {
-				CategoriaProdutoMethods.lista(produtos);
-				CategoriaProduto categoriaProduto = CategoriaProdutoMethods.selecionaCategoriaProduo(produtos);
+				CategoriaProdutoMethods.lista(CategoriasProdutos);
+				CategoriaProduto categoriaProduto = CategoriaProdutoMethods.selecionaCategoriaProduo(CategoriasProdutos);
 				if (categoriaProduto != null) {		
 					String nome = validaNome(Validacao.validaEntradaPalavra(Language.language_input_name()), produtos);
 					if (nome!=null) {
@@ -226,7 +226,7 @@ public class ProdutoMethods {
 		return Validacao.validaEntradaByte(Language.language_edit_data());
 	}
 
-	private static int actualizar(Vector produtos) {
+	private static int actualizar(Vector produtos, Vector fornecedores, Vector categoriasProdutos) {
 		int id = 0;
 		lista(produtos);
 		boolean error = false;		
@@ -239,16 +239,16 @@ public class ProdutoMethods {
 						id = produto.getId();
 						switch (menuActualizacao()) {
 						case 1:
-							FornecedorMethods.lista(produtos);
-							Fornecedor fornecedor = FornecedorMethods.selecionaFornecedor(produtos);
+							FornecedorMethods.lista(fornecedores);
+							Fornecedor fornecedor = FornecedorMethods.selecionaFornecedor(fornecedores);
 							produto2.setFornecedor(fornecedor);
 							produto2.setDataActualizacao(LocalDateTime.now());
 							Validacao.adicionar(produtos, produto2);
 							lista(produtos, id);
 							break;
 						case 2:
-							CategoriaProdutoMethods.lista(produtos);
-							CategoriaProduto categoriaProduto = CategoriaProdutoMethods.selecionaCategoriaProduo(produtos);
+							CategoriaProdutoMethods.lista(categoriasProdutos);
+							CategoriaProduto categoriaProduto = CategoriaProdutoMethods.selecionaCategoriaProduo(categoriasProdutos);
 							produto2.setCategoriaProduto(categoriaProduto);
 							produto2.setDataActualizacao(LocalDateTime.now());
 							Validacao.adicionar(produtos, produto2);
@@ -341,7 +341,7 @@ public class ProdutoMethods {
 		return id;		
 	}
 
-	private static boolean lerDadosNoFicheiro(Vector produtos, String file) {
+	private static boolean lerDadosNoFicheiro(Vector produtos, Vector fornecedores, Vector categoriasProdutos, String file) {
 		boolean error = false;		
 		StringTokenizer str;
 		try {		
@@ -352,8 +352,8 @@ public class ProdutoMethods {
 					str = new StringTokenizer(linha, "|");
 					Produto produto = new Produto(
 							Integer.parseInt(str.nextToken()),
-							FornecedorMethods.getById(Integer.parseInt(str.nextToken()), produtos),
-							CategoriaProdutoMethods.getById(Integer.parseInt(str.nextToken()), produtos),
+							FornecedorMethods.getById(Integer.parseInt(str.nextToken()), fornecedores),
+							CategoriaProdutoMethods.getById(Integer.parseInt(str.nextToken()), categoriasProdutos),
 							str.nextToken(),str.nextToken(),str.nextToken(),
 							Integer.parseInt(str.nextToken()),
 							Double.parseDouble(str.nextToken()),
@@ -368,7 +368,7 @@ public class ProdutoMethods {
 				error = true;				
 			}else {								
 				Validacao.geraDirectorioFicheiro(file);
-				lerDadosNoFicheiro(produtos, file);				
+				lerDadosNoFicheiro(produtos, fornecedores, categoriasProdutos,  file);				
 			}
 		} catch (IOException e) {
 			System.err.println("error" + e.getLocalizedMessage());		
@@ -475,28 +475,28 @@ public class ProdutoMethods {
 	/**
 	 * @Descrição Carregar os dadods do ficheiro para o array de objectos ao iniciar a applicação
 	 */
-	public static void load(Vector produtos ) {		
-		lerDadosNoFicheiro(produtos, filePath);
+	public static void load(Vector produtos, Vector fornecedores, Vector categoriasProdutos) {		
+		lerDadosNoFicheiro(produtos, fornecedores, categoriasProdutos, filePath);
 	}
 
 	/**
 	 * @param produtos
 	 * @param fornecedors
 	 */	
-	public static void inicializador(Vector produtos) {					
-		if ((Fornecedor)produtos.firstElement() != null) {
-			if ((CategoriaProduto)produtos.firstElement() != null) {
+	public static void inicializador(Vector produtos, Vector fornecedores, Vector categoriasProdutos) {					
+		if (!fornecedores.isEmpty()) {
+			if (!categoriasProdutos.isEmpty()) {
 				if (!produtos.isEmpty()) {
 					int caso;
 					do {
 						caso = Validacao.menu(Language.language_employee());
 						switch (caso) {
 						case 1:
-							gravar(produtos);
+							gravar(produtos, fornecedores, categoriasProdutos);
 							;
 							break;
 						case 2:
-							actualizar(produtos);
+							actualizar(produtos, fornecedores, categoriasProdutos);
 							;
 							break;
 						case 3:
@@ -516,7 +516,7 @@ public class ProdutoMethods {
 					} while (caso != 5);
 				} else {
 					System.out.println(Language.language_empty_array(Language.language_product()));
-					gravar(produtos);
+					gravar(produtos, fornecedores, categoriasProdutos);
 				} 
 			} else {
 				System.out.println(Language.language_empty_array(Language.language_product_category()));

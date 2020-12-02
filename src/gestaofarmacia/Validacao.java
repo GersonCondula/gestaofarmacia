@@ -88,6 +88,9 @@ public class Validacao {
 		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\resources\\files");
 		File fileDirectory = new File(filePath1);
 		String filePath2 = filePath1.concat("\\"+fileNames);
+		if(filePath2.contains("\\C:\\")) {
+			filePath2 = fileNames;
+		}
 		File file = new File(filePath2);
 		try {
 			if (!new File(filePath1).exists()) {				
@@ -103,24 +106,25 @@ public class Validacao {
 		}
 		return filePath2;
 	}
+	
+	
 
 	public static String destroiDirectorioFicheiro(String fileNames) {
 		Path currentAbsolutePath1 = Paths.get("");
 		String filePath1 = currentAbsolutePath1.toAbsolutePath().toString().concat("\\resources\\files");
-		File fileDirectory = new File(filePath1);
-		String filePath2 = filePath1.concat("\\"+fileNames);
-		File file = new File(filePath2);
+		File fileDirectory = new File(filePath1);		
+		File file = new File(fileNames);
 		try {
 			if (!new File(filePath1).exists()) {				
 				fileDirectory.mkdir();											
 			}else {
-				if (new File(filePath2).exists())				
+				if (new File(fileNames).exists())				
 					file.delete();
 			}
 		} catch (Exception e) {		
 			e.printStackTrace();
 		}
-		return filePath2;
+		return fileNames;
 	}
 
 	/**
@@ -222,8 +226,8 @@ public class Validacao {
 	 * @return
 	 * @Descrição: valida se o valor informado e um numero inteiro diferente de 0 e se contem espacos em branco
 	 */
-	public static boolean validaDados(int valor){
-		return (Integer.toString(valor)).matches("[0-9]*") && valor != 0 && !Integer.toString(valor).isBlank();
+	public static boolean validaDados(int valor){		
+		return (Integer.toString(valor)).matches("[0-9]*") && !Integer.toString(valor).isBlank();
 	}
 
 	/**
@@ -453,10 +457,11 @@ public class Validacao {
 		do {
 			try {
 				System.out.print(msg);
-				valor = Byte.parseByte(br.readLine());
+				valor = Byte.parseByte(br.readLine());				
 				if (validaDados(valor)) {
 					error = true;
 				}else {
+					System.err.println("ERRORRR!!!!");
 					System.err.println(Language.language_valid_value());
 				}
 			} catch (Exception e) {
@@ -567,7 +572,7 @@ public class Validacao {
 		System.out.println("-----------------------------------------------------------------------------------");
 		System.out.println("4. "+ Language.language_listing());
 		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println("5. "+ Language.language_cancel());
+		System.out.println("5. "+ Language.language_logout());
 		System.out.println("***********************************************************************************");
 		return Validacao.validaEntradaByte(Language.language_select_option());
 	}
